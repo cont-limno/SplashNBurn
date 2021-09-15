@@ -65,7 +65,8 @@ hist(locus_attributes$lake_elevation_m, main='Lake elevation (m)', xlab='')
 hist(locus_attributes$lake_shorelinedevfactor, main='Shoreline development factor', xlab='')
 hist(locus_attributes$ws_area_ha, main='Watershed area (ha)', xlab='', xlim=c(0,12200), breaks=seq(0,44600,100))
 hist(locus_attributes$drainage_ratio, main='Drainage ratio', xlab='')
-barplot(connclass_summary$nType, names.arg=connclass_summary$lake_connectivity_class)
+barplot(connclass_summary$nType, names.arg=connclass_summary$lake_connectivity_class, main='Lake connectivity class')
+mtext(side=3, 'dont worry KSC, I wouldnt forget this!', cex=0.6)
 
 ## LULC analysis (only for lakes >= 4ha)
 lagosne_lulc$iws_totalforest2011_pct <- lagosne_lulc$iws_nlcd2011_pct_41 + lagosne_lulc$iws_nlcd2011_pct_42 + lagosne_lulc$iws_nlcd2011_pct_43
