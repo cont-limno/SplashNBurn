@@ -1,6 +1,6 @@
 ############# Exploratory analysis of lakes/watersheds in Greenwood Fire burn area #############
 # Date: 9-14-21
-# updated: 
+# updated: 9-15-21
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -136,4 +136,4 @@ lakearea_propburned
 # what lakes have depth data?
 depths_burned <- subset(depths, lagoslakeid %in% burned_lagoslakeids)
 depths_burned <- depths_burned[,c(1,7,8)]
-hist(depths_burned$lake_maxdepth_m, main='Max depth')
+hist(depths_burned$lake_maxdepth_m, main='Max depth (m)', breaks=seq(1,8,1), xlab='')
