@@ -11,6 +11,8 @@ setwd("C:/Users/immcc/Documents/SplashNBurn")
 library(LAGOSNE)
 library(dplyr)
 library(ggplot2)
+library(raster)
+library(rgeos)
 
 #### Input data ####
 # From manually georeferenced 9.13.21 fire polygon: https://inciweb.nwcg.gov/incident/map/7805/0/125373
@@ -25,13 +27,29 @@ lakechar <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_LOCUS/LO
 # preliminary lake depth data
 depths <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_DEPTH/DEPTH_v0.1/lake_depth.csv")
 
+# UPDATE- hand-digitized fire polygon from 9-13-21; fire size hasn't changed since then; expect to redo this when fire is totally out
+burn_polygon <- shapefile("Data/GreenwoodFirePolygon/GreenwoodFirePolygon.shp")
+
+# select by location in ArcGIS based on above burn polygon
+burned_watersheds_shp <- shapefile("Data/BurnedWatersheds/BurnedWatersheds_9.13_intersect.shp")
+burned_watersheds <- burned_watersheds_shp@data[,c(2:5)]
+burned_watersheds$Shape_Area <- burned_watersheds$Shape_Area/10000 #covert sq m to ha
+names(burned_watersheds) <- c('lagoslakeid','ws_zoneid','ws_perim_m','ws_area_ha')
+
+
+# Landscape/lake attributes from LAGOSNE
 dt <- lagosne_load(version = '1.087.3')
 lagosne_lulc <- dt$iws.lulc 
 lagosne_limno <- dt$epi_nutr
 
 ######## Main program #########
-burned_lagoslakeids <- burned_watersheds$lagoslakei
+burned_lagoslakeids <- burned_watersheds$lagoslakeid
 length(unique(burned_lagoslakeids))
+
+# calculate % watershed burned
+burn_polygon <- gBuffer(burn_polygon, byid=T, width=0)
+burned_watersheds_shp <- gBuffer(burned_watersheds_shp, byid=T, width=0)
+test <- gIntersection(burn_polygon, burned_watersheds_shp, byid=T)
 
 # only keep attributes for burned watersheds
 lakeinfo_burned <- subset(lakeinfo, lagoslakeid %in% burned_lagoslakeids)

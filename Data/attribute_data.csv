@@ -1,0 +1,25 @@
+"","lagoslakeid","lake_namegnis","lake_namelagos","lake_elevation_m","lake_lat_decdeg","lake_lon_decdeg","lake_centroidstate","lake_waterarea_ha","lake_totalarea_ha","lake_perimeter_m","lake_shorelinedevfactor","lake_connectivity_class","lake_connectivity_fluctuates","lake_connectivity_permanent","ws_zoneid","ws_perim_m","ws_area_ha","est_burned_pct"
+"1",223,"Greenwood Lake","Greenwood Lake",542.2,47.51868,-91.63258,"MN",533.8,535.718,17267.7,2.108,"Drainage","N","Drainage",223,107221.8168,7724.215315,0.15
+"2",259,"Birch Lake","Birch Lake; Birch River",454.9,47.74474,-91.83811,"MN",3057.089,3135.866,168618.5,8.603,"DrainageLk","N","DrainageLk",259,461277.3415,44551.93392,0.03
+"3",414,"Sand Lake","Sand Lake",515.4,47.58241,-91.6694,"MN",194.7,195.346,12571.2,2.541,"DrainageLk","N","DrainageLk",414,45908.81915,2302.396603,0.35
+"4",430,"Slate Lake","Slate Lake",500,47.69582,-91.62568,"MN",119.485,119.875,13291.3,3.43,"DrainageLk","N","DrainageLk",430,73582.99879,2468.84072,0.2
+"5",14101,"McDougal Lake","McDougal Lake",529.1,47.63101,-91.5542,"MN",5.146,5.146,865.9,1.077,"Headwater","N","Headwater",14101,2710.014792,7.705021794,1
+"6",27717,"McDougal Lakes","McDougal Lakes; MIDDLE MCDOUGAL",529.1,47.62628,-91.54792,"MN",41.019,43.039,4457,1.963,"Headwater","N","Headwater",27717,12849.06804,139.6248455,1
+"7",29814,"Teamster Lake","Teamster Lake",525.4,47.64779,-91.54297,"MN",1.072,1.072,402.8,1.097,"Isolated","N","Isolated",29814,21842.81941,851.9476352,0.1
+"8",34992,"Jackpot Lake","Jackpot Lake",508.1,47.66491,-91.66962,"MN",4.503,4.503,1309.9,1.741,"DrainageLk","N","DrainageLk",34992,13452.3156,281.6185166,0.02
+"9",38199,"McDougal Lake","McDougal Lake",528.9,47.63702,-91.5489,"MN",104.904,105.553,7710.2,2.124,"DrainageLk","N","DrainageLk",38199,40957.83663,1060.815864,0.95
+"10",39247,NA,NA,550,47.61561,-91.49966,"MN",14.25,14.25,2544.3,1.901,"DrainageLk","N","DrainageLk",39247,94190.04842,12131.66257,0.1
+"11",50749,"Stony Lake","Stony Lake",516.6,47.61951,-91.6274,"MN",101.094,101.094,14730.3,4.133,"DrainageLk","N","DrainageLk",50749,90460.3627,5907.120143,0.75
+"12",51807,"Pitcha Lake","Pitcha Lake",513.7,47.66301,-91.6402,"MN",11.322,11.322,1885.3,1.581,"Headwater","N","Headwater",51807,15675.75373,401.1223889,1
+"13",51824,"Fishtrap Lake","Fishtrap Lake",557.7,47.61316,-91.46575,"MN",9.354,9.354,1321,1.218,"Isolated","N","Isolated",51824,7040.991363,80.18626024,0.8
+"14",51833,"Campers Lake","Campers Lake",514,47.66123,-91.58974,"MN",19.583,19.583,1861.5,1.187,"Headwater","N","Headwater",51833,9528.744879,113.1373274,0.25
+"15",52893,"Little Wampus Lake","Little Wampus Lake",517.4,47.651,-91.60968,"MN",7.354,7.354,1051,1.093,"Isolated","N","Isolated",52893,3490.962797,7.085892135,1
+"16",61074,NA,NA,521.5,47.54517,-91.69682,"MN",1.009,1.009,468.7,1.316,"Drainage","N","Drainage",61074,15193.51196,449.112154,0.02
+"17",66287,NA,NA,512.8,47.67334,-91.62697,"MN",3.188,3.188,755.4,1.194,"Isolated","N","Isolated",66287,9215.395614,165.0522686,0.33
+"18",66295,"McDougal Lakes","McDougal Lakes",529.1,47.617,-91.5529,"MN",110.597,111.12,6967.1,1.869,"Drainage","N","Drainage",66295,55651.4424,3443.200556,0.4
+"19",73430,"Wampus Lake","Wampus Lake",518.1,47.6444,-91.62274,"MN",55.614,55.811,4425.9,1.674,"Isolated","N","Isolated",73430,12365.90828,101.2286226,1
+"20",76583,"Cougar Lake","Cougar Lake",518,47.55591,-91.69675,"MN",27.092,27.092,1899.6,1.03,"Drainage","N","Drainage",76583,20438.01285,576.5846616,0.02
+"21",97426,NA,NA,515.9,47.60744,-91.63412,"MN",1.102,1.102,521.5,1.401,"DrainageLk","N","DrainageLk",97426,50560.7184,3007.777197,0.67
+"22",113774,"Lake Gegoka","Lake Gegoka",542.6,47.65096,-91.47981,"MN",59.077,59.669,8025.8,2.946,"Drainage","N","Drainage",113774,44724.52536,2842.151459,0.15
+"23",129114,NA,NA,557.5,47.56365,-91.57147,"MN",1.835,1.835,603.4,1.257,"Drainage","N","Drainage",129114,15919.11552,588.0069681,0.05
+"24",133329,"West Chub Lake","West Chub Lake",512.5,47.67416,-91.64122,"MN",46.319,46.319,3851.2,1.596,"DrainageLk","N","DrainageLk",133329,14530.94057,134.6790818,0.1
