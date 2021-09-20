@@ -1,6 +1,6 @@
 ############# Exploratory analysis of lakes/watersheds in Greenwood Fire burn area #############
 # Date: 9-14-21
-# updated: 9-15-21
+# updated: 9-20-21
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -12,7 +12,6 @@ library(LAGOSNE)
 library(dplyr)
 library(ggplot2)
 library(raster)
-library(rgeos)
 
 #### Input data ####
 # From manually georeferenced 9.13.21 fire polygon: https://inciweb.nwcg.gov/incident/map/7805/0/125373
@@ -36,6 +35,8 @@ burned_watersheds <- burned_watersheds_shp@data[,c(2:5)]
 burned_watersheds$Shape_Area <- burned_watersheds$Shape_Area/10000 #covert sq m to ha
 names(burned_watersheds) <- c('lagoslakeid','ws_zoneid','ws_perim_m','ws_area_ha')
 
+# greenwood fire percent watershed burned (from other script)
+greenwood_pct_burned <- read.csv("Data/greenwood_fire_pct_watershed_burned.csv")
 
 # Landscape/lake attributes from LAGOSNE
 dt <- lagosne_load(version = '1.087.3')
@@ -45,11 +46,6 @@ lagosne_limno <- dt$epi_nutr
 ######## Main program #########
 burned_lagoslakeids <- burned_watersheds$lagoslakeid
 length(unique(burned_lagoslakeids))
-
-# calculate % watershed burned
-burn_polygon <- gBuffer(burn_polygon, byid=T, width=0)
-burned_watersheds_shp <- gBuffer(burned_watersheds_shp, byid=T, width=0)
-test <- gIntersection(burn_polygon, burned_watersheds_shp, byid=T)
 
 # only keep attributes for burned watersheds
 lakeinfo_burned <- subset(lakeinfo, lagoslakeid %in% burned_lagoslakeids)
@@ -64,6 +60,8 @@ lakechar_vars <- c('lagoslakeid','lake_waterarea_ha','lake_totalarea_ha','lake_p
 
 lakeinfo_burned <- lakeinfo_burned[,lakeinfo_vars]
 lakechar_burned <- lakechar_burned[,lakechar_vars]
+
+burned_watersheds <- merge(burned_watersheds, greenwood_pct_burned, by='lagoslakeid')
 
 locus_attributes <- merge(lakeinfo_burned, lakechar_burned, by='lagoslakeid')
 locus_attributes <- merge(locus_attributes, burned_watersheds, by='lagoslakeid')
@@ -140,11 +138,13 @@ par(mfrow=c(1,1))
 hist(limno_burned_summary$mean_secchi, xlab='', main='Mean Secchi (m)')
 
 # proportion watershed burned (VISUAL ESTIMATE ONLY for illustrative purposes)
-hist(locus_attributes$est_burned_pct, xlim=c(0,1), breaks=seq(0,1,0.05), xlab='',main='Proportion watershed burned')
-plot(locus_attributes$lake_totalarea_ha ~ locus_attributes$est_burned_pct,
+hist(locus_attributes$ws_burn_pct, xlim=c(0,1), breaks=seq(0,1,0.05), col='firebrick',xlab='',main='Proportion watershed burned')
+mtext(side=3, 'not eyeballed!')
+
+plot(locus_attributes$lake_totalarea_ha ~ locus_attributes$ws_burn_pct,
      ylim=c(0,1000), pch=20, xlab='Watershed prop burned', ylab='Total lake area (ha)')
 
-lakearea_propburned <-ggplot(locus_attributes, aes(x=est_burned_pct,y=lake_totalarea_ha))+
+lakearea_propburned <-ggplot(locus_attributes, aes(x=ws_burn_pct,y=lake_totalarea_ha))+
   geom_point(aes(colour=lake_connectivity_class), size=3) +
   ggtitle('Lake area vs. proportion watershed burned')+
   #scale_color_manual(values=c("dodgerblue"), labels=c("Stable"), name='')+
@@ -156,3 +156,5 @@ lakearea_propburned
 depths_burned <- subset(depths, lagoslakeid %in% burned_lagoslakeids)
 depths_burned <- depths_burned[,c(1,7,8)]
 hist(depths_burned$lake_maxdepth_m, main='Max depth (m)', breaks=seq(1,8,1), xlab='')
+
+#write.csv(locus_attributes, file='Data/attribute_data.csv', row.names=F)
