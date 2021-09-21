@@ -1,6 +1,6 @@
 ############# Percent watershed burned in Greenwood Fire area ##################################
 # Date: 9-20-21
-# updated: 
+# updated: 9-21-21
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -10,6 +10,7 @@ setwd("C:/Users/immcc/Documents/SplashNBurn")
 #### R libraries ####
 library(raster)
 library(rgeos)
+library(rgdal)
 
 #### Input data ####
 lakes_1ha <- shapefile("C:/Ian_GIS/LAGOS_US_GIS/LAGOS_US_All_lakes_1ha_v0.5.shp")
@@ -29,6 +30,10 @@ burned_lagoslakeids <- burned_watersheds$lagoslakeid
 length(unique(burned_lagoslakeids))
 
 burned_lakes <- subset(lakes_1ha, lagoslakei %in% burned_lagoslakeids)
+
+#dsnname <- "Data/BurnedLakes"
+#layername <- "BurnedLakes"
+#writeOGR(burned_lakes, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
 
 lagoslakeid <- burned_lagoslakeids[1]
 watersheds <- burned_watersheds_shp
