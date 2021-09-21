@@ -83,4 +83,10 @@ for (i in 1:length(burned_lagoslakeids)) {
 greenwood_fire_history <- do.call(rbind.data.frame, output_vec)
 
 hist(greenwood_fire_history$ws_burn_pct, breaks=seq(0,1,0.1))
-write.csv(greenwood_fire_history, file='Data/greenwood_fire_pct_watershed_burned.csv', row.names=F)
+#write.csv(greenwood_fire_history, file='Data/greenwood_fire_pct_watershed_burned.csv', row.names=F)
+
+burned_lakes_pctwsburned <- merge(burned_lakes, greenwood_fire_history, by.x='lagoslakei', by.y='lagoslakeid')
+
+#dsnname <- "Data/BurnedLakes"
+#layername <- "BurnedLakes"
+#writeOGR(burned_lakes_pctwsburned, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
