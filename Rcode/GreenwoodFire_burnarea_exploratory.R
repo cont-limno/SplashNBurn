@@ -138,8 +138,15 @@ par(mfrow=c(1,1))
 hist(limno_burned_summary$mean_secchi, xlab='', main='Mean Secchi (m)')
 
 # proportion watershed burned (VISUAL ESTIMATE ONLY for illustrative purposes)
-hist(locus_attributes$ws_burn_pct, xlim=c(0,1), breaks=seq(0,1,0.05), col='firebrick',xlab='',main='Proportion watershed burned')
-mtext(side=3, 'not eyeballed!')
+png("Figures/ws_prop_burned.png",width = 6,height = 4,units = 'in',res=300)
+  hist(locus_attributes$ws_burn_pct, xlim=c(0,1), breaks=seq(0,1,0.1), col='gray',xlab='',main='Proportion watershed burned')
+  #mtext(side=3, 'not eyeballed!')
+  mtext(side=3, 'n = 28 lakes')
+dev.off()
+
+hist(locus_attributes$lake_waterarea_ha, xlim=c(0,1000), breaks=seq(0,3100,50), main='Lakes with burned watersheds',
+     xlab='Area (ha)', col='dodgerblue')
+
 
 plot(locus_attributes$lake_totalarea_ha ~ locus_attributes$ws_burn_pct,
      ylim=c(0,1000), pch=20, xlab='Watershed prop burned', ylab='Total lake area (ha)')
