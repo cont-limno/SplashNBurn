@@ -1,6 +1,6 @@
 ############# Exploratory analysis of lakes/watersheds in Greenwood Fire burn area #############
 # Date: 9-14-21
-# updated: 9-20-21
+# updated: 9-24-21
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -42,6 +42,10 @@ greenwood_pct_burned <- read.csv("Data/greenwood_fire_pct_watershed_burned.csv")
 dt <- lagosne_load(version = '1.087.3')
 lagosne_lulc <- dt$iws.lulc 
 lagosne_limno <- dt$epi_nutr
+
+# example smoke product
+smoke090521 <- shapefile("Data/Smoke/hms_smoke20210905/hms_smoke20210905.shp")
+smoke090521 <- spTransform(smoke090521, crs(burn_polygon))
 
 ######## Main program #########
 burned_lagoslakeids <- burned_watersheds$lagoslakeid
