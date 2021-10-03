@@ -1,6 +1,6 @@
 ############# Exploratory analysis of lakes/watersheds in Greenwood Fire burn area #############
 # Date: 9-14-21
-# updated: 9-24-21
+# updated: 10-2-21
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -151,6 +151,9 @@ dev.off()
 hist(locus_attributes$lake_waterarea_ha, xlim=c(0,1000), breaks=seq(0,3100,50), main='Lakes with burned watersheds',
      xlab='Area (ha)', col='dodgerblue')
 
+png("Figures/connclass_burned.png",width = 3.5,height = 3.5,units = 'in',res=300)
+  barplot(connclass_summary$nType, las=1,names.arg=c('DRS','DRLS','HW','ISO'), xlab='Lake connectivity class')
+dev.off()
 
 plot(locus_attributes$lake_totalarea_ha ~ locus_attributes$ws_burn_pct,
      ylim=c(0,1000), pch=20, xlab='Watershed prop burned', ylab='Total lake area (ha)')
