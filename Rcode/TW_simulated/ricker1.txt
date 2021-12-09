@@ -1,0 +1,16 @@
+
+    model{
+    for(i in 1:n){
+        yoy[i] ~ dnorm(y.hat[i], tau.y)
+        y.hat[i] <- a * adult[i] * exp(-b * adult[i])     
+    }
+
+    tau.y <- pow(sigma.y,-2)
+    sigma.y ~ dunif(0,10)
+
+    # Priors 
+    a ~ dnorm(0, 0.0001)
+    b ~ dnorm(0, 0.0001)
+
+} # end model
+    
