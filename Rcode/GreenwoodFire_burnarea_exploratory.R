@@ -151,8 +151,17 @@ dev.off()
 hist(locus_attributes$lake_waterarea_ha, xlim=c(0,1000), breaks=seq(0,3100,50), main='Lakes with burned watersheds',
      xlab='Area (ha)', col='dodgerblue')
 
-png("Figures/connclass_burned.png",width = 3.5,height = 3.5,units = 'in',res=300)
-  barplot(connclass_summary$nType, las=1,names.arg=c('DRS','DRLS','HW','ISO'), xlab='Lake connectivity class')
+# png("Figures/connclass_burned.png",width = 3.5,height = 3.5,units = 'in',res=300)
+#   barplot(connclass_summary$nType, las=1,names.arg=c('DRS','DRLS','HW','ISO'), xlab='Lake connectivity class')
+# dev.off()
+
+# conn plot with only isolated and drainage
+connclass_summary_trim <- connclass_summary[c(1,2,4),]
+connclass_summary_trim <- data.frame(lake_connectivity_class =c('Drainage','Isolated'),
+                                     nType=c(18,6))
+
+png("Figures/connclass_burned_DR_ISOL.png",width = 3.5,height = 3.5,units = 'in',res=300)
+   barplot(connclass_summary_trim$nType, las=1,names.arg=c('Drainage','Isolated'), xlab='Lake connectivity class', ylim=c(0,20))
 dev.off()
 
 plot(locus_attributes$lake_totalarea_ha ~ locus_attributes$ws_burn_pct,
