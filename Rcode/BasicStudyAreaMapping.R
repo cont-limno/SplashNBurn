@@ -1,6 +1,6 @@
 ##################### Basic study area mapping ##############################
 # Date created: 4-28-22
-# updated:
+# updated: 5-4-22
 # author: Ian McCullough (immccull@gmail.com)
 #############################################################################
 
@@ -28,6 +28,8 @@ minnesota_lakes <- shapefile("Data/Minnesota_lakes_1ha/Minnesota_lakes_1ha.shp")
 minnesota <- shapefile("Data/Minnesota_outline/Minnesota.shp")
 
 burn_perimeter <- shapefile("Data/GreenwoodFirePolygon/GreenwoodFirePolygon.shp")
+# not sample lakes; all lakes with watersheds intersecting burn zone
+burned_watersheds <- shapefile("Data/BurnedWatersheds/BurnedWatersheds_9.13_intersect.shp")
 
 #### Main program ####
 #plot(minnesota)
@@ -63,3 +65,14 @@ dsnname <- "Data/BurnedLakes"
 layername <- 'burned_lakes'
 #writeOGR(burned_lakes_shp, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
 
+# get burned and control lake watersheds
+control_lakes_lagoslakeid <- control$lagoslakeid
+burned_lakes_lagoslakeid <- burned_lakes$lagoslakeid
+
+burned_lakes_watersheds <- subset(burned_watersheds, lagoslakei %in% burned_lakes_lagoslakeid)
+dsnname <- "Data/BurnedWatersheds"
+layername <- 'BurnedWatersheds_sample'
+#writeOGR(burned_lakes_watersheds, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
+
+plot(burned_lakes_watersheds)
+plot(burned_lakes_shp, add=T, col='dodgerblue')
