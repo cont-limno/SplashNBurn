@@ -76,3 +76,18 @@ layername <- 'BurnedWatersheds_sample'
 
 plot(burned_lakes_watersheds)
 plot(burned_lakes_shp, add=T, col='dodgerblue')
+
+
+### Burn severity ###
+dNBR <- raster("Data/GTAC/greenwood_mn_preliminary_20210923/mn4755309164820210815_20210814_20210923_dnbr.tif")
+plot(dNBR)
+hist(dNBR)
+
+dNBR_unscaled <- dNBR/1000
+
+jpeg('Figures/preliminary_dNBR.jpeg',width = 7,height = 5,units = 'in',res=600) 
+  par(mfrow=c(1,2))
+  par(mar=c(2,3,1,0.5)) #bot,left,top,right
+  plot(dNBR_unscaled, main='dNBR')
+  hist(dNBR_unscaled, main='dNBR', xlab='dNBR', xlim=c(-0.4, 1.7), breaks=seq(-0.4,1.7,0.1))
+dev.off()
