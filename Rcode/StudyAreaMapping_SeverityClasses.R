@@ -191,3 +191,10 @@ severity_pct <- tabs%>%
 
 # check that rows sum to near 100%
 rowSums(severity_pct[,c(2:7)])
+
+par(mfrow=c(2,3))
+for (i in 2:ncol(severity_pct)){
+  hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', xlab=class_labels[i], ylim=c(0,15))
+}
+
+
