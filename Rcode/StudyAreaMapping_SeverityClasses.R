@@ -1,6 +1,6 @@
 ############## Study area mapping + burn severity classification ############
 # Date created: 4-28-22
-# updated: 5-9-22
+# updated: 5-10-22
 # author: Ian McCullough (immccull@gmail.com)
 #############################################################################
 
@@ -21,6 +21,12 @@ depths <- depths[,c('lagoslakeid','lake_maxdepth_m','lake_meandepth_m')]
 
 control <- merge(control, depths, by='lagoslakeid', all.x=T)
 #write.csv(control, "C:/Users/immcc/Documents/SplashNBurn/Data/ControlLakes/Lakes10kmBuff_wDepth.csv", row.names=F)
+
+# preliminary BAER burn severity
+dNBR <- raster("Data/GTAC/greenwood_mn_preliminary_20210923/mn4755309164820210815_20210814_20210923_dnbr.tif")
+
+# soil burn severity
+sbs <- raster("Data/GTAC/greenwood_sbs/GREENWOOD_sbs.tif")
 
 # LAGOS LOCUS v1.0
 #lake_char <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_LOCUS/LOCUS_v1.0/lake_characteristics.csv")
@@ -81,7 +87,7 @@ plot(burned_lakes_shp, add=T, col='dodgerblue')
 
 
 ### Burn severity ###
-dNBR <- raster("Data/GTAC/greenwood_mn_preliminary_20210923/mn4755309164820210815_20210814_20210923_dnbr.tif")
+
 plot(dNBR)
 hist(dNBR)
 
@@ -130,20 +136,24 @@ raster_pts <- rasterToPoints(dNBR_reclass_mask, spatial=T)
 # Then to a 'conventional' dataframe
 raster_df  <- data.frame(raster_pts)
 names(raster_df) <- c('value','x','y','optional')
+raster_df$severity_class <- NA
 
-custom_breaks <- c(-0.1,1,2,3,4,5,6,7)
-
-raster_df <- raster_df %>%
-  mutate(severity_class = cut(value, breaks = custom_breaks))
-unique(raster_df$severity_class)
-
+raster_df$severity_class <- ifelse(raster_df$value==1, 'ERH',NA)
+raster_df$severity_class <- ifelse(raster_df$value==2, 'ERL',raster_df$severity_class)
+raster_df$severity_class <- ifelse(raster_df$value==3, 'Unburned',raster_df$severity_class)
+raster_df$severity_class <- ifelse(raster_df$value==4, 'Low',raster_df$severity_class)
+raster_df$severity_class <- ifelse(raster_df$value==5, 'ModLow',raster_df$severity_class)
+raster_df$severity_class <- ifelse(raster_df$value==6, 'ModHigh',raster_df$severity_class)
+raster_df$severity_class <- ifelse(raster_df$value==7, 'High',raster_df$severity_class)
+raster_df$severity_class_fac <- as.factor(raster_df$severity_class)
+raster_df$severity_class_fac <- factor(raster_df$severity_class_fac, levels = c("ERH", "ERL", "Unburned", "Low", "ModLow","ModHigh", "High"))
 
 colorz <- c("forestgreen", "lightgreen", "gray", "khaki","gold","orange","firebrick")
 class_labels <- c('ERH','ERL','Unburned','Low','ModLow','ModHigh','High')
 
 ggplot() +
-  geom_raster(data = raster_df , aes(x = x, y = y, fill = severity_class)) + 
-  scale_fill_manual(values=colorz, name='Severity class', labels=class_labels, na.translate=F)+
+  geom_raster(data = raster_df , aes(x = x, y = y, fill = severity_class_fac)) + 
+  scale_fill_manual(values=colorz, name='Severity class', na.translate=F)+
   ggtitle("Greenwood Fire: Burn Severity Classes (dNBR)")+
   xlab('')+
   ylab('')+
@@ -158,8 +168,8 @@ ggplot() +
         axis.title = element_blank())
 
 ## calculate zonal stats of burn severity for watersheds
-test <- subset(burned_lakes_watersheds, lagoslakei==burned_lakes_lagoslakeid[1])
-xx <- extract(dNBR_reclass_mask, test, fun=mean, na.rm=T) #works, but not necessarily what we want
+#test <- subset(burned_lakes_watersheds, lagoslakei==burned_lakes_lagoslakeid[1])
+#xx <- extract(dNBR_reclass_mask, test, fun=mean, na.rm=T) #works, but not necessarily what we want
 
 # with help from: http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/
 ext<-extract(dNBR_reclass_mask, burned_lakes_watersheds, method='simple') #returns large list
@@ -196,5 +206,74 @@ par(mfrow=c(2,3))
 for (i in 2:ncol(severity_pct)){
   hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', xlab=class_labels[i], ylim=c(0,15))
 }
+
+#### soil burn severity 
+sbs_mask <- mask(sbs, burn_perimeter, inverse=F)
+plot(sbs_mask) #masking may not really be necessary; very similar to our burn perimeter
+
+# First, to a SpatialPointsDataFrame
+sbs_raster_pts <- rasterToPoints(sbs_mask, spatial=T)
+# Then to a 'conventional' dataframe
+sbs_raster_df  <- data.frame(sbs_raster_pts)
+names(sbs_raster_df) <- c('value','x','y','optional')
+
+sbs_raster_df$value <- ifelse(sbs_raster_df$value %in% c(1,2,3,4), sbs_raster_df$value, NA)
+sbs_raster_df$severity_class <- NA
+sbs_raster_df$severity_class <- ifelse(sbs_raster_df$value==1, 'Unburned', NA)
+sbs_raster_df$severity_class <- ifelse(sbs_raster_df$value==2, 'Low', sbs_raster_df$severity_class)
+sbs_raster_df$severity_class <- ifelse(sbs_raster_df$value==3, 'Moderate', sbs_raster_df$severity_class)
+sbs_raster_df$severity_class <- ifelse(sbs_raster_df$value==4, 'High', sbs_raster_df$severity_class)
+sbs_raster_df$severity_class_fac <- as.factor(sbs_raster_df$severity_class)
+
+# reorder factor levels
+sbs_raster_df$severity_class_fac <- factor(sbs_raster_df$severity_class_fac, levels = c("Unburned", "Low", "Moderate","High"))
+
+colorz <- c("gray", "khaki", "orange","firebrick")
+
+ggplot() +
+  geom_raster(data = sbs_raster_df , aes(x = x, y = y, fill = severity_class_fac)) + 
+  scale_fill_manual(values=colorz, name='Severity class', na.translate=F)+
+  ggtitle("Greenwood Fire: Soil Burn Severity Classes")+
+  xlab('')+
+  ylab('')+
+  #geom_path(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue') + coord_equal()+
+  geom_polygon(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue', fill='dodgerblue') + coord_equal()+
+  theme_bw() + 
+  theme(axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        #panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank())
+
+# with help from: http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/
+ext<-extract(sbs_mask, burned_lakes_watersheds, method='simple') #returns large list
+length(ext) # 15 elements (15 watersheds)
+
+# run through each region and compute a table of the count
+# of raster cells by land use. Produces a list (see below)
+tabs<-lapply(seq(ext), tabFunc, ext, burned_lakes_watersheds, "lagoslakeid")
+tabs
+tabs<-do.call("rbind",tabs )
+tabs <- subset(tabs, Var1 %in% c(1,2,3,4))
+
+tabs$severity_class <- factor(tabs$Var1, levels=c(1,2,3,4), labels=c("Unburned", "Low", "Moderate","High"))
+
+# use the spread function from tidyr to make nicer
+severity_pct_soil <- tabs[,c(2:4)]%>%
+  group_by(lagoslakeid) %>% # group by watershed
+  mutate(totcells=sum(Freq), # how many cells overall
+         percent.area=round(Freq/totcells,2)) %>% #cells by severity class/total cells
+  dplyr::select(-c(Freq, totcells)) %>% # there is a select func in raster so need to specify
+  tidyr::spread(key=severity_class, value=percent.area, fill=0) # make wide format
+
+# check that rows sum to near 100%
+rowSums(severity_pct_soil[,c(2:5)])
+
+par(mfrow=c(2,2))
+for (i in 2:ncol(severity_pct_soil)){
+  hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', ylim=c(0,15))
+}
+
 
 

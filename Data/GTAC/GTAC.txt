@@ -2,3 +2,10 @@
 https://www.fs.usda.gov/about-agency/gtac
 
 https://www.fs.usda.gov/inside-fs/out-and-about/greenwood-fire-post-wildfire-assessments-provide-key-information-and
+
+5-11-22: downloaded soil burn severity (sbs) data from: 
+https://burnseverity.cr.usgs.gov/baer/baer-imagery-support-data-download
+As of this date, no updates to other data downloaded on 4-22
+
+Also checked on status of RAVG: not yet available per https://burnseverity.cr.usgs.gov/ravg/mapping-status
+"These fires will be mapped near peak of green in 2022 due to issues with late-season imagery (snow, clouds, terrain shadows) or deciduous leaf fall. Use the Contact Us page if products are needed urgently."
