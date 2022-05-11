@@ -207,6 +207,7 @@ for (i in 2:ncol(severity_pct)){
   hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', xlab=class_labels[i], ylim=c(0,15))
 }
 
+#write.csv(severity_pct, file="Data/GTAC/burn_severity_pct.csv", row.names=F)
 #### soil burn severity 
 sbs_mask <- mask(sbs, burn_perimeter, inverse=F)
 plot(sbs_mask) #masking may not really be necessary; very similar to our burn perimeter
@@ -275,5 +276,5 @@ for (i in 2:ncol(severity_pct_soil)){
   hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', ylim=c(0,15))
 }
 
-
+#write.csv(severity_pct_soil, file="Data/GTAC/soil_burn_severity.csv", row.names=F)
 
