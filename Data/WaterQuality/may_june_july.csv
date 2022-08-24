@@ -1,0 +1,91 @@
+Lake,Color ,Source,Type,Site,Lagoslakeid,Month,Month_Order,Date,QAQC,Chloro,Phaeo,TP,OP,TN,NH4N,NO2NO3N,ANCmg,ANCaueq,TSS,TSVS,DOC
+control drainage,blue,drainage,control,August Lake,63,may,5,19-May-22,NA,NA,NA,15,NA,640,17,76,12.9,258.7,5.5,1.1,14.09
+control isolated,light sky blue,isolated,control,Baird Lake,139473,may,5,16-May-22,NA,NA,NA,17,NA,1322,545,34,22.6,452.5,2.8,2.8,9.47
+control drainage,blue,drainage,control,Cloquet Lake,57275,may,5,19-May-22,NA,NA,NA,22,NA,660,20,47,7.7,154,7.6,3.9,16.54
+control isolated,light sky blue,isolated,control,Dunnigan Lake,2867,may,5,17-May-22,NA,NA,NA,13,NA,431,17,12,4.4,88,3,1.8,7.28
+control isolated,light sky blue,isolated,control,Eighteen Lake,37142,may,5,18-May-22,NA,NA,NA,9,NA,665,229,21,26.3,525.8,0.9,0.8,4.75
+burned isolated,blue,isolated,sample,Fishtrap Lake,51824,may,5,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+control drainage,blue,drainage,control,Flathorn Lake,121215,may,5,20-May-22,NA,NA,NA,16,NA,763,19,33,15.3,305.2,1.9,2.5,20.12
+burned drainage,red,drainage,sample,Fourth McDougal,14101,may,5,17-May-22,NA,NA,NA,43,NA,866,12,91,13.2,263.4,6.8,2.4,18.25
+control drainage,blue,drainage,control,Gander Lake,20349,may,5,18-May-22,NA,NA,NA,10,NA,383,7,2,19.4,388.2,1.9,1.6,6.87
+burned drainage,red,drainage,sample,Greenwood Lake,223,may,5,17-May-22,NA,NA,NA,24,NA,879,10,70,4.8,96.4,7.1,4,24.89
+control drainage,blue,drainage,control,Grouse Lake,3839,may,5,17-May-22,NA,NA,NA,18,NA,732,16,97,10.7,213,3.8,1.5,19.35
+control isolated,light sky blue,isolated,control,Gypsy Lake,59050,may,5,16-May-22,NA,NA,NA,21,NA,465,7,39,2.2,43.6,2.7,3.2,10.61
+control isolated,light sky blue,isolated,control,Highlife Lake,3550,may,5,19-May-22,NA,NA,NA,11,NA,552,29,22,2.6,52.4,3.3,1.7,8.11
+control drainage,blue,drainage,control,Kitigan Lake,58010,may,5,20-May-22,NA,NA,NA,10,NA,300,8,9,47.8,955.2,1.7,1.4,4.59
+burned drainage,red,drainage,sample,Lake Gegoka,113774,may,5,17-May-22,NA,NA,NA,20,NA,602,18,34,14.8,295.1,5.4,3.3,15.75
+burned isolated,blue,isolated,sample,Lil Chub Lake,66287,may,5,23-May-22,NA,NA,NA,22,NA,781,12,NA,9,179.2,4.5,3,18.78
+burned drainage,red,drainage,sample,Middle McDougal,27717,may,5,17-May-22,NA,NA,NA,40,NA,889,15,89,10,200.4,2.1,2.7,20.72
+control drainage,blue,drainage,control,Mitawan Lake,21441,may,5,20-May-22,NA,NA,NA,16,NA,407,2,38,51.4,1026.5,2.1,2.4,4.31
+burned drainage,red,drainage,sample,North McDougal,38199,may,5,17-May-22,NA,NA,NA,32,NA,820,12,42,12.1,241.2,4.9,3.4,25.13
+control drainage,blue,drainage,control,Rat Lake,127093,may,5,20-May-22,NA,NA,NA,17,NA,805,24,36,15.8,315.2,2.1,1.7,19.68
+burned drainage,red,drainage,sample,Sand Lake,414,may,5,23-May-22,NA,NA,NA,25,NA,776,22,70,17.3,345.1,3.3,1.8,18.73
+burned drainage,red,drainage,sample,Slate Lake,430,may,5,17-May-22,NA,NA,NA,35,NA,822,14,61,8.8,175.6,5.2,2.8,23.72
+burned drainage,red,drainage,sample,South McDougal,66295,may,5,17-May-22,NA,NA,NA,50,NA,895,13,93,8.5,170.5,6.9,2.5,21.38
+burned drainage,red,drainage,sample,Stony Lake,50749,may,5,20-May-22,NA,NA,NA,36,NA,939,25,58,7.2,144.2,3.6,2.9,25.09
+burned isolated,blue,isolated,sample,Teamster Lake,29814,may,5,18-May-22,NA,NA,NA,23,NA,537,6,NA,23.9,476.8,2.3,1.6,7.7
+control drainage,blue,drainage,control,Two Deer Lake,30871,may,5,16-May-22,NA,NA,NA,9,NA,276,24,12,40,799.5,1.4,1.6,4.46
+burned drainage,red,drainage,sample,Unnamed Lake,15139,may,5,18-May-22,NA,NA,NA,16,NA,873,17,14,8.1,161.2,0.9,0.1,28.44
+control drainage,blue,drainage,control,Wadop Lake,102493,may,5,18-May-22,NA,NA,NA,10,NA,528,7,7,16.3,326.6,1.3,1,15.56
+burned isolated,blue,isolated,sample,Wampus Lake,73430,may,5,16-May-22,NA,NA,NA,15,NA,460,7,1,43.9,878,2.3,1.9,5.68
+burned drainage,red,drainage,sample,West Chub Lake,133329,may,5,16-May-22,NA,NA,NA,26,NA,622,5,NA,19,379.1,2.9,2.8,11.55
+control drainage,blue,drainage,control,August Lake,63,june,6,8-Jun-22,NA,NA,NA,10,NA,584,29,59,NA,NA,1.5,1.7,13.68
+control isolated,light sky blue,isolated,control,Baird Lake,139473,june,6,8-Jun-22,NA,NA,NA,15,NA,1295,357,18,23.7,474.4,3.3,3.6,11.31
+control drainage,blue,drainage,control,Cloquet Lake,57275,june,6,9-Jun-22,NA,NA,NA,20,NA,650,18,1,NA,NA,2.6,4.1,17.42
+control isolated,light sky blue,isolated,control,Dunnigan Lake,2867,june,6,8-Jun-22,NA,NA,NA,16,NA,533,19,NA,NA,NA,1.9,2,7.04
+control isolated,light sky blue,isolated,control,Eighteen Lake,37142,june,6,10-Jun-22,NA,NA,NA,14,NA,435,11,NA,23.7,472.6,1.2,1.1,5.27
+burned isolated,blue,isolated,sample,Fishtrap Lake,51824,june,6,13-Jun-22,NA,NA,NA,41,NA,876,18,NA,5.9,118.7,4.8,4.9,15.49
+control drainage,blue,drainage,control,Flathorn Lake,121215,june,6,10-Jun-22,NA,NA,NA,95,NA,680,17,7,24.1,482.2,1.9,1.5,18.92
+burned drainage,red,drainage,sample,Fourth McDougal,14101,june,6,7-Jun-22,NA,NA,NA,31,NA,822,13,NA,13.7,272.9,2.9,2.9,17.1
+control drainage,blue,drainage,control,Gander Lake,20349,june,6,9-Jun-22,NA,NA,NA,15,NA,422,10,NA,17.8,355.7,2,1.7,6.76
+burned drainage,red,drainage,sample,Greenwood Lake,223,june,6,9-Jun-22,NA,NA,NA,31,NA,1016,23,20,5.3,105.5,4.1,4.2,27.34
+control drainage,blue,drainage,control,Grouse Lake,3839,june,6,9-Jun-22,NA,NA,NA,20,NA,706,21,2,NA,NA,6,5.2,19.58
+control isolated,light sky blue,isolated,control,Gypsy Lake,59050,june,6,8-Jun-22,NA,NA,NA,21,NA,539,23,NA,NA,NA,2.7,3,12.26
+control isolated,light sky blue,isolated,control,Highlife Lake,3550,june,6,8-Jun-22,NA,NA,NA,66,NA,499,12,1,NA,NA,1.2,1.2,8.38
+control drainage,blue,drainage,control,Kitigan Lake,58010,june,6,8-Jun-22,NA,NA,NA,10,NA,333,10,NA,47.2,943.2,2.1,2.1,4.9
+burned drainage,red,drainage,sample,Lake Gegoka,113774,june,6,8-Jun-22,NA,NA,NA,14,NA,663,12,NA,NA,NA,2.2,2.5,20.04
+burned isolated,blue,isolated,sample,Lil Chub Lake,66287,june,6,13-Jun-22,NA,NA,NA,23,NA,732,9,NA,25.5,509.6,3.8,3.2,20.98
+burned drainage,red,drainage,sample,Middle McDougal,27717,june,6,7-Jun-22,NA,NA,NA,31,NA,836,25,NA,14.2,284,3.9,3.7,17.78
+control drainage,blue,drainage,control,Mitawan Lake,21441,june,6,8-Jun-22,NA,NA,NA,10,NA,214,5,NA,48.4,967.2,1.5,1.7,4.82
+burned drainage,red,drainage,sample,North McDougal,38199,june,6,7-Jun-22,NA,NA,NA,22,NA,888,27,17,10.3,204.8,3.5,2.3,29.25
+control drainage,blue,drainage,control,Rat Lake,127093,june,6,10-Jun-22,NA,NA,NA,20,NA,683,20,5,23.1,461.2,2.9,2.1,19.2
+burned drainage,red,drainage,sample,Sand Lake,414,june,6,9-Jun-22,NA,NA,NA,19,NA,738,46,73,NA,NA,1.2,1.6,19.52
+burned drainage,red,drainage,sample,Slate Lake,430,june,6,7-Jun-22,NA,NA,NA,30,NA,953,15,1,14,279,4.4,2.6,26.21
+burned drainage,red,drainage,sample,South McDougal,66295,june,6,7-Jun-22,NA,NA,NA,33,NA,987,19,NA,10.7,213.5,3.6,2.3,25.35
+burned drainage,red,drainage,sample,Stony Lake,50749,june,6,9-Jun-22,NA,NA,NA,39,NA,903,23,14,NA,NA,3.7,2.4,27.73
+burned isolated,blue,isolated,sample,Teamster Lake,29814,june,6,9-Jun-22,NA,NA,NA,18,NA,547,28,NA,30.3,606,2.8,3,9.57
+control drainage,blue,drainage,control,Two Deer Lake,30871,june,6,8-Jun-22,NA,NA,NA,12,NA,317,19,NA,41.8,835.8,1.5,1.8,4.92
+burned drainage,red,drainage,sample,Unnamed Lake,15139,june,6,9-Jun-22,NA,NA,NA,26,NA,951,12,11,10.3,206.5,3.7,3.4,31.84
+control drainage,blue,drainage,control,Wadop Lake,102493,june,6,10-Jun-22,NA,NA,NA,12,NA,406,16,18,27.9,557.7,1.2,1,9.23
+burned isolated,blue,isolated,sample,Wampus Lake,73430,june,6,9-Jun-22,NA,NA,NA,13,NA,521,15,NA,51.1,1020.3,1,1.3,6.61
+burned drainage,red,drainage,sample,West Chub Lake,133329,june,6,13-Jun-22,NA,NA,NA,19,NA,718,22,NA,25.1,502,1.8,1.3,14.53
+control drainage,blue,drainage,control,August Lake,63,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,9,12.7,253.1,1.8,1.9,NA
+control isolated,light sky blue,isolated,control,Baird Lake,139473,july,7,18-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,26.6,530.9,NA,NA,NA
+control drainage,blue,drainage,control,Cloquet Lake,57275,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,1,15.8,316,4.8,4.4,NA
+control isolated,light sky blue,isolated,control,Dunnigan Lake,2867,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,14,4,80.6,NA,NA,NA
+control isolated,light sky blue,isolated,control,Eighteen Lake,37142,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,24.4,487.6,NA,NA,NA
+burned isolated,blue,isolated,sample,Fishtrap Lake,51824,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,23,6,120.5,NA,NA,NA
+control drainage,blue,drainage,control,Flathorn Lake,121215,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,20,42.3,845.8,2.5,2.2,NA
+burned drainage,red,drainage,sample,Fourth McDougal,14101,july,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+control drainage,blue,drainage,control,Gander Lake,20349,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,6,22.2,443.6,NA,NA,NA
+burned drainage,red,drainage,sample,Greenwood Lake,223,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,7.2,143.8,NA,NA,NA
+control drainage,blue,drainage,control,Grouse Lake,3839,july,7,18-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,35.6,711,NA,NA,NA
+control isolated,light sky blue,isolated,control,Gypsy Lake,59050,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,13,4.6,92.9,NA,NA,NA
+control isolated,light sky blue,isolated,control,Highlife Lake,3550,july,7,18-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,1.9,38.3,NA,NA,NA
+control drainage,blue,drainage,control,Kitigan Lake,58010,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,52.5,1049.7,1.3,1.2,NA
+burned drainage,red,drainage,sample,Lake Gegoka,113774,july,7,18-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,21.4,427.4,NA,NA,NA
+burned isolated,blue,isolated,sample,Lil Chub Lake,66287,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,15.5,309.5,NA,NA,NA
+burned drainage,red,drainage,sample,Middle McDougal,27717,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,4,18.3,364.8,NA,NA,NA
+control drainage,blue,drainage,control,Mitawan Lake,21441,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,45.4,906.5,1.3,1.1,NA
+burned drainage,red,drainage,sample,North McDougal,38199,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,63,18.8,376.2,NA,NA,NA
+control drainage,blue,drainage,control,Rat Lake,127093,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,40.5,810,NA,NA,NA
+burned drainage,red,drainage,sample,Sand Lake,414,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,74,18.5,369.3,2.3,1.6,NA
+burned drainage,red,drainage,sample,Slate Lake,430,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,10,NA,NA,NA,NA,NA
+burned drainage,red,drainage,sample,South McDougal,66295,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,15.9,317.8,NA,NA,NA
+burned drainage,red,drainage,sample,Stony Lake,50749,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,29,13,259.2,3.6,2.1,NA
+burned isolated,blue,isolated,sample,Teamster Lake,29814,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,37.5,750.3,1.3,1.4,NA
+control drainage,blue,drainage,control,Two Deer Lake,30871,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,44.6,890.2,NA,NA,NA
+burned drainage,red,drainage,sample,Unnamed Lake,15139,july,7,14-Jul-22,NA,NA,NA,NA,NA,NA,NA,68,34.6,692,NA,NA,NA
+control drainage,blue,drainage,control,Wadop Lake,102493,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,34.2,684.4,NA,NA,NA
+burned isolated,blue,isolated,sample,Wampus Lake,73430,july,7,13-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,55.2,1102.8,NA,NA,NA
+burned drainage,red,drainage,sample,West Chub Lake,133329,july,7,15-Jul-22,NA,NA,NA,NA,NA,NA,NA,NA,30.5,609.1,NA,NA,NA
