@@ -1,0 +1,11 @@
+Downloaded NOAA climate data for Lake County, MN on 8-25-22
+Changed based period to 1991-2020
+This is the site Andrea had found and retrieved graphs from
+
+They have city data for Duluth or International Falls going back to 1940s
+
+Palmer Drought Index not available for cities or counties
+
+Citing This Page
+
+    NOAA National Centers for Environmental information, Climate at a Glance: County Time Series, published August 2022, retrieved on August 25, 2022 from https://www.ncei.noaa.gov/cag/
