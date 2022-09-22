@@ -376,27 +376,3 @@ interplot <- may_june_july %>%
   scale_color_manual('Month', values=month_colors)
 
 ggplotly(interplot, tooltip=c('x','y','label','shape'))
-
-## experimenting with shiny
-# library(shiny)
-# 
-# ui <- basicPage(
-#   plotOutput("plot1", click = "plot_click"),
-#   verbatimTextOutput("info")
-# )
-# 
-# server <- function(input, output) {
-#   output$plot1 <- renderPlot({
-#     ggplot(data=may_june_july, aes(x=TN, y=TP, color=Month_factor, label=Site, shape=Type)) +
-#       geom_point(size=2) +
-#       theme_classic()+
-#       theme(legend.title=element_text('Legend'))+
-#       scale_color_manual('Month', values=month_colors)
-#   })
-#   
-#   output$info <- renderText({
-#     paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
-#   })
-# }
-# 
-# shinyApp(ui, server)
