@@ -471,24 +471,24 @@ residcor <- as.data.frame(cor(mayalldata[, unlist(lapply(mayalldata, is.numeric)
 residcor <- data.frame(variable=rownames(residcor), residuals=residcor$residuals)
 
 ## what about the "nutrient space"?
-ggplot(data=may_june_july, aes(x=TN, y=TP, color=Month_factor, shape=Lake))+
+ggplot(data=may_thru_aug, aes(x=TN, y=TP, color=Month_factor, shape=Group))+
   geom_point(size=2)+
   theme_classic()+
   scale_color_manual('Month', values=month_colors)
   
-ggplot(data=may_june_july, aes(x=DOC, y=TP, color=Month_factor, shape=Lake))+
+ggplot(data=may_thru_aug, aes(x=DOC, y=TP, color=Month_factor, shape=Group))+
   geom_point(size=2)+
   theme_classic()+
   scale_color_manual('Month', values=month_colors)
 
-ggplot(data=may_june_july, aes(x=TSS, y=TP, color=Month_factor, shape=Lake))+
+ggplot(data=may_thru_aug, aes(x=TSS, y=TP, color=Month_factor, shape=Group))+
   geom_point(size=2)+
   theme_classic()+
   scale_color_manual('Month', values=month_colors)
 
 
 ## interactive plot
-interplot <- may_june_july %>%
+interplot <- may_thru_aug %>%
   ggplot(aes(x=TN, y=TP, color=Month_factor, label=Site, shape=Type)) +
   geom_point(size=2) +
   theme_classic()+
