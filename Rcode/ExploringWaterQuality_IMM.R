@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-4-22# now with all lakes
+# updated: 10-5-22# now with all lakes
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -8,22 +8,46 @@
 library(ggplot2)
 library(plotly)
 library(gridExtra)
+library(lubridate)
+library(tidyr)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
 may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
+may_thru_aug <- read.csv("Data/WaterQuality/LabAnalyses_Lakes9-30-22.csv")
 ws_burn_severity <- read.csv("Data/BurnSeverity/vegetation_ws_area.csv")
-LAGOStable <- read.csv("Data/LAGOS/LAGOS_GEO_LOCUS_Combined.csv")
+LAGOStable <- read.csv("Data/LAGOS/LAGOS_LOCUS_Table.csv")
 
 #### Main program ####
-## grouped boxplots
+# get basic LAGOS data in may_thru_aug table
+LAGOS_layover <- LAGOStable[,c('lagoslakeid','Site','Type','lake_connectivity_class')]
+LAGOS_layover$Type <- ifelse(LAGOS_layover$Type=='sample', 'Burned', 'Control')
+LAGOS_layover$ConnClass <- ifelse(LAGOS_layover$lake_connectivity_class %in% c('DrainageLk','Drainage','Headwater'), 'Drainage', LAGOS_layover$lake_connectivity_class)
+LAGOS_layover$Group <- paste(LAGOS_layover$Type, LAGOS_layover$ConnClass, sep='_')
+  
+may_thru_aug <- merge(may_thru_aug, LAGOS_layover, by='Site', all=T)
+may_thru_aug$Date <- lubridate::dmy(may_thru_aug$Date)
+may_thru_aug$Month <- lubridate::month(may_thru_aug$Date)
+may_thru_aug$Month_factor <- lubridate::month(may_thru_aug$Date, label=T, abbr=T)
+may_thru_aug <- may_thru_aug %>% drop_na(Date) #row with no data for some reason; remove
+may_thru_aug <- droplevels(may_thru_aug)
+
+### grouped boxplots
 may_june_july$Month_factor <- factor(as.character(may_june_july$Month), levels = c('may', 'june', 'july'))
 
-month_colors <- c('dodgerblue','tan','gold')
+month_colors <- c('dodgerblue','tan','gold','orange')
 
-ggplot(may_june_july, aes(x = Lake, y = TP, fill = Month_factor)) +
+## TP
+ggplot(may_thru_aug, aes(x = Group, y = TP, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
+  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(may_thru_aug, aes(x = Group, y = TP, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,100))+
   labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
   scale_fill_manual("Month", values=month_colors)
 
@@ -36,76 +60,161 @@ ggplot(may_june_july, aes(x = Lake, y = TP, fill = Month_factor)) +
   scale_fill_manual("Month", values=month_colors)+
   theme(legend.position=c(0.8,0.8),
         axis.text.x=element_text(color='black'))
-
+## TN
 ggplot(may_june_july, aes(x = Lake, y = TN, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Total nitrogen (ppb)")+
   scale_fill_manual("Month", values=month_colors)
 
+ggplot(may_thru_aug, aes(x = Group, y = TN, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Total nitrogen (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## NO2NO3
 ggplot(may_june_july, aes(x = Lake, y = NO2NO3N, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "NO2/NO3-N (ppb)")+
   scale_fill_manual("Month", values=month_colors)
 
+ggplot(may_thru_aug, aes(x = Group, y = NO2NO3N, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "NO2/NO3-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## NH4
 ggplot(may_june_july, aes(x = Lake, y = NH4N, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "NH4-N (ppb)")+
   scale_fill_manual("Month", values=month_colors)
 
+## NH4
+ggplot(may_thru_aug, aes(x = Group, y = NH4N, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "NH4-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(may_thru_aug, aes(x = Group, y = NH4N, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,50))+
+  labs(x = "Lake Type", y = "NH4-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## DOC
 ggplot(may_june_july, aes(x = Lake, y = DOC, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Dissolved organic carbon (ppm)")+
   scale_fill_manual("Month", values=month_colors)
 
+ggplot(may_thru_aug, aes(x = Group, y = DOC, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,40))+
+  labs(x = "Lake Type", y = "DOC (ppm)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## TSS
 ggplot(may_june_july, aes(x = Lake, y = TSS, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
   scale_fill_manual("Month", values=month_colors)
 
+ggplot(may_thru_aug, aes(x = Group, y = TSS, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## ANC
 ggplot(may_june_july, aes(x = Lake, y = ANCmg, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Acid neutralizing capacity (mg CaCO3/L)")+
   scale_fill_manual("Month", values=month_colors)
 
+ggplot(may_thru_aug, aes(x = Group, y = ANCmg, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Acid neutralizing capacity (mg CaCO3/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
 ## fire predictors of water quality (recall burn severity predictors are highly correlated with each other)
 # first log transform WQ variables
-may_june_july$logChloro <- log(may_june_july$Chloro)
-may_june_july$logTP <- log(may_june_july$TP)
-may_june_july$logOP <- log(may_june_july$OP)
-may_june_july$logTN <- log(may_june_july$TN)
-may_june_july$logNH4N <- log(may_june_july$NH4N)
-may_june_july$logNO2NO3 <- log(may_june_july$NO2NO3)
-may_june_july$logANCmg <- log(may_june_july$ANCmg)
-may_june_july$logANCaueq <- log(may_june_july$ANCaueq)
-may_june_july$logTSS <- log(may_june_july$TSS)
-may_june_july$logTSVS <- log(may_june_july$TSVS)
-may_june_july$logDOC <- log(may_june_july$DOC)
+# may_june_july$logChloro <- log(may_june_july$Chloro)
+# may_june_july$logTP <- log(may_june_july$TP)
+# may_june_july$logOP <- log(may_june_july$OP)
+# may_june_july$logTN <- log(may_june_july$TN)
+# may_june_july$logNH4N <- log(may_june_july$NH4N)
+# may_june_july$logNO2NO3 <- log(may_june_july$NO2NO3)
+# may_june_july$logANCmg <- log(may_june_july$ANCmg)
+# may_june_july$logANCaueq <- log(may_june_july$ANCaueq)
+# may_june_july$logTSS <- log(may_june_july$TSS)
+# may_june_july$logTSVS <- log(may_june_july$TSVS)
+# may_june_july$logDOC <- log(may_june_july$DOC)
+
+may_thru_aug$logChloro <- log(may_thru_aug$Chloro)
+may_thru_aug$logTP <- log(may_thru_aug$TP)
+#may_thru_aug$logOP <- log(may_thru_aug$OP)
+may_thru_aug$logTN <- log(may_thru_aug$TN)
+may_thru_aug$logNH4N <- log(may_thru_aug$NH4N)
+may_thru_aug$logNO2NO3 <- log(may_thru_aug$NO2NO3)
+may_thru_aug$logANCmg <- log(may_thru_aug$ANCmg)
+may_thru_aug$logANCaueq <- log(may_thru_aug$ANCaueq)
+may_thru_aug$logTSS <- log(may_thru_aug$TSS)
+may_thru_aug$logTSVS <- log(may_thru_aug$TSVS)
+may_thru_aug$logDOC <- log(may_thru_aug$DOC)
 
 # correlation matrices
 ws_burn_severity$total_burn_pct <- rowSums(ws_burn_severity[,c(3,5,7,9)])
-mayWQ <- subset(may_june_july, Month=='may')
-mayWQ_fire <- merge(mayWQ[,c(3,5,6,24:34)], ws_burn_severity[,c(1,3,5,7,9,11)], by.x='Lagoslakeid', by.y='lagoslakeid')
+
+# May
+mayWQ <- subset(may_thru_aug, Month_factor=='May')
+mayWQ_fire <- merge(mayWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
 
 cormayWQ_fire <- as.data.frame(t(cor(mayWQ_fire[, unlist(lapply(mayWQ_fire, is.numeric))], use='pairwise.complete.obs')))[,c(1:12)] 
 cormayWQ_fire <-cormayWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
 
-juneWQ <- subset(may_june_july, Month=='june')
-juneWQ_fire <- merge(juneWQ[,c(3,5,6,24:34)], ws_burn_severity[,c(1,3,5,7,9,11)], by.x='Lagoslakeid', by.y='lagoslakeid')
+# June
+juneWQ <- subset(may_thru_aug, Month_factor=='Jun')
+juneWQ_fire <- merge(juneWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
 
 corjuneWQ_fire <- as.data.frame(cor(juneWQ_fire[, unlist(lapply(juneWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
 corjuneWQ_fire <-corjuneWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+
+# July
+julyWQ <- subset(may_thru_aug, Month_factor=='Jul')
+julyWQ_fire <- merge(julyWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+
+corjulyWQ_fire <- as.data.frame(cor(julyWQ_fire[, unlist(lapply(julyWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
+corjulyWQ_fire <-corjulyWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+
+# Aug
+augWQ <- subset(may_thru_aug, Month_factor=='Aug')
+augWQ_fire <- merge(augWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+
+coraugWQ_fire <- as.data.frame(cor(augWQ_fire[, unlist(lapply(augWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
+coraugWQ_fire <-coraugWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+
+# Sep
 
 ## "gradient" plots
 # may need to play around with plot aesthetics for individual plots
 #mayWQ_fire <- merge(mayWQ, ws_burn_severity[,c(1,3,5,7,9,11)], by.x='Lagoslakeid', by.y='lagoslakeid')
 mayWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",mayWQ_fire$Site)
 juneWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",juneWQ_fire$Site)
+julyWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",julyWQ_fire$Site)
+augWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",augWQ_fire$Site)
 
 ## May
 # plot A

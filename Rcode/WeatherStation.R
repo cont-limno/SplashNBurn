@@ -1,6 +1,6 @@
 ##################### Exploring weather station data ##########################
 # Date: 8-24-22
-# updated:
+# updated: 10-5-22; with full season of data
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -10,7 +10,8 @@ library(weathermetrics)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
-station <- read.csv("Data/weatherstation/kestrelmet_download_all_8.24.22.csv")
+#station <- read.csv("Data/weatherstation/kestrelmet_download_all_8.24.22.csv")
+station <- read.csv("Data/weatherstation/ambient-weather-20220524-20220926.csv")
 
 #### Main program ####
 # get rid of unwanted variables
@@ -51,7 +52,8 @@ weather_summary <- station %>%
 jpeg('Figures/airtemp_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   plot(AirTempC_dailymax ~ Date, data=weather_summary, pch=20, col='firebrick', 
      ylim=c(0,40), ylab='Air temperature (C)', xaxt='n', xlab='', main='Daily Air Temperature')
-  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/08/24"),by="weeks"), cex.axis=0.8)
+  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"),
+                         labels=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
   lines(AirTempC_dailymax ~ Date, data=weather_summary, col='firebrick')
   points(AirTempC_dailymean ~ Date, data=weather_summary, pch=20, col='black')
   lines(AirTempC_dailymean ~ Date, data=weather_summary, pch=20, col='black')
@@ -65,5 +67,6 @@ dev.off()
 jpeg('Figures/precip_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   plot(Precipmm_dailytotal ~ Date, data=weather_summary, col='navy', type='l', lwd=1.5,
      ylim=c(0,30), ylab='Precipitation (mm)', xaxt='n', xlab='', main='Daily Precipitation')
-  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/08/24"),by="weeks"), cex.axis=0.8)
+  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), 
+            labels=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
 dev.off()
