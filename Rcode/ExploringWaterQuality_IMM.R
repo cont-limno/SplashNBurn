@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 9-21-22# now with all lakes
+# updated: 10-4-22# now with all lakes
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -26,6 +26,16 @@ ggplot(may_june_july, aes(x = Lake, y = TP, fill = Month_factor)) +
   theme_classic() +
   labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
   scale_fill_manual("Month", values=month_colors)
+
+## different version; candidate for MW CASC proposal
+ggplot(may_june_july, aes(x = Lake, y = TP, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
+  scale_y_continuous(limits=c(0,50))+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c(0.8,0.8),
+        axis.text.x=element_text(color='black'))
 
 ggplot(may_june_july, aes(x = Lake, y = TN, fill = Month_factor)) +
   geom_boxplot() + 
@@ -107,7 +117,7 @@ pval <- round(plotcor$p.value, 2)
 plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
 
 plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=Source, label=LakeName))+
-  ggtitle('May total phosphorus')+
+  #ggtitle('May total phosphorus')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
@@ -118,7 +128,8 @@ plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=Source,
   annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
            color="red")+
   theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
+  scale_x_continuous(limits=c(0,100), name='Watershed % high severity')+
+  scale_y_continuous(limits=c(), name='log(Total phosphorus (ppb)')+
   #xlab('Watershed high severity burn (%)')+
   #ylab('Log total phosphorus (ppb)')+
   theme(axis.text.x = element_text(color='black'),
