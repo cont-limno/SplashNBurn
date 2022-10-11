@@ -5,41 +5,9 @@
   <language>ENG</language>
   <type>dataset</type>
   <title>ws</title>
-  <abstract>The LAGOS-LOCUS-v1 WS dataset contains the Lake Watersheds (WS, watersheds excluding flow into upstream lakes greater than 10 ha) delineations for each lake included in the LAke multi-scaled GeOSpatial and temporal database (LAGOS-US). Only the shape (GIS) information for the Lake Watersheds and their identifiers are contained in this dataset--all other watershed attributes are published as separate components of LAGOS-US. These watersheds were custom-delineated for LAGOS-US, relying on the USGS National Hydrography Dataset and the USGS 3DEP elevation datasets as inputs.
-
-To provide LAGOS-US users with a spatial representation of the Lake Watersheds (WS, watersheds excluding flow into upstream lakes greater than 10 ha) in the LAGOS-US database.</abstract>
-  <keywords vocabulary="Search keys">
-    <keyword>lakes</keyword>
-    <keyword>lagos-us</keyword>
-    <keyword>water quality</keyword>
-  </keywords>
-  <keywords vocabulary="gmd:topicCategory">
-    <keyword>lakes</keyword>
-    <keyword>lagos-us</keyword>
-    <keyword>water quality</keyword>
-  </keywords>
-  <contact>
-    <contactAddress>
-      <type>both</type>
-      <address>480 Wilson Rd</address>
-      <city>East Lansing</city>
-      <administrativearea>MI</administrativearea>
-      <postalcode>48824</postalcode>
-      <country></country>
-    </contactAddress>
-    <name></name>
-    <organization>LAGOS Lakes Database--Continental Limnology Research Group</organization>
-    <position></position>
-    <voice>517-884-1769</voice>
-    <fax></fax>
-    <email>LAGOS.lakes.contact@gmail.com</email>
-    <role>Point of contact</role>
-  </contact>
+  <abstract></abstract>
   <links/>
-  <history>Data source: The U.S. national hydrography map, including lake location and hydrographic network information.</history>
-  <history>Data source: The U.S. national hydrography map, including lake location, hydrographic network, and catchments delineated for NHD HR Plus.</history>
   <fees></fees>
-  <constraints type="Limitations of use">N/A</constraints>
   <encoding></encoding>
   <crs>
     <spatialrefsys nativeFormat="Wkt">
@@ -54,19 +22,5 @@ To provide LAGOS-US users with a spatial representation of the Lake Watersheds (
       <geographicflag>false</geographicflag>
     </spatialrefsys>
   </crs>
-  <extent>
-    <spatial minz="0" maxy="0" minx="0" miny="0" maxz="0" dimensions="2" crs="EPSG:5070" maxx="0"/>
-    <temporal>
-      <period>
-        <start>2019-08-28T04:00:00Z</start>
-        <end></end>
-      </period>
-    </temporal>
-    <temporal>
-      <period>
-        <start></start>
-        <end></end>
-      </period>
-    </temporal>
-  </extent>
+  <extent/>
 </qgis>
