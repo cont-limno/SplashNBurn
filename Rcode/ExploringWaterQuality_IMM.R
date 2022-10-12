@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-5-22# now with all lakes
+# updated: 10-12-22# now with all lakes
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -17,6 +17,7 @@ may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
 may_thru_aug <- read.csv("Data/WaterQuality/LabAnalyses_Lakes9-30-22.csv")
 ws_burn_severity <- read.csv("Data/BurnSeverity/vegetation_ws_area.csv")
 LAGOStable <- read.csv("Data/LAGOS/LAGOS_LOCUS_Table.csv")
+field_obs <- read.csv("Data/WaterQuality/FieldSampling_ Lakes-secchi10-5-22.csv")
 
 #### Main program ####
 # get basic LAGOS data in may_thru_aug table
@@ -496,3 +497,52 @@ interplot <- may_thru_aug %>%
   scale_color_manual('Month', values=month_colors)
 
 ggplotly(interplot, tooltip=c('x','y','label','shape'))
+
+#### Secchi and depth data ####
+field_obs <- merge(field_obs, LAGOS_layover, by='Site', all=T)
+field_obs$Date <- lubridate::mdy(field_obs$Date)
+field_obs$Month <- lubridate::month(field_obs$Date)
+field_obs$Month_factor <- lubridate::month(field_obs$Date, label=T, abbr=T)
+field_obs <- field_obs %>% drop_na(Date) #row with no data for some reason; remove
+field_obs <- droplevels(field_obs)
+
+ggplot(field_obs, aes(x = Group, y = SecchiDepth_m, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Secchi (m)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(field_obs, aes(x = Group, y = zMax_m, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Max depth (m)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## get table of just Secchi and few other vars to merge to other water quality
+secchi_depth <- field_obs[,c('SecchiDepth_m','zMax_m','Site','Month')]
+allWQ_data <- merge(may_thru_aug, secchi_depth, by=c("Site","Month"), all=T)
+#write.csv(allWQ_data, "Data/WaterQuality/combined_lab_field_may_aug.csv", row.names=F)
+
+ggplot(data=allWQ_data, aes(x=TP, y=SecchiDepth_m, color=Month_factor, shape=Group))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_color_manual('Month', values=month_colors)
+
+ggplot(data=allWQ_data, aes(x=DOC, y=SecchiDepth_m, color=Month_factor, shape=Group))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(limits=c(0,40))+
+  scale_color_manual('Month', values=month_colors)
+
+ggplot(data=allWQ_data, aes(x=TSS, y=SecchiDepth_m, color=Month_factor, shape=Group))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(limits=c())+
+  scale_color_manual('Month', values=month_colors)
+
+ggplot(data=allWQ_data, aes(x=TN, y=SecchiDepth_m, color=Month_factor, shape=Group))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(limits=c())+
+  scale_color_manual('Month', values=month_colors)
+
