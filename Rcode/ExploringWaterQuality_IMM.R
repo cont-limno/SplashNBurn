@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-12-22# now with all lakes
+# updated: 10-13-22# now with all lakes
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -782,4 +782,178 @@ jpeg('Figures/TN_vs_TP.jpeg',width = 7,height = 7,units = 'in',res=600)
   grid.arrange(a,b + guides(shape='none'),c,d)
 dev.off()
 
+# TP vs TSS
+xlimz <- c(0,50)
+ylimz <- c()
+a <- ggplot(data=allWQ_data_may, aes(x=TP, y=TSS, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.2,0.7))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
 
+b <- ggplot(data=allWQ_data_jun, aes(x=TP, y=TSS, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.2,0.7))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + guides(shape='none')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP, y=TSS, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP, y=TSS, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b + guides(shape='none'),c,d)
+
+jpeg('Figures/TP_vs_TSS.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b + guides(shape='none'),c,d)
+dev.off()
+
+
+# TP vs zMax
+xlimz <- c(0,50)
+ylimz <- c(0,10)
+a <- ggplot(data=allWQ_data_may, aes(x=TP, y=zMax_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP, y=zMax_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Type')
+
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP, y=zMax_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP, y=zMax_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d)
+
+jpeg('Figures/TP_vs_zMax.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d)
+dev.off()
+
+
+# Secchi vs zMax
+xlimz <- c(0,10)
+ylimz <- c(0,4)
+a <- ggplot(data=allWQ_data_may, aes(x=zMax_m, SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(c('none')))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=zMax_m, SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(color='Type')
+
+
+c <- ggplot(data=allWQ_data_jul, aes(x=zMax_m, SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=zMax_m, SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d)
+
+jpeg('Figures/Secchi_vs_zMax.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d)
+dev.off()
