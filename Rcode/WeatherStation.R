@@ -1,6 +1,6 @@
 ##################### Exploring weather station data ##########################
 # Date: 8-24-22
-# updated: 10-5-22; with full season of data
+# updated: 10-13-22; with full season of data
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -51,9 +51,10 @@ weather_summary <- station %>%
 # air temp
 jpeg('Figures/airtemp_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   plot(AirTempC_dailymax ~ Date, data=weather_summary, pch=20, col='firebrick', 
-     ylim=c(0,40), ylab='Air temperature (C)', xaxt='n', xlab='', main='Daily Air Temperature')
-  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"),
-                         labels=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
+     ylim=c(0,40), ylab='Air temperature (°C)', xaxt='n', xlim=c(as.Date("2022/05/17"), as.Date("2022/09/27")), 
+     xlab='', main='Daily Air Temperature')
+  axis.Date(1,Day,at=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"),
+                         labels=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
   lines(AirTempC_dailymax ~ Date, data=weather_summary, col='firebrick')
   points(AirTempC_dailymean ~ Date, data=weather_summary, pch=20, col='black')
   lines(AirTempC_dailymean ~ Date, data=weather_summary, pch=20, col='black')
@@ -61,12 +62,21 @@ jpeg('Figures/airtemp_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   lines(AirTempC_dailymin ~ Date, data=weather_summary, pch=20, col='dodgerblue')
   legend('topright', legend=c('Max','Mean','Min'), col=c('firebrick','black','dodgerblue'),
        pch=c(16,16,16), horiz=T, bty='n')
+  abline(v=as.Date("2022/05/19")) #median day of sample trips
+  abline(v=as.Date("2022/06/09")) 
+  abline(v=as.Date("2022/07/15"))
+  abline(v=as.Date("2022/08/23"))
 dev.off()
 
 # precip
 jpeg('Figures/precip_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   plot(Precipmm_dailytotal ~ Date, data=weather_summary, col='navy', type='l', lwd=1.5,
-     ylim=c(0,30), ylab='Precipitation (mm)', xaxt='n', xlab='', main='Daily Precipitation')
-  axis.Date(1,Day,at=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), 
-            labels=seq(as.Date("2022/05/24"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
+     ylim=c(0,30), ylab='Precipitation (mm)', xaxt='n', xlim=c(as.Date("2022/05/17"), as.Date("2022/09/27")),
+     xlab='', main='Daily Precipitation')
+  axis.Date(1,Day,at=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"), 
+            labels=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
+  abline(v=as.Date("2022/05/19")) #median day of sample trips
+  abline(v=as.Date("2022/06/09")) 
+  abline(v=as.Date("2022/07/15"))
+  abline(v=as.Date("2022/08/23"))
 dev.off()
