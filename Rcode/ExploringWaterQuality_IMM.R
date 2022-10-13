@@ -546,3 +546,240 @@ ggplot(data=allWQ_data, aes(x=TN, y=SecchiDepth_m, color=Month_factor, shape=Gro
   scale_x_continuous(limits=c())+
   scale_color_manual('Month', values=month_colors)
 
+## separate the months
+allWQ_data_may <- subset(allWQ_data, Month_factor=='May')
+allWQ_data_jun <- subset(allWQ_data, Month_factor=='Jun')
+allWQ_data_jul <- subset(allWQ_data, Month_factor=='Jul')
+allWQ_data_aug <- subset(allWQ_data, Month_factor=='Aug')
+
+burn_colors <- c('firebrick','dodgerblue')
+
+## DOC vs Secchi
+a <- ggplot(data=allWQ_data_may, aes(x=DOC, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.7))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d)
+
+jpeg('Figures/DOC_vs_Secchi.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d)
+dev.off()
+
+# TP vs Secchi
+xlimz <- c(0,50)
+ylimz <- c(0,4)
+a <- ggplot(data=allWQ_data_may, aes(x=TP, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.7))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP, y=SecchiDepth_m, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d)
+
+jpeg('Figures/TP_vs_Secchi.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d)
+dev.off()
+
+# DOC vs TP
+xlimz <- c(0,50)
+ylimz <- c(0,35)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.7))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d)
+
+jpeg('Figures/DOC_vs_TP.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d)
+dev.off()
+
+
+# TN vs TP
+xlimz <- c(0,1500)
+ylimz <- c(0,50)
+a <- ggplot(data=allWQ_data_may, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.2,0.7))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.2,0.7))+
+  scale_color_manual(values=burn_colors)+
+  labs(color='Type')
+b + guides(shape='none')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b + guides(shape='none'),c,d)
+
+jpeg('Figures/TN_vs_TP.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b + guides(shape='none'),c,d)
+dev.off()
+
+
