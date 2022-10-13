@@ -957,3 +957,15 @@ grid.arrange(a,b,c,d)
 jpeg('Figures/Secchi_vs_zMax.jpeg',width = 7,height = 7,units = 'in',res=600)
   grid.arrange(a,b,c,d)
 dev.off()
+
+## How much does max depth vary for a given lake across sample months? ## 
+allWQ_data$Lake <- gsub(paste('Lake',collapse='|'),"",allWQ_data$Site)
+
+jpeg('Figures/MaxDepth_variation.jpeg',width = 7,height = 5,units = 'in',res=600)
+ggplot(allWQ_data, aes(x = Lake, y = zMax_m, fill = Type)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "Max depth (m)")+
+  theme(axis.text.x=element_text(color='black', angle=90, size=8, hjust=1, vjust=0.5))+
+  scale_fill_manual("Type", values=burn_colors)
+dev.off()
