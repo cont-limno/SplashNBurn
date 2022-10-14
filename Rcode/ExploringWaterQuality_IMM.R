@@ -53,14 +53,17 @@ ggplot(may_thru_aug, aes(x = Group, y = TP, fill = Month_factor)) +
   scale_fill_manual("Month", values=month_colors)
 
 ## different version; candidate for MW CASC proposal
-ggplot(may_june_july, aes(x = Lake, y = TP, fill = Month_factor)) +
+ggplot(may_thru_aug, aes(x = Group, y = TP, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
   scale_y_continuous(limits=c(0,50))+
   scale_fill_manual("Month", values=month_colors)+
   theme(legend.position=c(0.8,0.8),
-        axis.text.x=element_text(color='black'))
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
+                            'Control drainage','Control isolated'))
 ## TN
 ggplot(may_june_july, aes(x = Lake, y = TN, fill = Month_factor)) +
   geom_boxplot() + 
@@ -120,7 +123,13 @@ ggplot(may_thru_aug, aes(x = Group, y = DOC, fill = Month_factor)) +
   theme_classic() +
   scale_y_continuous(limits=c(0,40))+
   labs(x = "Lake Type", y = "DOC (ppm)")+
-  scale_fill_manual("Month", values=month_colors)
+  scale_fill_manual("Month", values=month_colors)+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  ggtitle("B) Hydrologic connectivity")+
+  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
+                            'Control drainage','Control isolated'))
 
 ## TSS
 ggplot(may_june_july, aes(x = Lake, y = TSS, fill = Month_factor)) +
@@ -217,6 +226,8 @@ juneWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",juneWQ_fire$Site)
 julyWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",julyWQ_fire$Site)
 augWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",augWQ_fire$Site)
 
+mayWQ_fire <- merge(mayWQ_fire, LAGOS_layover, by='lagoslakeid', all=F)
+
 ## May
 # plot A
 wqvar <- 'logTP'
@@ -226,26 +237,28 @@ rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
 plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
 
-plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=Source, label=LakeName))+
+plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=ConnClass, label=LakeName))+
   #ggtitle('May total phosphorus')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
-  geom_abline(slope = coef(plotlm)[2], 
-              intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
-           color="red")+
-  annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
-           color="red")+
+  #geom_abline(slope = coef(plotlm)[2], 
+  #            intercept = coef(plotlm)[["(Intercept)"]])+
+  geom_vline(xintercept=25, linetype='dashed')+
+  #annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
+  #         color="red")+
+  #annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
+  #         color="red")+
   theme_classic()+
-  scale_x_continuous(limits=c(0,100), name='Watershed % high severity')+
-  scale_y_continuous(limits=c(), name='log(Total phosphorus (ppb)')+
+  scale_x_continuous(limits=c(0,100), name='Watershed % high severity burn')+
+  scale_y_continuous(limits=c(), name='log(Total phosphorus) (ppb)')+
   #xlab('Watershed high severity burn (%)')+
   #ylab('Log total phosphorus (ppb)')+
   theme(axis.text.x = element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c(0.9,0.2))+
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+  ggtitle('A) Burn severity gradient')+
+  scale_color_manual("Class", values=c('black','gold'), labels=c('Drainage','Isolated'))
 plotA
 
 # plot B
