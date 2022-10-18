@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 9-21-22, now with all lakes 
+# updated: 10-18-22, now with soil burn severity data corrected
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -14,9 +14,11 @@ setwd("C:/Users/immcc/Documents/SplashNBurn")
 
 may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
 ws_burn_severity <- read.csv("Data/BurnSeverity/vegetation_ws_area.csv")
-ws_soilburn_severity <- read.csv("Data/BurnSeverity/soil_ws_area.csv")
+#ws_soilburn_severity <- read.csv("Data/BurnSeverity/soil_ws_area.csv")
+ws_soilburn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_sbs_pct.csv")
 buffer_burn_severity <- read.csv("Data/BurnSeverity/vegetation_buffer_area.csv")
-buffer_soilburn_severity <- read.csv("Data/BurnSeverity/soil_buffer_area.csv")
+#buffer_soilburn_severity <- read.csv("Data/BurnSeverity/soil_buffer_area.csv")
+buffer_soilburn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_sbs_pct.csv")
 
 #### Main program ####
 # how correlated are % ws burn variables? Seem to be highly so
@@ -61,23 +63,23 @@ dev.off()
 
 ### watershed soil burn severity ###
 # how correlated are % ws soilburn variables? Seem to be highly so
-ws_soilburn_severity_pct <- ws_soilburn_severity[,c(1,3,5,7)]
-ws_soilburn_severity_pct$total_ws_soilburn_pct <- rowSums(ws_soilburn_severity_pct[,c(2:4)])
+ws_soilburn_severity_pct <- ws_soilburn_severity[,c(1,11:15)]
+ws_soilburn_severity_pct$total_ws_soilburn_pct <- rowSums(ws_soilburn_severity_pct[,c(2:6)])
 cor(ws_soilburn_severity_pct, method='pearson', use='pairwise.complete.obs')
 cor(ws_soilburn_severity_pct, method='spearman', use='pairwise.complete.obs')
 
-# calculate unburned pct
-ws_soilburn_severity_pct$unburned_pct <- 100-ws_soilburn_severity_pct$total_ws_soilburn_pct
+# calculate unburned pct; no longer needed
+#ws_soilburn_severity_pct$unburned_pct <- 100-ws_soilburn_severity_pct$total_ws_soilburn_pct
 # if any slight rounding errors result in negative soilburned area
-ws_soilburn_severity_pct$unburned_pct <- ifelse(ws_soilburn_severity_pct$unburned_pct < 0, 0, ws_soilburn_severity_pct$unburned_pct)
+#ws_soilburn_severity_pct$unburned_pct <- ifelse(ws_soilburn_severity_pct$unburned_pct < 0, 0, ws_soilburn_severity_pct$unburned_pct)
 
 ## prepare for plot
 ws_soilburn_severity_pct <- merge(ws_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
-ws_soilburn_severity_pct_melted <- reshape2::melt(ws_soilburn_severity_pct[,c(2:4,6,7)], 
+ws_soilburn_severity_pct_melted <- reshape2::melt(ws_soilburn_severity_pct[,c(2:6,8)], 
                                                   id.var='Site', variable.name='Severity', value.name='Percent')
 
-ws_soilburn_severity_pct_melted$Severity <- factor(ws_soilburn_severity_pct_melted$Severity, levels=c('unburned_pct','low_severity_pct',
-                                                                                                      'moderate_severity_pct','high_severity_pct'))
+ws_soilburn_severity_pct_melted$Severity <- factor(ws_soilburn_severity_pct_melted$Severity, levels=c('unburned_pct','unburned_low_pct','low_pct',
+                                                                                                      'moderate_pct','high_pct'))
 
 # get rid of word 'Lake' to make labels smaller
 ws_soilburn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",ws_soilburn_severity_pct_melted$Site)
@@ -88,8 +90,8 @@ ggplot(ws_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) +
   theme_classic()+
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
         axis.text.y=element_text(color='black'))+
-  scale_fill_manual(values=c('gray90','gold','firebrick','black'), 
-                    labels=c('Unburned','Low','Moderate','High'),
+  scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
+                    labels=c('Unburned','Unburned-Low','Low','Moderate','High'),
                     'Severity (%)')+
   ggtitle('Watershed soil burn severity')
 dev.off()
@@ -130,25 +132,25 @@ ggplot(buffer_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) +
   ggtitle('Vegetation burn severity (100m shoreline buffer)')
 dev.off()
 
-## soil burn severity
+## soil burn severity 100m buffer
 # how correlated are % buffer soilburn variables? Seem to be highly so
-buffer_soilburn_severity_pct <- buffer_soilburn_severity[,c(1,3,5,7)]
-buffer_soilburn_severity_pct$total_buffer_soilburn_pct <- rowSums(buffer_soilburn_severity_pct[,c(2:4)])
+buffer_soilburn_severity_pct <- buffer_soilburn_severity[,c(1,8:12)]
+buffer_soilburn_severity_pct$total_buffer_soilburn_pct <- rowSums(buffer_soilburn_severity_pct[,c(2:6)])
 cor(buffer_soilburn_severity_pct, method='pearson', use='pairwise.complete.obs')
 cor(buffer_soilburn_severity_pct, method='spearman', use='pairwise.complete.obs')
 
-# calculate unburned pct
-buffer_soilburn_severity_pct$unburned_pct <- 100-buffer_soilburn_severity_pct$total_buffer_soilburn_pct
+# calculate unburned pct; no longer needed
+#buffer_soilburn_severity_pct$unburned_pct <- 100-buffer_soilburn_severity_pct$total_buffer_soilburn_pct
 # if any slight rounding errors result in negative soilburned area
-buffer_soilburn_severity_pct$unburned_pct <- ifelse(buffer_soilburn_severity_pct$unburned_pct < 0, 0, buffer_soilburn_severity_pct$unburned_pct)
+#buffer_soilburn_severity_pct$unburned_pct <- ifelse(buffer_soilburn_severity_pct$unburned_pct < 0, 0, buffer_soilburn_severity_pct$unburned_pct)
 
 ## prepare for plot
 buffer_soilburn_severity_pct <- merge(buffer_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
-buffer_soilburn_severity_pct_melted <- reshape2::melt(buffer_soilburn_severity_pct[,c(2:4,6,7)], 
+buffer_soilburn_severity_pct_melted <- reshape2::melt(buffer_soilburn_severity_pct[,c(2:6,8)], 
                                                       id.var='Site', variable.name='Severity', value.name='Percent')
 
-buffer_soilburn_severity_pct_melted$Severity <- factor(buffer_soilburn_severity_pct_melted$Severity, levels=c('unburned_pct','low_severity_pct',
-                                                                                                              'moderate_severity_pct','high_severity_pct'))
+buffer_soilburn_severity_pct_melted$Severity <- factor(buffer_soilburn_severity_pct_melted$Severity, levels=c('unburned_pct','unburned_low_pct','low_pct',
+                                                                                                              'moderate_pct','high_pct'))
 
 # get rid of word 'Lake' to make labels smaller
 buffer_soilburn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",buffer_soilburn_severity_pct_melted$Site)
@@ -159,10 +161,10 @@ ggplot(buffer_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake
   theme_classic()+
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
         axis.text.y=element_text(color='black'))+
-  scale_fill_manual(values=c('gray90','gold','firebrick','black'), 
-                    labels=c('Unburned','Low','Moderate','High'),
+  scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
+                    labels=c('Unburned','Unburned-Low','Low','Moderate','High'),
                     'Severity (%)')+
-  ggtitle('Soil burn severity (100m shoreline buffer)')
+  ggtitle('100m lake buffer soil burn severity')
 dev.off()
 
 
