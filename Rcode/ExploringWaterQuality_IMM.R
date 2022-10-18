@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-13-22# now with all lakes
+# updated: 10-18-22# now with all lakes
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -258,7 +258,7 @@ plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=ConnCla
         axis.text.y=element_text(color='black'),
         legend.position=c(0.9,0.2))+
   ggtitle('A) Burn severity gradient')+
-  scale_color_manual("Class", values=c('black','gold'), labels=c('Drainage','Isolated'))
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
 plotA
 
 # plot B
