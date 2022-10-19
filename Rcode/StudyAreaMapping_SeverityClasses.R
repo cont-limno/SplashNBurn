@@ -1,6 +1,6 @@
 ############## Study area mapping + burn severity classification ############
 # Date created: 4-28-22
-# updated: 5-10-22
+# updated: 10-18-22 (complete list of lakes)
 # author: Ian McCullough (immccull@gmail.com)
 #############################################################################
 
@@ -13,14 +13,17 @@ library(ggplot2)
 setwd("C:/Users/immcc/Documents/SplashNBurn")
 
 #### Input data ####
-burned_lakes <- read.csv("Data/BurnedLakes/burned_lake_accessibility-12-3-21 CTF2-8-22-1500.csv")
-control <- read.csv("Data/ControlLakes/control_candidates_2.8.22_attributes.csv")
+#burned_lakes <- read.csv("Data/BurnedLakes/burned_lake_accessibility-12-3-21 CTF2-8-22-1500.csv")
+#control <- read.csv("Data/ControlLakes/control_candidates_2.8.22_attributes.csv")
 
-depths <- read.csv("Data/lake_depth.csv")
-depths <- depths[,c('lagoslakeid','lake_maxdepth_m','lake_meandepth_m')]
+#depths <- read.csv("Data/lake_depth.csv")
+#depths <- depths[,c('lagoslakeid','lake_maxdepth_m','lake_meandepth_m')]
 
-control <- merge(control, depths, by='lagoslakeid', all.x=T)
+#control <- merge(control, depths, by='lagoslakeid', all.x=T)
 #write.csv(control, "C:/Users/immcc/Documents/SplashNBurn/Data/ControlLakes/Lakes10kmBuff_wDepth.csv", row.names=F)
+
+burned_lakes <- shapefile("Data/BurnedLakes/burn_lakes/burn_lakes.shp")
+control_lakes <- shapefile("Data/ControlLakes/control_lakes/control_lakes.shp")
 
 # preliminary BAER burn severity
 dNBR <- raster("Data/GTAC/greenwood_mn_preliminary_20210923/mn4755309164820210815_20210814_20210923_dnbr.tif")
@@ -30,64 +33,29 @@ sbs <- raster("Data/GTAC/greenwood_sbs/GREENWOOD_sbs.tif")
 
 # LAGOS LOCUS v1.0
 #lake_char <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_LOCUS/LOCUS_v1.0/lake_characteristics.csv")
-lake_info <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_LOCUS/LOCUS_v1.0/lake_information.csv")
+#lake_info <- read.csv("C:/Users/immcc/Dropbox/CL_LAGOSUS_exports/LAGOSUS_LOCUS/LOCUS_v1.0/lake_information.csv")
 
-minnesota_lakes <- shapefile("Data/Minnesota_lakes_1ha/Minnesota_lakes_1ha.shp")
-minnesota <- shapefile("Data/Minnesota_outline/Minnesota.shp")
+#minnesota_lakes <- shapefile("Data/Minnesota_lakes_1ha/Minnesota_lakes_1ha.shp")
+#minnesota <- shapefile("Data/Minnesota_outline/Minnesota.shp")
 
 burn_perimeter <- shapefile("Data/GreenwoodFirePolygon/GreenwoodFirePolygon.shp")
 # not sample lakes; all lakes with watersheds intersecting burn zone
-burned_watersheds <- shapefile("Data/BurnedWatersheds/BurnedWatersheds_9.13_intersect.shp")
+burned_watersheds <- shapefile("Data/BurnedWatersheds/burned_lakes_ws/burned_lakes_ws.shp")
 
 #### Main program ####
 #plot(minnesota)
 #plot(burn_perimeter)
 
-hist(control$Hectares, breaks=seq(0,80,10))
-summary(control$Hectares)
-hist(burned_lakes$lake_waterarea_ha)
-summary(burned_lakes$lake_waterarea_ha)
-
-hist(burned_lakes$ws_burn_pct, main='Proportion watershed burned',
-     xlab='Proportion', breaks=seq(0,1,0.1))
-
-# get burned and control lake polygons
-burned_lakes_shp <- subset(minnesota_lakes, lagoslakei %in% burned_lakes$lagoslakeid)
-plot(burned_lakes_shp, add=T, col='red')
-
-control_lakes_shp <- subset(minnesota_lakes, lagoslakei %in% control$lagoslakeid)
-plot(control_lakes_shp, add=T, col='dodgerblue')
-
-
-plot(control_lakes_shp, col='dodgerblue')
+par(mfrow=c(1,1))
+plot(control_lakes, col='blue')
 plot(burn_perimeter, add=T)
-plot(burned_lakes_shp, add=T, col='red')
-#legend('topright', legend=c('Burned','Control'), col=c('red','dodgerblue'), pch=c(16,16))
+plot(burned_lakes, add=T, col='firebrick')
+legend('topright', legend=c('Burned','Control'), col=c('firebrick','blue'), pch=c(16,16))
 
-# save burned and control lake shapefiles:
-dsnname <- "Data/ControlLakes"
-layername <- 'control_lakes'
-#writeOGR(control_lakes_shp, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
-
-dsnname <- "Data/BurnedLakes"
-layername <- 'burned_lakes'
-#writeOGR(burned_lakes_shp, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
-
-# get burned and control lake watersheds
-control_lakes_lagoslakeid <- control$lagoslakeid
-burned_lakes_lagoslakeid <- burned_lakes$lagoslakeid
-
-burned_lakes_watersheds <- subset(burned_watersheds, lagoslakei %in% burned_lakes_lagoslakeid)
-dsnname <- "Data/BurnedWatersheds"
-layername <- 'BurnedWatersheds_sample'
-#writeOGR(burned_lakes_watersheds, dsn=dsnname, layer=layername, driver="ESRI Shapefile", overwrite_layer = T)
-
-plot(burned_lakes_watersheds)
-plot(burned_lakes_shp, add=T, col='dodgerblue')
-
+plot(burned_watersheds)
+plot(burned_lakes, add=T, col='dodgerblue')
 
 ### Burn severity ###
-
 plot(dNBR)
 hist(dNBR)
 
@@ -111,6 +79,7 @@ dev.off()
 #                    0.660, 1.300, 7)
 
 # use this table to deal with exact values not being reclassified
+# from: Key, C. H., & Benson, N. C. (2006). Landscape assessment (LA). In: Lutes, Duncan C.; Keane, Robert E.; Caratti, John F.; Key, Carl H.; Benson, Nathan C.; Sutherland, Steve; Gangi, Larry J. 2006. FIREMON: Fire effects monitoring and inventory system. Gen. Tech. Rep. RMRS-GTR-164-CD. Fort Collins, CO: US Department of Agriculture, Forest Service, Rocky Mountain Research Station. p. LA-1-55, 164.
 reclass_table <- c(-0.5, -0.250, 1,
                    -0.250, -0.100, 2,
                    -0.100, 0.100, 3,
@@ -118,7 +87,6 @@ reclass_table <- c(-0.5, -0.250, 1,
                    0.270, 0.440, 5,
                    0.440, 0.660, 6,
                    0.660, 1.300, 7)
-
 
 reclass_matrix <- matrix(reclass_table, ncol=3, byrow=T)
 dNBR_reclass <- reclassify(dNBR_unscaled, reclass_matrix)
@@ -132,7 +100,7 @@ plot(burn_perimeter, add=T)
 ## Nicer map, with help from: https://erinbecker.github.io/r-raster-vector-geospatial/02-raster-plot/index.html 
 
 # First, to a SpatialPointsDataFrame
-raster_pts <- rasterToPoints(dNBR_reclass_mask, spatial=T)
+raster_pts <- raster::rasterToPoints(dNBR_reclass_mask, spatial=T)
 # Then to a 'conventional' dataframe
 raster_df  <- data.frame(raster_pts)
 names(raster_df) <- c('value','x','y','optional')
@@ -157,8 +125,8 @@ ggplot() +
   ggtitle("Greenwood Fire: Burn Severity Classes (dNBR)")+
   xlab('')+
   ylab('')+
-  #geom_path(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue') + coord_equal()+
-  geom_polygon(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue', fill='dodgerblue') + coord_equal()+
+  #geom_path(data=burned_lakes, aes(long, lat, group=group), color='dodgerblue') + coord_equal()+
+  geom_polygon(data=burned_lakes, aes(long, lat, group=group), color='dodgerblue', fill='dodgerblue') + coord_equal()+
   theme_bw() + 
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
@@ -172,20 +140,20 @@ ggplot() +
 #xx <- extract(dNBR_reclass_mask, test, fun=mean, na.rm=T) #works, but not necessarily what we want
 
 # with help from: http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/
-ext<-extract(dNBR_reclass_mask, burned_lakes_watersheds, method='simple') #returns large list
+ext<-extract(dNBR_reclass_mask, burned_watersheds, method='simple') #returns large list
 length(ext) # 15 elements (15 watersheds)
 
 # Function to tabulate land use by region and return 
 # a data.frame
 tabFunc<-function(indx, extracted, region, regname) {
   dat<-as.data.frame(table(extracted[[indx]]))
-  dat$lagoslakeid<-burned_lakes_watersheds[["lagoslakei"]][[indx]]
+  dat$lagoslakeid<-burned_watersheds[["lagoslakei"]][[indx]]
   return(dat)
 }
 
 # run through each region and compute a table of the count
 # of raster cells by land use. Produces a list (see below)
-tabs<-lapply(seq(ext), tabFunc, ext, burned_lakes_watersheds, "lagoslakeid")
+tabs<-lapply(seq(ext), tabFunc, ext, burned_watersheds, "lagoslakeid")
 tabs
 tabs<-do.call("rbind",tabs )
 
@@ -195,25 +163,35 @@ tabs$Var1<-factor(tabs$Var1, levels=c(1,2,3,4,5,6,7), labels=class_labels)
 severity_pct <- tabs%>%
   group_by(lagoslakeid) %>% # group by watershed
   mutate(totcells=sum(Freq), # how many cells overall
-         percent.area=round(Freq/totcells,2)) %>% #cells by severity class/total cells
+         percent.area=round(Freq/totcells,3)) %>% #cells by severity class/total cells
   dplyr::select(-c(Freq, totcells)) %>% # there is a select func in raster so need to specify
   tidyr::spread(key=Var1, value=percent.area, fill=0) # make wide format
 
-# check that rows sum to near 100%
+# check that rows sum to near 100%; anything very close is likely rounding error; conservatively assign to unburned class
 rowSums(severity_pct[,c(2:7)])
+severity_pct$total <- rowSums(severity_pct[,c(2:7)])
+severity_pct$roundextra <- 1-severity_pct$total
+severity_pct$Unburned <- severity_pct$Unburned + severity_pct$roundextra
+rowSums(severity_pct[,c(2:7)])
+severity_pct <- severity_pct[,c(1:7)]
 
 par(mfrow=c(2,3))
 for (i in 2:ncol(severity_pct)){
   hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', xlab=class_labels[i], ylim=c(0,15))
 }
 
-#write.csv(severity_pct, file="Data/GTAC/burn_severity_pct.csv", row.names=F)
+# convert to percentages
+severity_pct <- severity_pct %>%
+  mutate(across(where(is.numeric), ~ .x * 100))
+
+#write.csv(severity_pct, file="Data/BurnSeverity/Ian_calculations/burned_ws_vbs_pctR.csv", row.names=F)
+
 #### soil burn severity 
 sbs_mask <- mask(sbs, burn_perimeter, inverse=F)
 plot(sbs_mask) #masking may not really be necessary; very similar to our burn perimeter
 
 # First, to a SpatialPointsDataFrame
-sbs_raster_pts <- rasterToPoints(sbs_mask, spatial=T)
+sbs_raster_pts <- raster::rasterToPoints(sbs_mask, spatial=T)
 # Then to a 'conventional' dataframe
 sbs_raster_df  <- data.frame(sbs_raster_pts)
 names(sbs_raster_df) <- c('value','x','y','optional')
@@ -238,7 +216,7 @@ ggplot() +
   xlab('')+
   ylab('')+
   #geom_path(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue') + coord_equal()+
-  geom_polygon(data=burned_lakes_shp, aes(long, lat, group=group), color='dodgerblue', fill='dodgerblue') + coord_equal()+
+  geom_polygon(data=burned_lakes, aes(long, lat, group=group), color='dodgerblue', fill='dodgerblue') + coord_equal()+
   theme_bw() + 
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
@@ -248,12 +226,12 @@ ggplot() +
         axis.title = element_blank())
 
 # with help from: http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/
-ext<-extract(sbs_mask, burned_lakes_watersheds, method='simple') #returns large list
+ext<-extract(sbs_mask, burned_watersheds, method='simple') #returns large list
 length(ext) # 15 elements (15 watersheds)
 
 # run through each region and compute a table of the count
 # of raster cells by land use. Produces a list (see below)
-tabs<-lapply(seq(ext), tabFunc, ext, burned_lakes_watersheds, "lagoslakeid")
+tabs<-lapply(seq(ext), tabFunc, ext, burned_watersheds, "lagoslakeid")
 tabs
 tabs<-do.call("rbind",tabs )
 tabs <- subset(tabs, Var1 %in% c(1,2,3,4))
@@ -264,17 +242,26 @@ tabs$severity_class <- factor(tabs$Var1, levels=c(1,2,3,4), labels=c("Unburned",
 severity_pct_soil <- tabs[,c(2:4)]%>%
   group_by(lagoslakeid) %>% # group by watershed
   mutate(totcells=sum(Freq), # how many cells overall
-         percent.area=round(Freq/totcells,2)) %>% #cells by severity class/total cells
+         percent.area=round(Freq/totcells,3)) %>% #cells by severity class/total cells
   dplyr::select(-c(Freq, totcells)) %>% # there is a select func in raster so need to specify
   tidyr::spread(key=severity_class, value=percent.area, fill=0) # make wide format
 
 # check that rows sum to near 100%
 rowSums(severity_pct_soil[,c(2:5)])
+severity_pct_soil$total <- rowSums(severity_pct_soil[,c(2:5)])
+severity_pct_soil$roundextra <- 1-severity_pct_soil$total
+severity_pct_soil$Unburned <- severity_pct_soil$Unburned + severity_pct_soil$roundextra
+rowSums(severity_pct_soil[,c(2:5)])
+severity_pct_soil <- severity_pct_soil[,c(1:5)]
 
 par(mfrow=c(2,2))
 for (i in 2:ncol(severity_pct_soil)){
-  hist(severity_pct[[i]], breaks=seq(0,1,0.1), main='Proportion class', ylim=c(0,15))
+  hist(severity_pct_soil[[i]], breaks=seq(0,1,0.1), main='Proportion class', ylim=c(0,15))
 }
 
-#write.csv(severity_pct_soil, file="Data/GTAC/soil_burn_severity.csv", row.names=F)
+# convert to percentages
+severity_pct_soil <- severity_pct_soil %>%
+  mutate(across(where(is.numeric), ~ .x * 100))
+
+#write.csv(severity_pct_soil, file="Data/BurnSeverity/Ian_calculations/burned_ws_sbs_pctR.csv", row.names=F)
 

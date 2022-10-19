@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 10-18-22, now with soil burn severity data corrected
+# updated: 10-18-22, now with soil and veg burn severity data corrected
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -8,29 +8,28 @@
 library(ggplot2)
 library(reshape2)
 library(dplyr)
+library(tidyr)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
 
 may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
-ws_burn_severity <- read.csv("Data/BurnSeverity/vegetation_ws_area.csv")
-#ws_soilburn_severity <- read.csv("Data/BurnSeverity/soil_ws_area.csv")
+ws_burn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_vbs_pct.csv")
 ws_soilburn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_sbs_pct.csv")
-buffer_burn_severity <- read.csv("Data/BurnSeverity/vegetation_buffer_area.csv")
-#buffer_soilburn_severity <- read.csv("Data/BurnSeverity/soil_buffer_area.csv")
+buffer_burn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_vbs_pct.csv")
 buffer_soilburn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_sbs_pct.csv")
 
 #### Main program ####
 # how correlated are % ws burn variables? Seem to be highly so
-ws_burn_severity_pct <- ws_burn_severity[,c(1,3,5,7,9)]
-ws_burn_severity_pct$total_ws_burn_pct <- rowSums(ws_burn_severity_pct[,c(2:5)])
+ws_burn_severity_pct <- ws_burn_severity[,c(1, 12:17)]
+ws_burn_severity_pct$total_ws_burn_pct <- rowSums(ws_burn_severity_pct[,c(2:7)])
 cor(ws_burn_severity_pct, method='pearson', use='pairwise.complete.obs')
 cor(ws_burn_severity_pct, method='spearman', use='pairwise.complete.obs')
 
 # calculate unburned pct
-ws_burn_severity_pct$unburned_pct <- 100-ws_burn_severity_pct$total_ws_burn_pct
+#ws_burn_severity_pct$unburned_pct <- 100-ws_burn_severity_pct$total_ws_burn_pct
 # if any slight rounding errors result in negative burned area
-ws_burn_severity_pct$unburned_pct <- ifelse(ws_burn_severity_pct$unburned_pct < 0, 0, ws_burn_severity_pct$unburned_pct)
+#ws_burn_severity_pct$unburned_pct <- ifelse(ws_burn_severity_pct$unburned_pct < 0, 0, ws_burn_severity_pct$unburned_pct)
 
 ## prepare for plot
 # get names + lagoslakeids only
@@ -40,11 +39,13 @@ lakenamesids <- lakenamesids[!duplicated(lakenamesids), ]
 lakenamesids <- lakenamesids[,c(1:2)]
 
 ws_burn_severity_pct <- merge(ws_burn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
-ws_burn_severity_pct_melted <- reshape2::melt(ws_burn_severity_pct[,c(2:5,7,8)], 
+# ERL category is so small...just lump in with unburned
+ws_burn_severity_pct$Unburned_pct <- ws_burn_severity_pct$Unburned_pct + ws_burn_severity_pct$ERL_pct
+ws_burn_severity_pct_melted <- reshape2::melt(ws_burn_severity_pct[,c(3:7,9)], 
       id.var='Site', variable.name='Severity', value.name='Percent')
 
-ws_burn_severity_pct_melted$Severity <- factor(ws_burn_severity_pct_melted$Severity, levels=c('unburned_pct','low_severity_pct',
-                                                          'moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct'))
+ws_burn_severity_pct_melted$Severity <- factor(ws_burn_severity_pct_melted$Severity, levels=c('Unburned_pct','Low_pct',
+                                                          'ModerateLow_pct','ModerateHigh_pct','High_pct'))
 
 # get rid of word 'Lake' to make labels smaller
 ws_burn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",ws_burn_severity_pct_melted$Site)
@@ -99,23 +100,24 @@ dev.off()
 ### shoreline buffers ###
 ## vegetation burn severity
 # how correlated are % buffer burn variables? Seem to be highly so
-buffer_burn_severity_pct <- buffer_burn_severity[,c(1,3,5,7,9)]
-buffer_burn_severity_pct$total_buffer_burn_pct <- rowSums(buffer_burn_severity_pct[,c(2:5)])
+buffer_burn_severity_pct <- buffer_burn_severity[,c(1,8:12)]
+buffer_burn_severity_pct$total_buffer_burn_pct <- rowSums(buffer_burn_severity_pct[,c(2:6)], na.rm=T)
 cor(buffer_burn_severity_pct, method='pearson', use='pairwise.complete.obs')
 cor(buffer_burn_severity_pct, method='spearman', use='pairwise.complete.obs')
 
 # calculate unburned pct
-buffer_burn_severity_pct$unburned_pct <- 100-buffer_burn_severity_pct$total_buffer_burn_pct
+#buffer_burn_severity_pct$unburned_pct <- 100-buffer_burn_severity_pct$total_buffer_burn_pct
 # if any slight rounding errors result in negative burned area
-buffer_burn_severity_pct$unburned_pct <- ifelse(buffer_burn_severity_pct$unburned_pct < 0, 0, buffer_burn_severity_pct$unburned_pct)
+#buffer_burn_severity_pct$unburned_pct <- ifelse(buffer_burn_severity_pct$unburned_pct < 0, 0, buffer_burn_severity_pct$unburned_pct)
 
 ## prepare for plot
 buffer_burn_severity_pct <- merge(buffer_burn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
-buffer_burn_severity_pct_melted <- reshape2::melt(buffer_burn_severity_pct[,c(2:5,7,8)], 
+buffer_burn_severity_pct <- tidyr::replace_na(buffer_burn_severity_pct, list(Unburned_pct=100)) #replace Unburned NAs as 100 (i.e., everything not captured assumed to be unburned)
+buffer_burn_severity_pct_melted <- reshape2::melt(buffer_burn_severity_pct[,c(2:6,8)], 
                                                   id.var='Site', variable.name='Severity', value.name='Percent')
 
-buffer_burn_severity_pct_melted$Severity <- factor(buffer_burn_severity_pct_melted$Severity, levels=c('unburned_pct','low_severity_pct',
-                                                                                                      'moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct'))
+buffer_burn_severity_pct_melted$Severity <- factor(buffer_burn_severity_pct_melted$Severity, levels=c('Unburned_pct','Low_pct',
+                                                                                                      'ModerateLow_pct','ModerateHigh_pct','High_pct'))
 
 # get rid of word 'Lake' to make labels smaller
 buffer_burn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",buffer_burn_severity_pct_melted$Site)
