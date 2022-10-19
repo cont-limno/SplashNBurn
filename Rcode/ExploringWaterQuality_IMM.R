@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-18-22# now with all lakes
+# updated: 10-19-22# now with all lakes + burn severity variables
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -10,14 +10,24 @@ library(plotly)
 library(gridExtra)
 library(lubridate)
 library(tidyr)
+library(tidyverse)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
+
+# water quality
 may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
 may_thru_aug <- read.csv("Data/WaterQuality/LabAnalyses_Lakes9-30-22.csv")
-ws_burn_severity <- read.csv("Data/BurnSeverity/vegetation_ws_area.csv")
+field_obs <- read.csv("Data/WaterQuality/FieldSampling_Lakes-secchi_field_sheet10-19-22complete.csv")
+
+# LAGOS ancillary data
 LAGOStable <- read.csv("Data/LAGOS/LAGOS_LOCUS_Table.csv")
-field_obs <- read.csv("Data/WaterQuality/FieldSampling_ Lakes-secchi10-5-22.csv")
+
+# burn severity variables
+ws_vbs <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_vbs_pct.csv")
+ws_sbs <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_sbs_pct.csv")
+buff100m_vbs <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_vbs_pct.csv")
+buff100m_sbs <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_sbs_pct.csv")
 
 #### Main program ####
 # get basic LAGOS data in may_thru_aug table
@@ -33,10 +43,47 @@ may_thru_aug$Month_factor <- lubridate::month(may_thru_aug$Date, label=T, abbr=T
 may_thru_aug <- may_thru_aug %>% drop_na(Date) #row with no data for some reason; remove
 may_thru_aug <- droplevels(may_thru_aug)
 
+# combine burn severity datasets
+# for total burn columns, considering low to high as burned
+ws_vbs$ws_vbs_total_burn_pct <- rowSums(ws_vbs[,c(14:17)], na.rm=T)
+ws_vbs <- ws_vbs[,c(1,13:18)]
+names(ws_vbs) <- c('lagoslakeid','ws_vbs_Unburned_pct',
+                   'ws_vbs_Low_pct','ws_vbs_ModerateLow_pct','ws_vbs_ModerateHigh_pct',
+                   'ws_vbs_High_pct','ws_vbs_total_burn_pct')
+
+ws_sbs$ws_sbs_total_burn_pct <- rowSums(ws_sbs[,c(13:15)], na.rm=T)
+ws_sbs <- ws_sbs[,c(1,11:16)]
+names(ws_sbs) <- c('lagoslakeid','ws_sbs_Unburned_pct',
+                   'ws_sbs_Unburned_Low_pct','ws_sbs_Low_pct','ws_sbs_Moderate_pct',
+                   'ws_sbs_High_pct','ws_sbs_total_burn_pct')
+
+buff100m_vbs$buff100m_vbs_total_burn_pct <- rowSums(buff100m_vbs[,c(9:12)], na.rm=T)
+buff100m_vbs <- buff100m_vbs[,c(1,8:13)]
+names(buff100m_vbs) <- c('lagoslakeid','buff100m_vbs_Unburned_pct',
+                         'buff100m_vbs_Low_pct','buff100m_vbs_ModerateLow_pct','buff100m_vbs_ModerateHigh_pct',
+                         'buff100m_vbs_High_pct','buff100m_vbs_total_burn_pct')
+
+buff100m_sbs$buff100m_sbs_total_burn_pct <- rowSums(buff100m_sbs[,c(10:12)], na.rm=T)
+buff100m_sbs <- buff100m_sbs[,c(1,8:13)]
+names(buff100m_sbs) <- c('lagoslakeid','buff100m_sbs_Unburned_pct',
+                         'buff100m_sbs_UnburnedLow_pct','buff100m_sbs_Low_pct','buff100m_sbs_Moderate_pct',
+                         'buff100m_sbs_High_pct','buff100m_sbs_total_burn_pct')
+
+df_list <- list(ws_vbs, ws_sbs, buff100m_vbs, buff100m_sbs)
+burn_severity <- df_list %>% reduce(full_join, by='lagoslakeid')
+burn_severity[is.na(burn_severity)] <- 0 #replace NAs with 0 (represent true 0s)
+
+# how correlated are burn severity variables?
+# seems could use total watershed % burned if you had to pick one variable
+cor(burn_severity, method='pearson', use='pairwise.complete.obs')
+cor(burn_severity, method='spearman', use='pairwise.complete.obs')
+
+#write.csv(burn_severity, file='Data/BurnSeverity/Ian_calculations/all_burn_severity_variables.csv', row.names=F)
+
 ### grouped boxplots
 may_june_july$Month_factor <- factor(as.character(may_june_july$Month), levels = c('may', 'june', 'july'))
 
-month_colors <- c('dodgerblue','tan','gold','orange')
+month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
 
 ## TP
 ggplot(may_thru_aug, aes(x = Group, y = TP, fill = Month_factor)) +
@@ -185,36 +232,29 @@ may_thru_aug$logTSS <- log(may_thru_aug$TSS)
 may_thru_aug$logTSVS <- log(may_thru_aug$TSVS)
 may_thru_aug$logDOC <- log(may_thru_aug$DOC)
 
-# correlation matrices
-ws_burn_severity$total_burn_pct <- rowSums(ws_burn_severity[,c(3,5,7,9)])
-
 # May
 mayWQ <- subset(may_thru_aug, Month_factor=='May')
-mayWQ_fire <- merge(mayWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+mayWQ_fire <- merge(mayWQ[,c(1,14, 21:30)], burn_severity, by='lagoslakeid')
 
-cormayWQ_fire <- as.data.frame(t(cor(mayWQ_fire[, unlist(lapply(mayWQ_fire, is.numeric))], use='pairwise.complete.obs')))[,c(1:12)] 
-cormayWQ_fire <-cormayWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+cormayWQ_fire <- as.data.frame(t(cor(mayWQ_fire[, unlist(lapply(mayWQ_fire, is.numeric))], use='pairwise.complete.obs')))[,c(1:11)] 
 
 # June
 juneWQ <- subset(may_thru_aug, Month_factor=='Jun')
-juneWQ_fire <- merge(juneWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+juneWQ_fire <- merge(juneWQ[,c(1,14, 21:30)], burn_severity, by='lagoslakeid')
 
-corjuneWQ_fire <- as.data.frame(cor(juneWQ_fire[, unlist(lapply(juneWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
-corjuneWQ_fire <-corjuneWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+corjuneWQ_fire <- as.data.frame(cor(juneWQ_fire[, unlist(lapply(juneWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:11)] 
 
 # July
 julyWQ <- subset(may_thru_aug, Month_factor=='Jul')
-julyWQ_fire <- merge(julyWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+julyWQ_fire <- merge(julyWQ[,c(1,14, 21:30)], burn_severity, by='lagoslakeid')
 
-corjulyWQ_fire <- as.data.frame(cor(julyWQ_fire[, unlist(lapply(julyWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
-corjulyWQ_fire <-corjulyWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+corjulyWQ_fire <- as.data.frame(cor(julyWQ_fire[, unlist(lapply(julyWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:11)] 
 
 # Aug
 augWQ <- subset(may_thru_aug, Month_factor=='Aug')
-augWQ_fire <- merge(augWQ[,c(1,14, 21:30)], ws_burn_severity[,c(1,3,5,7,9,11)], by='lagoslakeid')
+augWQ_fire <- merge(augWQ[,c(1,14, 21:30)], burn_severity, by='lagoslakeid')
 
-coraugWQ_fire <- as.data.frame(cor(augWQ_fire[, unlist(lapply(augWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:12)] 
-coraugWQ_fire <-coraugWQ_fire[c('low_severity_pct','moderate_low_severity_pct','moderate_high_severity_pct','high_severity_pct','total_burn_pct'),]
+coraugWQ_fire <- as.data.frame(cor(augWQ_fire[, unlist(lapply(augWQ_fire, is.numeric))], use='pairwise.complete.obs'))[,c(1:11)] 
 
 # Sep
 
@@ -227,17 +267,20 @@ julyWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",julyWQ_fire$Site)
 augWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",augWQ_fire$Site)
 
 mayWQ_fire <- merge(mayWQ_fire, LAGOS_layover, by='lagoslakeid', all=F)
+juneWQ_fire <- merge(juneWQ_fire, LAGOS_layover, by='lagoslakeid', all=F)
+julyWQ_fire <- merge(julyWQ_fire, LAGOS_layover, by='lagoslakeid', all=F)
+augWQ_fire <- merge(augWQ_fire, LAGOS_layover, by='lagoslakeid', all=F)
 
-## May
+## May: example plot for CASC proposal
 # plot A
 wqvar <- 'logTP'
-firevar <- 'high_severity_pct'
+firevar <- 'ws_vbs_High_pct'
 plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
 plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
 
-plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=ConnClass, label=LakeName))+
+plotA <- ggplot(data=mayWQ_fire, aes(x=ws_vbs_High_pct, y=logTP, color=ConnClass, label=LakeName))+
   #ggtitle('May total phosphorus')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
@@ -261,219 +304,137 @@ plotA <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTP, color=ConnCla
   scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
 plotA
 
-# plot B
-wqvar <- 'logTN'
-firevar <- 'high_severity_pct'
+######### looking at same WQ variable across months #########
+# set variables and plotting parameters for all plots
+wqvar <- 'logTP'
+#firevar <- 'ws_vbs_High_pct'
+firevar <- 'ws_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(2,4)
+#xlabb <- 'Watershed % burned high severity'
+xlabb <- 'Watershed % burned'
+ylabb <- 'log(Total phosphorus) (ppb)'
+rvalx <- 5
+rvaly <- 4
+pvalx <- 5
+pvaly <- 3.8
+
+# May
 plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
 plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
-
-plotB <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTN, color=Source, label=LakeName))+
-  ggtitle('May total nitrogen')+
+plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('A) May')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=6.0, label=paste0("r=",rval),
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
            color="red")+
-  annotate(geom="text", x=5, y=5.9, label=paste0("p=",pval),
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
            color="red")+
   theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
   theme(axis.text.x = element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c(0.9,0.2))+
   scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotB
+plotMay
 
-# plot C
-wqvar <- 'logDOC'
-firevar <- 'moderate_low_severity_pct'
-plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
+# June
+plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
-plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
-
-plotC <- ggplot(data=mayWQ_fire, aes(x=moderate_low_severity_pct, y=logDOC, color=Source, label=LakeName))+
-  ggtitle('May dissolved organic carbon')+
+plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
+plotJun <- ggplot(data=juneWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('B) June')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
            color="red")+
-  annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
            color="red")+
   theme_classic()+
-  scale_x_continuous(limits=c(0,40))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
   theme(axis.text.x = element_text(color='black'),
         axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.9))+
+        legend.position=c('none'))+
   scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotC
+plotJun
 
-# plot D
-wqvar <- 'logTSS'
-firevar <- 'high_severity_pct'
-plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
+# July
+plotcor <- cor.test(julyWQ_fire[,wqvar], julyWQ_fire[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
-plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
-
-plotD <- ggplot(data=mayWQ_fire, aes(x=high_severity_pct, y=logTSS, color=Source, label=LakeName))+
-  ggtitle('May total suspended solids')+
+plotlm <- lm(julyWQ_fire[,wqvar] ~ julyWQ_fire[,firevar])
+plotJul <- ggplot(data=julyWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('C) July')+
   geom_point(size=2)+ 
   geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=-0.5, label=paste0("r=",rval),
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
            color="red")+
-  annotate(geom="text", x=5, y=-0.7, label=paste0("p=",pval),
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
            color="red")+
   theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
-  scale_y_continuous(limits=c(-1,2))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
   theme(axis.text.x = element_text(color='black'),
         axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.2))+
+        legend.position=c('none'))+
   scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotD
+plotJul
+
+# August
+plotcor <- cor.test(augWQ_fire[,wqvar], augWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(augWQ_fire[,wqvar] ~ augWQ_fire[,firevar])
+plotAug <- ggplot(data=augWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('D) August')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAug
+
+grid.arrange(plotMay, plotJun, plotJul, plotAug, nrow=2)
 
 # jpeg('Figures/multipanel_gradient_may.jpeg',width = 6,height = 6,units = 'in',res=600)
 #   grid.arrange(plotA, plotB, plotC, plotD, nrow=2)
 # dev.off()
-
-## June
-# plot A
-wqvar <- 'logTP'
-firevar <- 'high_severity_pct'
-plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
-rval <- round(plotcor$estimate, 2)
-pval <- round(plotcor$p.value, 2)
-plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
-
-plotA <- ggplot(data=juneWQ_fire, aes(x=high_severity_pct, y=logTP, color=Source, label=LakeName))+
-  ggtitle('June total phosphorus')+
-  geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
-  #geom_smooth(method='lm')+ separate lines for isolated and drainage
-  geom_abline(slope = coef(plotlm)[2], 
-              intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
-           color="red")+
-  annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
-           color="red")+
-  theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
-  theme(axis.text.x = element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.2))+
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotA
-
-# plot B
-wqvar <- 'logTN'
-firevar <- 'high_severity_pct'
-plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
-rval <- round(plotcor$estimate, 2)
-pval <- round(plotcor$p.value, 2)
-plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
-
-plotB <- ggplot(data=juneWQ_fire, aes(x=high_severity_pct, y=logTN, color=Source, label=LakeName))+
-  ggtitle('June total nitrogen')+
-  geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
-  #geom_smooth(method='lm')+ separate lines for isolated and drainage
-  geom_abline(slope = coef(plotlm)[2], 
-              intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=6.0, label=paste0("r=",rval),
-           color="red")+
-  annotate(geom="text", x=5, y=5.9, label=paste0("p=",pval),
-           color="red")+
-  theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
-  theme(axis.text.x = element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.2))+
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotB
-
-# plot C
-wqvar <- 'logDOC'
-firevar <- 'moderate_low_severity_pct'
-plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
-rval <- round(plotcor$estimate, 2)
-pval <- round(plotcor$p.value, 2)
-plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
-
-plotC <- ggplot(data=juneWQ_fire, aes(x=moderate_low_severity_pct, y=logDOC, color=Source, label=LakeName))+
-  ggtitle('June dissolved organic carbon')+
-  geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
-  #geom_smooth(method='lm')+ separate lines for isolated and drainage
-  geom_abline(slope = coef(plotlm)[2], 
-              intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
-           color="red")+
-  annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
-           color="red")+
-  theme_classic()+
-  scale_x_continuous(limits=c(0,40))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
-  theme(axis.text.x = element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.9))+
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotC
-
-# plot D
-wqvar <- 'logTSS'
-firevar <- 'high_severity_pct'
-plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
-rval <- round(plotcor$estimate, 2)
-pval <- round(plotcor$p.value, 2)
-plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
-
-plotD <- ggplot(data=juneWQ_fire, aes(x=high_severity_pct, y=logTSS, color=Source, label=LakeName))+
-  ggtitle('June total suspended solids')+
-  geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
-  #geom_smooth(method='lm')+ separate lines for isolated and drainage
-  geom_abline(slope = coef(plotlm)[2], 
-              intercept = coef(plotlm)[["(Intercept)"]])+
-  annotate(geom="text", x=5, y=-0.5, label=paste0("r=",rval),
-           color="red")+
-  annotate(geom="text", x=5, y=-0.7, label=paste0("p=",pval),
-           color="red")+
-  theme_classic()+
-  scale_x_continuous(limits=c(0,100))+
-  scale_y_continuous(limits=c(-1,2))+
-  #xlab('Watershed high severity burn (%)')+
-  #ylab('Log total phosphorus (ppb)')+
-  theme(axis.text.x = element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        legend.position=c(0.9,0.2))+
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-plotD
+###########################################################################
 
 ## can we explain residuals from gradient plots?
-maytplm <- lm(logTP ~ high_severity_pct, data=mayWQ_fire)
-mayalldata <- merge(mayWQ_fire, LAGOStable, by.x='Lagoslakeid', by.y='lagoslakeid')
+maytplm <- lm(logTP ~ ws_vbs_High_pct, data=mayWQ_fire)
+mayalldata <- merge(mayWQ_fire, LAGOStable, by='lagoslakeid')
 mayalldata$element <- rownames(mayalldata)
 resids <- as.data.frame(residuals(maytplm))
 colnames(resids) <- 'residuals'
@@ -564,6 +525,7 @@ allWQ_data_may <- subset(allWQ_data, Month_factor=='May')
 allWQ_data_jun <- subset(allWQ_data, Month_factor=='Jun')
 allWQ_data_jul <- subset(allWQ_data, Month_factor=='Jul')
 allWQ_data_aug <- subset(allWQ_data, Month_factor=='Aug')
+allWQ_data_sep <- subset(allWQ_data, Month==9)
 
 burn_colors <- c('firebrick','dodgerblue')
 
@@ -742,6 +704,7 @@ xlimz <- c(0,1500)
 ylimz <- c(0,50)
 a <- ggplot(data=allWQ_data_may, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
   geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
   theme_classic()+
   scale_x_continuous(name='TN (ppb)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
@@ -754,6 +717,7 @@ a <- ggplot(data=allWQ_data_may, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
 
 b <- ggplot(data=allWQ_data_jun, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
   geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
   theme_classic()+
   scale_x_continuous(name='TN (ppb)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
@@ -767,6 +731,7 @@ b + guides(shape='none')
 
 c <- ggplot(data=allWQ_data_jul, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
   geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
   theme_classic()+
   scale_x_continuous(name='TN (ppb)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
@@ -779,6 +744,7 @@ c <- ggplot(data=allWQ_data_jul, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
 
 d <- ggplot(data=allWQ_data_aug, aes(x=TN, y=TP, color=Type, shape=ConnClass))+
   geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
   theme_classic()+
   scale_x_continuous(name='TN (ppb)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
@@ -982,3 +948,162 @@ ggplot(allWQ_data, aes(x = Lake, y = zMax_m, fill = Type)) +
   theme(axis.text.x=element_text(color='black', angle=90, size=8, hjust=1, vjust=0.5))+
   scale_fill_manual("Type", values=burn_colors)
 dev.off()
+
+
+## Secchi along burn severity gradients
+secchi_burn <- merge(field_obs[,c(1,2,16,17,20:26)], burn_severity, by=c('lagoslakeid'))
+secchi_burn$logSecchi_m <- log(secchi_burn$SecchiDepth_m)
+secchi_burn$LakeName <- gsub(paste('Lake',collapse='|'),"",secchi_burn$Site)
+secchi_burn_may <- subset(secchi_burn, Month_factor=='May')
+secchi_burn_jun <- subset(secchi_burn, Month_factor=='Jun')
+secchi_burn_jul <- subset(secchi_burn, Month_factor=='Jul')
+secchi_burn_aug <- subset(secchi_burn, Month_factor=='Aug')
+secchi_burn_sep <- subset(secchi_burn, Month_factor=='Sep')
+
+# set variables and plotting parameters for all plots
+wqvar <- 'logSecchi_m'
+#firevar <- 'ws_vbs_High_pct'
+firevar <- 'ws_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(-1,2)
+#xlabb <- 'Watershed % burned high severity'
+xlabb <- 'Watershed % burned'
+ylabb <- 'log(Secchi depth (m))'
+rvalx <- 40
+rvaly <- 1.5
+pvalx <- 40
+pvaly <- 1.3
+
+# May
+plotcor <- cor.test(secchi_burn_may[,wqvar], secchi_burn_may[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(secchi_burn_may[,wqvar] ~ secchi_burn_may[,firevar])
+plotMay <- ggplot(data=secchi_burn_may, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('A) May')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.9,0.6))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotMay
+
+# June
+plotcor <- cor.test(secchi_burn_jun[,wqvar], secchi_burn_jun[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(secchi_burn_jun[,wqvar] ~ secchi_burn_jun[,firevar])
+plotJun <- ggplot(data=secchi_burn_jun, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('B) June')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotJun
+
+# July
+plotcor <- cor.test(secchi_burn_jul[,wqvar], secchi_burn_jul[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(secchi_burn_jul[,wqvar] ~ secchi_burn_jul[,firevar])
+plotJul <- ggplot(data=secchi_burn_jul, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('C) July')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotJul
+
+# August
+plotcor <- cor.test(secchi_burn_aug[,wqvar], secchi_burn_aug[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(secchi_burn_aug[,wqvar] ~ secchi_burn_aug[,firevar])
+plotAug <- ggplot(data=secchi_burn_aug, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('D) August')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAug
+
+# September
+plotcor <- cor.test(secchi_burn_sep[,wqvar], secchi_burn_sep[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(secchi_burn_sep[,wqvar] ~ secchi_burn_sep[,firevar])
+plotSep <- ggplot(data=secchi_burn_sep, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('E) September')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotSep
+
+grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, nrow=2)

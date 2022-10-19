@@ -1,0 +1,146 @@
+Site,Date,Time,AirTemp_F,WindSpeed_mph,CloudCover,Precipitation,Precip Type,PrecipLast24Hours,PrecipType24hr,Est24HrPrecipAmount_in,WaterSurfaceConditions,OdorPresent,ScumVisible,WaterColor,SecchiDepth_m,zMax_m,Instrument Used,Comments
+Baird Lake,5/16/2022,9:15,45,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.3,1.9,Lena,
+Gypsy Lake,5/16/2022,10:07,52,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.1,3.8,Lena,
+West Chub Lake,5/16/2022,12:08,55,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.1,1.5,Lena,
+Two Deer Lake,5/16/2022,14:15,55,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2.4,2.6,Lena,
+Wampus Lake,5/16/2022,15:26,55,15,Mostly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Clear,0.9,1.5,Lena,
+Lake Gegoka,5/17/2022,9:00,48,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1.2,2.4,Lena,
+Grouse Lake,5/17/2022,10:17,48,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.8,2.8,Lena,
+South McDougal,5/17/2022,11:41,56,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1,2.2,Lena,
+Middle McDougal,5/17/2022,12:12,54,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1,2,Lena,
+Fourth McDougal,5/17/2022,12:34,,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1.1,8.1,Lena,
+North McDougal,5/17/2022,13:05,,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1,3.2,Lena,
+Dunnigan Lake,5/17/2022,14:57,,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,,3.6,Lena,Secchi not recorded on field sheet; Anna thinks it could have been 1.1 m
+Slate Lake,5/17/2022,15:26,,,Partly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Brown,1,,Lena,z-max not recorded
+Greenwood Lake,5/17/2022,16:29,,,Partly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Brown,0.8,2,Lena,
+Gander Lake,5/18/2022,9:05,45,5,Partly Cloudy,TRUE,Light Rain/Drizzle,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Clear,1.8,1.8,Lena,
+Wadop Lake,5/18/2022,10:27,54,5,Mostly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Brown,1.5,1.9,Lena,
+Unnamed Lake,5/18/2022,12:02,55,10,Mostly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Brown,0.8,7.1,Lena,
+Eighteen Lake,5/18/2022,13:07,50,15,Partly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Choppy,FALSE,FALSE,Clear,3.2,5.1,Lena,
+Teamster Lake,5/18/2022,14:15,60,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.4,1.4,Lena,
+August Lake,5/19/2022,10:26,48,5,Overcast,FALSE,,TRUE,Rain,0.25,Flat,FALSE,FALSE,Brown,1.6,5.5,Lena,
+Highlife Lake,5/19/2022,12:02,50,0,Overcast,FALSE,,TRUE,Rain,0.25,Flat,FALSE,FALSE,Clear,2.4,5.5,Lena,
+Cloquet Lake,5/19/2022,17:37,49,10,Partly Cloudy,FALSE,,TRUE,Rain,0.25,Choppy,FALSE,FALSE,Brown,0.9,1.9,Lena,
+Flathorn Lake,5/20/2022,9:05,49,5,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.7,4.5,Lena,
+Rat Lake,5/20/2022,10:00,50,5,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.5,1.6,Lena,
+Kitigan Lake,5/20/2022,10:52,50,5,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2.1,2.2,Lena,
+Mitawan Lake,5/20/2022,11:15,50,10,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,2.4,6.2,Lena,
+Stony Lake,5/20/2022,13:00,55,20,Mostly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Brown,0.9,1.8,Lena,
+Sand Lake,5/23/2022,9:30,49,5,Overcast,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.3,3.9,Lena,
+Lil Chub Lake,5/23/2022,11:30,58,5,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.2,1.7,Lena,
+Gypsy Lake,6/7/2022,10:35,65,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.2,5,,
+North McDougal,6/7/2022,13:33,68,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.9,2.8,Ole,
+Middle McDougal,6/7/2022,15:00,68,0,Mostly Cloudy,FALSE,,FALSE,,0,Flat,FALSE,FALSE,,0.9,1.4,,
+South McDougal,6/7/2022,15:10,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.85,1.9,Lena,
+Slate Lake,6/7/2022,16:15,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.75,1.5,Lena,
+Dunnigan Lake,6/8/2022,10:24,,,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.5,7,,
+Baird Lake,6/8/2022,11:10,67,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,,1.9,Lena,
+August Lake,6/8/2022,13:00,,,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.3,5.3,,
+Kitigan Lake,6/8/2022,14:15,70,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1.6,1.6,Ole,
+Highlife Lake,6/8/2022,14:36,71,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.1,10,Lena,
+Mitawan Lake,6/8/2022,15:25,72,0,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,3.4,7.8,Ole,
+Lake Gegoka,6/8/2022,15:45,,,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.7,2.4,,
+Two Deer Lake,6/8/2022,16:06,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,,2.4,Lena,secchi depth is clear to bottom
+Sand Lake,6/9/2022,9:50,65,7,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,3,4,,
+Cloquet Lake,6/9/2022,10:30,58,15,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.3,1.5,Lena,
+Greenwood Lake,6/9/2022,12:36,,,Partly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Brown,0.4,1.7,,
+Stony Lake,6/9/2022,14:27,68,0,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.8,1,,
+Gander Lake,6/9/2022,14:30,70,8,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.9,1.9,Lena,
+Teamster Lake,6/9/2022,15:45,75,0,,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.7,1.7,Lena,
+Unnamed Lake,6/9/2022,16:09,,,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,4.4,,
+Wampus Lake,6/9/2022,16:30,68,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.3,1.3,,
+Grouse Lake,6/9/2022,17:32,,,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.7,2.6,,
+Wadop Lake,6/10/2022,9:40,60,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,2.7,2.7,Ole,
+Rat Lake,6/10/2022,9:45,,,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1.3,1.5,,
+Flathorn Lake,6/10/2022,11:00,66,,Partly Cloudy,FALSE,,FALSE,,,,FALSE,FALSE,Brown,1.1,3.5,,
+Eighteen Lake,6/10/2022,11:10,70,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.6,3.6,Ole,
+Fishtrap Lake,6/13/2022,13:28,50,10,,FALSE,Light Rain/Drizzle,FALSE,Rain,0.26,Flat,FALSE,FALSE,Clear,1.1,1.8,Lena,
+West Chub Lake,6/13/2022,15:17,55,10,Overcast,FALSE,,TRUE,Rain,0.26,Ripples,FALSE,FALSE,Clear,1.3,1.3,Lena,
+Lil Chub Lake,6/13/2022,16:01,55,5,Mostly Cloudy,FALSE,,TRUE,Rain,0.26,Ripples,FALSE,FALSE,"Clear, Brown",1.2,1.8,Lena,
+Sand Lake,7/13/2022,9:12,58,0,Clear,FALSE,,TRUE,Heavy Rain,,Ripples,FALSE,TRUE,"Clear, Brown",1.25,3.75,Lena,
+Kitigan Lake,7/13/2022,9:31,64,,,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.2,1.2,Sven,Clear to bottom
+Mitawan Lake,7/13/2022,10:08,66,,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.65,6.1,Sven,
+Stony Lake,7/13/2022,10:44,60,0,Clear,FALSE,,TRUE,Heavy Rain,,Ripples,FALSE,FALSE,Brown,0.53,1.5,Lena,
+Fishtrap Lake,7/13/2022,10:57,68,0,,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1,1.4,Sven,"Flipper was used, Sample Column0-1m"
+Flathorn Lake,7/13/2022,11:13,68,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.3,1.7,Sven,Sample 0-1.5 Flipper was used
+Wampus Lake,7/13/2022,12:20,70,0,Partly Cloudy,FALSE,,TRUE,Heavy Rain,,Ripples,FALSE,FALSE,Clear,0.8,0.8,Lena,clear to bottom
+Teamster Lake,7/13/2022,12:28,70,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.3,1.3,Sven,"Clear to the bottom, flipper was used on sample 0-1m"
+Gypsy Lake,7/13/2022,14:21,74,2,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.4,4.1,Sven,flipper was used
+Cloquet Lake,7/13/2022,15:10,75,5,Clear,FALSE,,TRUE,Heavy Rain,,Choppy,FALSE,FALSE,Brown,0.92,1.7,Lena,
+August Lake,7/13/2022,15:34,72,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.9,5,Sven,flipper was used
+Unnamed Lake,7/14/2022,9:26,65,0,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,8,Sven,Flipper was used
+North McDougal,7/14/2022,9:55,65,8,Partly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Brown,0.8,2.8,Lena,
+Middle McDougal,7/14/2022,10:33,70,5,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,,1.25,1.6,Lena,
+South McDougal,7/14/2022,11:12,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.6,1.9,Lena,
+Dunnigan Lake,7/14/2022,13:14,75,10,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,4.1,4.1,Lena,Clear to Bottom
+Gander Lake,7/14/2022,13:34,71,10,Partly Cloudy,FALSE,,FALSE,,,Choppy,FALSE,FALSE,Clear,2,2,Sven,"Clear to bottom
+flipper was used"
+Slate Lake,7/14/2022,15:36,73,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.8,1.7,Lena,
+Two Deer Lake,7/15/2022,9:10,70,1,Clear,FALSE,,TRUE,Light Rain/Drizzle,,Flat,FALSE,FALSE,Clear,1.94,1.94,Lena,Could see secchi to the bottom
+Eighteen Lake,7/15/2022,9:20,71,,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.3,3.7,Sven,flipper was used
+Rat Lake,7/15/2022,10:15,75,0,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.2,1.2,Sven,"flipper was used, Clear to bottom"
+Wadop Lake,7/15/2022,10:20,74,0,,FALSE,,TRUE,"Light Rain/Drizzle, Rain",,Flat,FALSE,FALSE,Clear,2.15,2.15,Lena,Could see to bottom
+Lil Chub Lake,7/15/2022,12:05,75,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.7,1.4,Lena,
+West Chub Lake,7/15/2022,13:09,80,5,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.4,1.9,Lena,Composite sampler lost. Sampled with cubitainer grab under the surface.
+Greenwood Lake,7/15/2022,14:08,80,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.7,1.4,Lena,
+Grouse Lake,7/18/2022,8:15,67,0,Partly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Flat,FALSE,FALSE,Brown,2,2.6,Lena,Flipper was used
+Lake Gegoka,7/18/2022,8:50,69,5,Mostly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Brown,1,2.4,Lena,Flipper was used
+Baird Lake,7/18/2022,9:53,72,5,Mostly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Clear,1.3,1.9,Lena,
+Highlife Lake,7/18/2022,10:56,72,5,Mostly Cloudy,FALSE,,TRUE,Light Rain/Drizzle,,Ripples,FALSE,FALSE,Clear,2.3,7,Lena,Flipper was used
+Teamster Lake,8/22/2022,1:53,72,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.4,1.4,Lena,flipper
+Rat Lake,8/22/2022,9:20,69,0,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.68,1.75,Lena,
+Flathorn Lake,8/22/2022,10:11,69,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.85,3.9,Lena,
+Gypsy Lake,8/22/2022,11:07,70,1,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.6,3.7,Sven,
+Mitawan Lake,8/22/2022,11:16,70,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,3.5,7.25,Lena,Flipper
+Slate Lake,8/22/2022,11:30,,,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,,0.7,1.9,Sven,
+Kitigan Lake,8/22/2022,11:43,71,0,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,2.2,2.2,Lena,Flipper
+Grouse Lake,8/22/2022,12:50,73,,,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.7,2.6,Lena,Flipper
+West Chub Lake,8/22/2022,13:00,73,,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,"Clear, Brown",1.2,2.5,Sven,jane
+Wampus Lake,8/22/2022,14:00,76,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.3,1.3,Sven,jane
+Greenwood Lake,8/22/2022,15:00,81,2,Partly Cloudy,FALSE,,FALSE,,,,FALSE,FALSE,Brown,0.5,1.5,Sven,jane
+Sand Lake,8/22/2022,15:04,72,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1,3.75,Lena,Flipper
+August Lake,8/22/2022,,64,5,,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.7,2.7,Sven,
+Baird Lake,8/23/2022,9:00,65,5,,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Clear,1.6,1.6,Sven,
+Cloquet Lake,8/23/2022,9:07,60,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1,2,Lena,
+Highlife Lake,8/23/2022,10:45,70,5,Clear,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Clear,3,5,Sven,
+Gander Lake,8/23/2022,11:23,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.75,2.1,Lena,
+Eighteen Lake,8/23/2022,12:15,73,7,Partly Cloudy,FALSE,,TRUE,Rain,,Choppy,FALSE,FALSE,Clear,3,3,Sven,
+Wadop Lake,8/23/2022,13:13,70,,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2,2,Lena,
+Unnamed Lake,8/23/2022,13:50,70,5,Mostly Cloudy,FALSE,,TRUE,Heavy Rain,,Ripples,FALSE,FALSE,Brown,0.5,4.5,Sven,
+Two Deer Lake,8/23/2022,14:08,,,Partly Cloudy,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,2.35,2.4,Lena,
+Dunnigan Lake,8/24/2022,10:05,60,5,Overcast,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,3.5,3.5,Sven,
+South McDougal,8/24/2022,11:22,60,10,Overcast,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.4,2,Sven,
+Middle McDougal,8/24/2022,11:50,60,10,,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.1,1.4,Sven,
+North McDougal,8/24/2022,12:14,65,10,Overcast,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,3,Sven,
+Lake Gegoka,8/24/2022,13:13,65,10,Overcast,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,2.7,Sven,
+Stony Lake,8/25/2022,8:30,57,,Clear,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Brown,0.5,1.2,,flipper
+Fishtrap Lake,8/25/2022,10:23,59,,Partly Cloudy,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Brown,0.7,1.3,,flipper
+Lil Chub Lake,8/25/2022,12:10,,,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.6,1.2,,flipper
+Sand Lake,9/19/2022,8:15,50,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1,3.4,Lena,
+Eighteen Lake,9/19/2022,9:30,59,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,"Clear, Brown",3.4,3.4,Lena,
+Grouse Lake,9/19/2022,10:30,64,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.3,2.5,Lena,
+Kitigan Lake,9/19/2022,11:00,65,5,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2,2,Lena,
+Mitawan Lake,9/19/2022,11:30,65,10,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.9,8,Lena,
+Rat Lake,9/19/2022,12:00,65,5,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,1.5,1.5,Lena,
+Flathorn Lake,9/19/2022,12:30,65,15,Clear,FALSE,,FALSE,,,Choppy,FALSE,FALSE,"Clear, Brown",1.4,2.6,Lena,
+Teamster Lake,9/19/2022,13:15,70,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.3,1.3,Lena,
+Greenwood Lake,9/20/2022,8:44,77,3,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.25,1.5,Lena,
+North McDougal,9/20/2022,10:06,77,3,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,,Lena,
+South McDougal,9/20/2022,10:43,77,3,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,1.5,Lena,
+Middle McDougal,9/20/2022,11:07,77,3,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.75,1.5,Lena,
+Lake Gegoka,9/20/2022,12:19,77,3,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.5,2.5,Lena,
+Dunnigan Lake,9/20/2022,13:30,,3,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,3.5,3.5,Lena,
+Slate Lake,9/20/2022,14:04,79,5,Overcast,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.75,,Lena,
+Wampus Lake,9/22/2022,9:30,42,8,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,1.2,1.2,Lena,
+August Lake,9/22/2022,10:27,42,8,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,,1.6,5,Lena,
+West Chub Lake,9/22/2022,11:30,45,8,Mostly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.5,3.3,Lena,
+Two Deer Lake,9/22/2022,12:26,47,8,,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2.5,2.5,Lena,
+Wadop Lake,9/22/2022,13:08,50,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Clear,2.5,2.5,Lena,
+Cloquet Lake,9/22/2022,14:25,50,5,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,1.7,2.2,Lena,
+Gypsy Lake,9/26/2022,8:32,,,Overcast,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Brown,1.2,4.8,Lena,
+Baird Lake,9/26/2022,10:00,,,,FALSE,,TRUE,Rain,,Ripples,FALSE,FALSE,Brown,1.3,1.9,Lena,
+Highlife Lake,9/26/2022,11:05,,,Overcast,TRUE,Light Rain/Drizzle,TRUE,Rain,,Ripples,FALSE,FALSE,Clear,2.3,5.1,Lena,
+Gander Lake,9/28/2022,9:00,,,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Clear,1.7,1.7,Ole,flipper
+Fishtrap Lake,9/28/2022,10:37,,,Clear,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.9,1.5,Ole,flipper
+Unnamed Lake,9/28/2022,11:35,,,Clear,FALSE,,FALSE,,,Flat,FALSE,FALSE,Brown,0.5,5.2,Ole,flipper
+Lil Chub Lake,9/28/2022,12:45,,,Partly Cloudy,FALSE,,FALSE,,,Ripples,FALSE,FALSE,Brown,0.6,1.5,Ole,flipper
