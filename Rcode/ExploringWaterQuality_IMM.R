@@ -1104,7 +1104,7 @@ dev.off()
 
 # TP vs chloro
 xlimz <- c(0,50)
-ylimz <- c(0,25)
+ylimz <- c(0,10)
 a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=Chloro_ppb, color=Type, shape=ConnClass))+
   geom_point(size=2)+
   theme_classic()+
@@ -1602,4 +1602,889 @@ ggplot(allWQ_data, aes(x = Lake, y = zMax_m, fill = Type)) +
   scale_fill_manual("Type", values=burn_colors)
 dev.off()
 
+#### Similar plots, but with regression lines/confidence intervals
+# Note that for now, lumped isolated and drainage so would only be 
+# regression lines for control vs burned
 
+# first make new legend with only control vs burned
+legendplot <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.2,0.6))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+legend2 <- g_legend(legendplot)
+
+# TP vs chloro
+xlimz <- c(0,50)
+ylimz <- c(0,10)
+a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.1,0.7))+
+  scale_color_manual(values=burn_colors, guide='none')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+## DOC vs Secchi
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=c(0,35))+
+  scale_y_continuous(name='Secchi (m)', limits=c(0,4))+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# TP vs Secchi
+xlimz <- c(0,50)
+ylimz <- c(0,4)
+a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+a+geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP_ppb, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b+geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP_ppb, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c+geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP_ppb, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d+geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TP_ppb, y=SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e+geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# DOC vs TP
+xlimz <- c(0,50)
+ylimz <- c(0,35)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+a+geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b+geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c+geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d+geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e+geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# TN vs TP
+xlimz <- c(0,1500)
+ylimz <- c(0,50)
+a <- ggplot(data=allWQ_data_may, aes(x=TN_ppb, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a +geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TN_ppb, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TN_ppb, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TN_ppb, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TN_ppb, y=TP_ppb, color=Type))+
+  geom_point(size=2)+
+  geom_abline(intercept=0, slope=16)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TP (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# TP vs TSS
+xlimz <- c(0,50)
+ylimz <- c()
+a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=TSS_mgL, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP_ppb, y=TSS_mgL, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP_ppb, y=TSS_mgL, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP_ppb, y=TSS_mgL, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TP_ppb, y=TSS_mgL, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='TSS (mg/L)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+
+# TN vs chloro
+xlimz <- c(0,1500)
+ylimz <- c(0,25)
+a <- ggplot(data=allWQ_data_may, aes(x=TN_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TN_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TN_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TN_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TN_ppb, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TN (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# TSS vs chloro
+xlimz <- c(0,10)
+ylimz <- c(0,25)
+a <- ggplot(data=allWQ_data_may, aes(x=TSS_mgL, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TSS (mg/L)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TSS_mgL, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TSS (mg/L)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TSS_mgL, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TSS (mg/L)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TSS_mgL, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TSS (mg/L)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TSS_mgL, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TSS (mg/L)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# DOC vs chloro
+xlimz <- c(0,45)
+ylimz <- c(0,25)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# Secchi vs chloro
+xlimz <- c(0,5)
+ylimz <- c(0,25)
+a <- ggplot(data=allWQ_data_may, aes(x=SecchiDepth_m, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Secchi (m)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=SecchiDepth_m, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Secchi (m)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=SecchiDepth_m, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Secchi (m)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=SecchiDepth_m, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Secchi (m)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=SecchiDepth_m, y=Chloro_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Secchi (m)',limits=xlimz)+
+  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e +geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# TP vs zMax
+xlimz <- c(0,50)
+ylimz <- c(0,10)
+a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=zMax_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=TP_ppb, y=zMax_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=TP_ppb, y=zMax_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=TP_ppb, y=zMax_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=TP_ppb, y=zMax_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
+  scale_y_continuous(name='Max depth (m)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+
+# Secchi vs zMax
+xlimz <- c(0,10)
+ylimz <- c(0,4)
+a <- ggplot(data=allWQ_data_may, aes(x=zMax_m, SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(c('none')))+
+  scale_color_manual(values=burn_colors, guide='none')+
+  labs(shape='Connectivity')
+a + geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=zMax_m, SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(color='Type')
+b + geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=zMax_m, SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c + geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=zMax_m, SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d + geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=zMax_m, SecchiDepth_m, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='Max depth (m)',limits=xlimz)+
+  scale_y_continuous(name='Secchi (m)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e + geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
