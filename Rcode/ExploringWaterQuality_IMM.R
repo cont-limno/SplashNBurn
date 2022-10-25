@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-24-22# now with all lakes + burn severity variables
+# updated: 10-25-22# now with all lakes + burn severity variables
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -86,6 +86,10 @@ burn_severity[is.na(burn_severity)] <- 0 #replace NAs with 0 (represent true 0s)
 # seems could use total watershed % burned if you had to pick one variable
 cor(burn_severity, method='pearson', use='pairwise.complete.obs')
 cor(burn_severity, method='spearman', use='pairwise.complete.obs')
+corPearson_df <- as.data.frame(cor(burn_severity, method='pearson', use='pairwise.complete.obs'))
+corPearson_df_total <- as.data.frame(corPearson_df$ws_vbs_total_burn_pct)
+colnames(corPearson_df_total) <- 'ws_vbs_total_burn_pct'
+rownames(corPearson_df_total) <- rownames(corPearson_df)
 
 #write.csv(burn_severity, file='Data/BurnSeverity/Ian_calculations/all_burn_severity_variables.csv', row.names=F)
 
@@ -206,6 +210,7 @@ ggplot(may_thru_sep, aes(x = Group, y = Phaeo_ppb, fill = Month_factor)) +
   scale_y_continuous(limits=c())+
   labs(x = "Lake Type", y = "Phaeo_ppb")+
   scale_fill_manual("Month", values=month_colors)
+
 
 ## fire predictors of water quality (recall burn severity predictors are highly correlated with each other)
 # first log transform WQ variables
@@ -945,7 +950,7 @@ e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TP_ppb, color=Type, shape=Conn
   theme_classic()+
   scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
-  ggtitle('August 2022')+
+  ggtitle('September 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
@@ -1894,7 +1899,7 @@ e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TP_ppb, color=Type))+
   theme_classic()+
   scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
   scale_y_continuous(name='TP (ppb)', limits=ylimz)+
-  ggtitle('August 2022')+
+  ggtitle('September 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
@@ -2488,3 +2493,93 @@ e + geom_smooth(method='lm')
 grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
              c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
              e+geom_smooth(method='lm'),legend2)
+
+#####
+## Can we cram multiple grouped boxed plots into multi-panel plot?
+TP_box <- ggplot(allWQ_data, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "TP (ppb)")+
+  scale_y_continuous(limits=c(0,50))+ #0,50
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c('none'),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.background=element_rect(color = 'black', fill = 'white', linetype='solid'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+TN_box <- ggplot(allWQ_data, aes(x = Group, y = TN_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "TN (ppb)")+
+  scale_y_continuous(limits=c())+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c('none'),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+DOC_box <- ggplot(allWQ_data, aes(x = Group, y = DOC_ppm, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "DOC (ppm)")+ #0,40
+  scale_y_continuous(limits=c())+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c(0.85,0.75), #0.85,0.7
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.title=element_blank(),
+        legend.key.size=unit(0.5, "cm"))+
+        #legend.background=element_rect(color = 'black', fill = 'white', linetype='solid'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+TSS_box <- ggplot(allWQ_data, aes(x = Group, y = TSS_mgL, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,10))+
+  labs(x = "", y = "TSS (mg/L)")+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c('none'),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+chla_box <- ggplot(allWQ_data, aes(x = Group, y = Chloro_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "", y = "Chlorophyll-a (ppb)")+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c('none'),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+secchi_box <- ggplot(allWQ_data, aes(x = Group, y = SecchiDepth_m, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "", y = "Secchi (m)")+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c('none'),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+
+legendbox <- ggplot(may_thru_sep, aes(x = Group, y = Chloro_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "", y = "Chlorophyll-a (ppb)")+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c(0.5,0.5),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('BD','BI','CD','CI'))
+legendbox <- g_legend(legendbox)
+
+grid.arrange(TP_box, TN_box, DOC_box, TSS_box, chla_box, secchi_box, nrow=2)
+
+jpeg('Figures/multipanel_month_boxplots.jpeg',width = 7,height = 5,units = 'in',res=600)
+  grid.arrange(TP_box, TN_box, DOC_box, TSS_box, chla_box, secchi_box, nrow=2)
+dev.off()
