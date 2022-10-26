@@ -1,6 +1,6 @@
 ##################### Exploring weather station data ##########################
 # Date: 8-24-22
-# updated: 10-13-22; with full season of data
+# updated: 10-26-22; add sample dates to plots
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -62,10 +62,11 @@ jpeg('Figures/airtemp_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
   lines(AirTempC_dailymin ~ Date, data=weather_summary, pch=20, col='dodgerblue')
   legend('topright', legend=c('Max','Mean','Min'), col=c('firebrick','black','dodgerblue'),
        pch=c(16,16,16), horiz=T, bty='n')
-  abline(v=as.Date("2022/05/19")) #median day of sample trips
-  abline(v=as.Date("2022/06/09")) 
-  abline(v=as.Date("2022/07/15"))
-  abline(v=as.Date("2022/08/23"))
+  abline(v=as.Date("2022/05/19"), lty=2) #median day of sample trips
+  abline(v=as.Date("2022/06/09"), lty=2) 
+  abline(v=as.Date("2022/07/15"), lty=2)
+  abline(v=as.Date("2022/08/23"), lty=2)
+  abline(v=as.Date("2022/09/23"), lty=2)
 dev.off()
 
 # precip
@@ -75,8 +76,9 @@ jpeg('Figures/precip_plot.jpeg',width = 7,height = 5,units = 'in',res=600)
      xlab='', main='Daily Precipitation')
   axis.Date(1,Day,at=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"), 
             labels=seq(as.Date("2022/05/17"), as.Date("2022/09/27"),by="weeks"), cex.axis=0.8, las=2)
-  abline(v=as.Date("2022/05/19")) #median day of sample trips
-  abline(v=as.Date("2022/06/09")) 
-  abline(v=as.Date("2022/07/15"))
-  abline(v=as.Date("2022/08/23"))
+  abline(v=as.Date("2022/05/19"), lty=2) #median day of sample trips
+  abline(v=as.Date("2022/06/09"), lty=2) 
+  abline(v=as.Date("2022/07/15"), lty=2)
+  abline(v=as.Date("2022/08/23"), lty=2)
+  abline(v=as.Date("2022/09/23"), lty=2)
 dev.off()
