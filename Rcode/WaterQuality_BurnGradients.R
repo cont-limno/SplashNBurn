@@ -1,11 +1,12 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 
+# updated: 10-26-22; added pH
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
 #### R libraries ####
 library(ggplot2)
+library(gridExtra)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
@@ -866,6 +867,155 @@ plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
   theme(axis.text.x = element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c(0.2,0.8))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotMay
+
+# June
+plotcor <- cor.test(juneWQ_fire[,wqvar], juneWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
+plotJun <- ggplot(data=juneWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('B) June')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotJun
+
+# July
+plotcor <- cor.test(julyWQ_fire[,wqvar], julyWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(julyWQ_fire[,wqvar] ~ julyWQ_fire[,firevar])
+plotJul <- ggplot(data=julyWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('C) July')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotJul
+
+# August
+plotcor <- cor.test(augWQ_fire[,wqvar], augWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(augWQ_fire[,wqvar] ~ augWQ_fire[,firevar])
+plotAug <- ggplot(data=augWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('D) August')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAug
+
+# September
+plotcor <- cor.test(sepWQ_fire[,wqvar], sepWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(sepWQ_fire[,wqvar] ~ sepWQ_fire[,firevar])
+plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('E) September')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotSep
+
+grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, nrow=2)
+
+## pH
+# set variables and plotting parameters for all plots
+wqvar <- 'pH'
+#firevar <- 'ws_vbs_High_pct'
+firevar <- 'ws_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(6,10)
+#xlabb <- 'Watershed % burned high severity'
+xlabb <- 'Watershed % burned'
+ylabb <- 'pH'
+rvalx <- 95
+rvaly <- 9.5
+pvalx <- 95
+pvaly <- 9
+
+# May
+plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
+plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+  ggtitle('A) May')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red")+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+ #0.5,0.2
   scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
 plotMay
 

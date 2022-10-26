@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-25-22# move burn severity gradient analysis to other script
+# updated: 10-26-22# added surface measurements from profile variables
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -20,6 +20,7 @@ may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
 may_thru_aug <- read.csv("Data/WaterQuality/LabAnalyses_Lakes9-30-22.csv")
 may_thru_sep <- read.csv("Data/WaterQuality/LabAnalyses_Lakes10-20-22.csv")
 field_obs <- read.csv("Data/WaterQuality/FieldSampling_Lakes-secchi_field_sheet10-19-22complete.csv")
+profiles <- read.csv("Data/WaterQuality/Field-Sampling_Lake-Profiles10-19-22Complete.csv")
 
 # LAGOS ancillary data
 LAGOStable <- read.csv("Data/LAGOS/LAGOS_LOCUS_Table.csv")
@@ -52,6 +53,24 @@ may_thru_sep$Month_factor <- lubridate::month(may_thru_sep$Date, label=T, abbr=T
 may_thru_sep <- may_thru_sep %>% drop_na(Date) #row with no data for some reason; remove
 may_thru_sep <- droplevels(may_thru_sep)
 
+# prepare profile data (just surface values; other analysis covers full profiles)
+profiles <- merge(profiles, LAGOS_layover, by='Site', all=T)
+profiles$Date <- lubridate::mdy(profiles$Date)
+profiles$Month <- lubridate::month(profiles$Date)
+profiles$Month_factor <- lubridate::month(profiles$Date, label=T, abbr=T)
+profiles <- profiles %>% drop_na(Date) #row with no data for some reason; remove
+profiles <- droplevels(profiles)
+# seems to be two entries for surface Middle McDougal in June for some reason
+mm1 <- profiles[349,]
+mm2 <- profiles[356,]
+meanz <- (mm1[,c(3:8)] + mm2[,c(3:8)])/2
+bandaid <- mm1
+bandaid[,c(3:8)] <- meanz
+profiles[349,] <- bandaid #sub in new row representing mean of 2 entries
+profiles <- profiles[-356,]
+
+profiles_surface <- subset(profiles, ProfileDepth_m==0)
+
 # combine burn severity datasets
 # for total burn columns, considering low to high as burned
 ws_vbs$ws_vbs_total_burn_pct <- rowSums(ws_vbs[,c(14:17)], na.rm=T)
@@ -83,124 +102,6 @@ burn_severity <- df_list %>% reduce(full_join, by='lagoslakeid')
 burn_severity[is.na(burn_severity)] <- 0 #replace NAs with 0 (represent true 0s)
 
 #write.csv(burn_severity, file='Data/BurnSeverity/Ian_calculations/all_burn_severity_variables.csv', row.names=F)
-
-### grouped boxplots
-may_june_july$Month_factor <- factor(as.character(may_june_july$Month), levels = c('may', 'june', 'july'))
-
-month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
-
-## TP
-ggplot(may_thru_sep, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-ggplot(may_thru_sep, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c(0,100))+
-  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## different version; candidate for MW CASC proposal
-ggplot(may_thru_sep, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
-  scale_y_continuous(limits=c(0,50))+
-  scale_fill_manual("Month", values=month_colors)+
-  theme(legend.position=c(0.8,0.8),
-        axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'))+
-  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
-                            'Control drainage','Control isolated'))
-## TN
-ggplot(may_thru_sep, aes(x = Group, y = TN_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  labs(x = "Lake Type", y = "Total nitrogen (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## NO2NO3
-ggplot(may_thru_sep, aes(x = Group, y = NO2NO3_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  labs(x = "Lake Type", y = "NO2/NO3-N (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## NH4
-ggplot(may_thru_sep, aes(x = Group, y = NH4N_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  labs(x = "Lake Type", y = "NH4-N (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-ggplot(may_thru_sep, aes(x = Group, y = NH4N_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c(0,50))+
-  labs(x = "Lake Type", y = "NH4-N (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## DOC
-ggplot(may_thru_sep, aes(x = Group, y = DOC_ppm, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c(0,40))+
-  labs(x = "Lake Type", y = "DOC (ppm)")+
-  scale_fill_manual("Month", values=month_colors)+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        legend.position=c(0.8,0.8))+
-  #ggtitle("B) Hydrologic connectivity")+
-  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
-                            'Control drainage','Control isolated'))
-
-## TSS
-ggplot(may_thru_sep, aes(x = Group, y = TSS_mgL, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c())+
-  labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
-  scale_fill_manual("Month", values=month_colors)
-
-ggplot(may_thru_sep, aes(x = Group, y = TSS_mgL, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c(0,10))+
-  labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## ANC
-ggplot(may_thru_sep, aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c())+
-  labs(x = "Lake Type", y = "Acid neutralizing capacity (mg CaCO3/L)")+
-  scale_fill_manual("Month", values=month_colors)
-
-ggplot(may_thru_sep, aes(x = Group, y = ANC_ueqL, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c())+
-  labs(x = "Lake Type", y = "Acid neutralizing capacity (ueq/L)")+
-  scale_fill_manual("Month", values=month_colors)
-
-## chloro
-ggplot(may_thru_sep, aes(x = Group, y = Chloro_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c())+
-  labs(x = "Lake Type", y = "Chlorophyll-a (ppb)")+
-  scale_fill_manual("Month", values=month_colors)
-
-ggplot(may_thru_sep, aes(x = Group, y = Phaeo_ppb, fill = Month_factor)) +
-  geom_boxplot() + 
-  theme_classic() +
-  scale_y_continuous(limits=c())+
-  labs(x = "Lake Type", y = "Phaeo_ppb")+
-  scale_fill_manual("Month", values=month_colors)
 
 
 ## fire predictors of water quality (recall burn severity predictors are highly correlated with each other)
@@ -358,23 +259,182 @@ field_obs$Month_factor <- lubridate::month(field_obs$Date, label=T, abbr=T)
 field_obs <- field_obs %>% drop_na(Date) #row with no data for some reason; remove
 field_obs <- droplevels(field_obs)
 
-ggplot(field_obs, aes(x = Group, y = SecchiDepth_m, fill = Month_factor)) +
+## get table of just Secchi and few other vars to merge to other water quality
+secchi_depth <- field_obs[,c('SecchiDepth_m','zMax_m','Site','Month')]
+allWQ_data <- merge(may_thru_sep, secchi_depth, by=c("Site","Month"), all=T)
+allWQ_data <- merge(allWQ_data, profiles_surface[,c(1,3,4,5,6,7,8,14)], by=c("Site","Month"), all=T)
+#write.csv(allWQ_data, "Data/WaterQuality/combined_lab_field_may_sep.csv", row.names=F)
+
+### grouped boxplots
+#may_june_july$Month_factor <- factor(as.character(may_june_july$Month), levels = c('may', 'june', 'july'))
+
+month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
+
+## TP
+ggplot(allWQ_data, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,100))+
+  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## different version; candidate for MW CASC proposal
+ggplot(allWQ_data, aes(x = Group, y = TP_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Total phosphorus (ppb)")+
+  scale_y_continuous(limits=c(0,50))+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(legend.position=c(0.8,0.8),
+        axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'))+
+  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
+                            'Control drainage','Control isolated'))
+## TN
+ggplot(allWQ_data, aes(x = Group, y = TN_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Total nitrogen (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## NO2NO3
+ggplot(allWQ_data, aes(x = Group, y = NO2NO3_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "NO2/NO3-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## NH4
+ggplot(allWQ_data, aes(x = Group, y = NH4N_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "NH4-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = NH4N_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,50))+
+  labs(x = "Lake Type", y = "NH4-N (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## DOC
+ggplot(allWQ_data, aes(x = Group, y = DOC_ppm, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,40))+
+  labs(x = "Lake Type", y = "DOC (ppm)")+
+  scale_fill_manual("Month", values=month_colors)+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  #ggtitle("B) Hydrologic connectivity")+
+  scale_x_discrete(labels=c('Burned drainage','Burned isolated',
+                            'Control drainage','Control isolated'))
+
+## TSS
+ggplot(allWQ_data, aes(x = Group, y = TSS_mgL, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = TSS_mgL, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,10))+
+  labs(x = "Lake Type", y = "Total suspended solids (mg/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## ANC
+ggplot(allWQ_data, aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Acid neutralizing capacity (mg CaCO3/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = ANC_ueqL, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Acid neutralizing capacity (ueq/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## chloro
+ggplot(allWQ_data, aes(x = Group, y = Chloro_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Chlorophyll-a (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = Phaeo_ppb, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Phaeo_ppb")+
+  scale_fill_manual("Month", values=month_colors)
+
+## Secchi
+ggplot(allWQ_data, aes(x = Group, y = SecchiDepth_m, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Secchi (m)")+
   scale_fill_manual("Month", values=month_colors)
 
-ggplot(field_obs, aes(x = Group, y = zMax_m, fill = Month_factor)) +
+## zMax
+ggplot(allWQ_data, aes(x = Group, y = zMax_m, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Max depth (m)")+
   scale_fill_manual("Month", values=month_colors)
 
-## get table of just Secchi and few other vars to merge to other water quality
-secchi_depth <- field_obs[,c('SecchiDepth_m','zMax_m','Site','Month')]
-allWQ_data <- merge(may_thru_sep, secchi_depth, by=c("Site","Month"), all=T)
-#write.csv(allWQ_data, "Data/WaterQuality/combined_lab_field_may_sep.csv", row.names=F)
+## pH
+ggplot(allWQ_data, aes(x = Group, y = pH, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "pH")+
+  scale_fill_manual("Month", values=month_colors)
 
+## Surface water temp
+ggplot(allWQ_data, aes(x = Group, y = WaterTemp_C, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Surface temp (C)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## Conductivity
+ggplot(allWQ_data, aes(x = Group, y = SpecCond_uScm, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "Specific conductivity (uS/cm)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## Dissolved oxygen
+ggplot(allWQ_data, aes(x = Group, y = LDO_mgL, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(5,12))+ #appears to be a weird outlier
+  labs(x = "Lake Type", y = "Dissolved oxygen (mg/L)")+
+  scale_fill_manual("Month", values=month_colors)
+
+ggplot(allWQ_data, aes(x = Group, y = LDO_pct, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  labs(x = "Lake Type", y = "Dissolved oxygen (%)")+
+  scale_fill_manual("Month", values=month_colors)
+
+######
+## other random plots
 ggplot(data=allWQ_data, aes(x=TP_ppb, y=SecchiDepth_m, color=Month_factor, shape=Group))+
   geom_point(size=2)+
   theme_classic()+
