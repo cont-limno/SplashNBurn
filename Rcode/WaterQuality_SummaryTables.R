@@ -26,7 +26,7 @@ wq_summary_conn <- function(df, input_var){
   return(output)
 }
 
-wq_summary <- function(df, input_var){
+wq_summary_basic <- function(df, input_var){
   #df: data frame
   #input_var: water quality variable (column) in a data frame
   output <- df %>%
@@ -45,6 +45,33 @@ wq_summary <- function(df, input_var){
 #             nSamples=n(),.groups="keep")
 
 ########## Main program ###########
-TP_summary <- wq_summary(df=waterquality, input_var='TP_ppb')
+TP_summary_basic <- wq_summary_basic(df=waterquality, input_var='TP_ppb')
 TP_summary_conn <- wq_summary_conn(df=waterquality, input_var='TP_ppb')
-DOC_summary <- wq_summary(df=waterquality, input_var='DOC_ppm')
+
+TN_summary_basic <- wq_summary_basic(df=waterquality, input_var='TN_ppb')
+TN_summary_conn <- wq_summary_conn(df=waterquality, input_var='TN_ppb')
+
+DOC_summary_basic <- wq_summary_basic(df=waterquality, input_var='DOC_ppm')
+DOC_summary_conn <- wq_summary_conn(df=waterquality, input_var='DOC_ppm')
+
+TSS_summary_basic <- wq_summary_basic(df=waterquality, input_var='TSS_mgL')
+TSS_summary_conn <- wq_summary_conn(df=waterquality, input_var='TSS_mgL')
+
+Secchi_summary_basic <- wq_summary_basic(df=waterquality, input_var='SecchiDepth_m')
+Secchi_summary_conn <- wq_summary_conn(df=waterquality, input_var='SecchiDepth_m')
+
+Chloro_summary_basic <- wq_summary_basic(df=waterquality, input_var='Chloro_ppb')
+Chloro_summary_conn <- wq_summary_conn(df=waterquality, input_var='Chloro_ppb')
+
+pH_summary_basic <- wq_summary_basic(df=waterquality, input_var='pH')
+pH_summary_conn <- wq_summary_conn(df=waterquality, input_var='pH')
+
+Temp_summary_basic <- wq_summary_basic(df=waterquality, input_var='WaterTemp_C')
+Temp_summary_conn <- wq_summary_conn(df=waterquality, input_var='WaterTemp_C')
+
+ANC_summary_basic <- wq_summary_basic(df=waterquality, input_var='ANC_mgCaCO3L')
+ANC_summary_conn <- wq_summary_conn(df=waterquality, input_var='ANC_mgCaCO3L')
+
+zMax_summary_basic <- wq_summary_basic(df=waterquality, input_var='zMax_m')
+zMax_summary_conn <- wq_summary_conn(df=waterquality, input_var='zMax_m')
+
