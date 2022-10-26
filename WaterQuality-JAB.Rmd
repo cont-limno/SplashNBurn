@@ -1,0 +1,53 @@
+---
+title: "Water Quality"
+date: "2022-10-26"
+author: "J. Brentrup"
+output: html_notebook
+---
+
+# Load Libraries
+```{r, message=FALSE}
+
+# install.packages("tidyverse")
+
+library(tidyverse)
+library(googledrive)
+library(readxl)
+library(lubridate)
+```
+
+# Load data- water quality May-Sep
+```{r}
+wq_data <- read_csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
+  str(wq_data)
+  
+unique(wq_data$Site)
+```
+
+# Burn severity gradient vs. TP - May
+```{r}
+plotA <- ggplot(data=mayWQ_fire, aes(x=ws_vbs_High_pct, y=logTP, color=ConnClass, label=LakeName))+
+  #ggtitle('May total phosphorus')+
+  geom_point(size=2)+ 
+  geom_text(hjust=0, vjust=0, size=3, nudge_x=0.5)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  #geom_abline(slope = coef(plotlm)[2], 
+  #            intercept = coef(plotlm)[["(Intercept)"]])+
+  geom_vline(xintercept=25, linetype='dashed')+
+  #annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
+  #         color="red")+
+  #annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
+  #         color="red")+
+  theme_classic()+
+  scale_x_continuous(limits=c(0,100), name='Watershed % high severity burn')+
+  scale_y_continuous(limits=c(), name='log(Total phosphorus) (ppb)')+
+  #xlab('Watershed high severity burn (%)')+
+  #ylab('Log total phosphorus (ppb)')+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.9,0.2))+
+  ggtitle('A) Burn severity gradient')+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotA
+```
+
