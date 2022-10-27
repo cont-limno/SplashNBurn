@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-26-22# added surface measurements from profile variables
+# updated: 10-27-22# dealt with weird Middle McDougal sample (error; discarded)
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -61,13 +61,14 @@ profiles$Month_factor <- lubridate::month(profiles$Date, label=T, abbr=T)
 profiles <- profiles %>% drop_na(Date) #row with no data for some reason; remove
 profiles <- droplevels(profiles)
 # seems to be two entries for surface Middle McDougal in June for some reason
-mm1 <- profiles[349,]
-mm2 <- profiles[356,]
-meanz <- (mm1[,c(3:8)] + mm2[,c(3:8)])/2
-bandaid <- mm1
-bandaid[,c(3:8)] <- meanz
-profiles[349,] <- bandaid #sub in new row representing mean of 2 entries
-profiles <- profiles[-356,]
+# UPDATE: first entry is another lake and should be deleted
+# mm1 <- profiles[349,]
+# mm2 <- profiles[356,]
+# meanz <- (mm1[,c(3:8)] + mm2[,c(3:8)])/2
+# bandaid <- mm1
+# bandaid[,c(3:8)] <- meanz
+# profiles[349,] <- bandaid #sub in new row representing mean of 2 entries
+# profiles <- profiles[-356,]
 
 profiles_surface <- subset(profiles, ProfileDepth_m==0)
 
