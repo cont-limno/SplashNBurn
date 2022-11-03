@@ -1,0 +1,67 @@
+---
+title: "LAGOS_LANDSAT_chla_timeseries"
+output: html_document
+date: '2022-11-01'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#### Input data ####
+setwd("C:/Users/immcc/Documents/SplashNBurn")
+LOCUS <- read.csv("Data/LAGOS/LAGOS_LOCUS_Table.csv")
+
+#### Main program ####
+# basic table wrangling
+lake_table <- LOCUS[,c('lagoslakeid','Type','Site')]
+lake_table$Type <- ifelse(lake_table$Type=='sample','burned', lake_table$Type)
+burned_lakes <- subset(lake_table, Type=='burned')
+control_lakes <- subset(lake_table, Type=='control')
+burned_lakes_IDs <- burned_lakes$lagoslakeid
+control_lakes_IDs <- control_lakes$lagoslakeid
+
+# read in LANDSAT time series
+csv_list <- list.files("Data/LAGOS/LANDSAT_timeseries", pattern='.csv')
+landsat_timeseries <- list()
+for (i in 1:length(csv_list)){
+  xx <- read.csv(paste0("Data/LAGOS/LANDSAT_timeseries/",csv_list[[i]]))
+  #xx <- merge(xx, lake_table[,c(1,3)], by='lagoslakeid')
+  landsat_timeseries[[i]] <- xx
+  xx=NULL
+}
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+# get stoked
+# Landsat-estimated chlorophyll-a
+# time series plots of burned and control lakes sampled in 2022
+# based on months May-September
+# only lakes > 4ha surface area are included due to satellite resolution
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+for (i in 1:length(landsat_timeseries)){
+  df <- landsat_timeseries[[i]]
+  plot(median_logChl ~ Year, data=df, type='l', pch=20, lwd=2, las=1,
+       xlab='Year', ylab='log Chla', col='black', ylim=c(0,2))
+  lines(min_logChl ~ Year, data=df, type='l', pch=20, col='blue', lwd=2)
+  lines(max_logChl ~ Year, data=df, type='l', pch=20, col='red', lwd=2)
+  legend('topright', legend=c('Min','Median','Max'), pch=c(16,16,16), 
+         col=c('blue','black','red'), bty='n', horiz=T)
+  mtext(side=3, df$Type[1])
+  title(df$Site[1])
+  df=NULL
+}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
