@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 10-27-22# dealt with weird Middle McDougal sample (error; discarded)
+# updated: 11-14-22# TN vs DOC
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -701,6 +701,75 @@ e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TP_ppb, color=Type, shape=Conn
 grid.arrange(a,b,c,d,e,legend)
 
 jpeg('Figures/DOC_vs_TP.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d,e,legend)
+dev.off()
+
+# DOC vs TN
+xlimz <- c(0,50)
+ylimz <- c(1,1500)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d,e,legend)
+
+jpeg('Figures/DOC_vs_TN.jpeg',width = 7,height = 7,units = 'in',res=600)
   grid.arrange(a,b,c,d,e,legend)
 dev.off()
 
