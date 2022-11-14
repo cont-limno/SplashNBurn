@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 11-14-22# TN vs DOC
+# updated: 11-14-22# TN/TP vs DOC
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -226,6 +226,7 @@ residcor <- as.data.frame(cor(mayalldata[, unlist(lapply(mayalldata, is.numeric)
 residcor <- data.frame(variable=rownames(residcor), residuals=residcor$residuals)
 
 ## what about the "nutrient space"?
+month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
 ggplot(data=may_thru_sep, aes(x=TN_ppb, y=TP_ppb, color=Month_factor, shape=Group))+
   geom_point(size=2)+
   theme_classic()+
@@ -264,6 +265,7 @@ field_obs <- droplevels(field_obs)
 secchi_depth <- field_obs[,c('SecchiDepth_m','zMax_m','Site','Month')]
 allWQ_data <- merge(may_thru_sep, secchi_depth, by=c("Site","Month"), all=T)
 allWQ_data <- merge(allWQ_data, profiles_surface[,c(1,3,4,5,6,7,8,14)], by=c("Site","Month"), all=T)
+allWQ_data$TNTP <- allWQ_data$TN_ppb/allWQ_data$TP_ppb
 #write.csv(allWQ_data, "Data/WaterQuality/combined_lab_field_may_sep.csv", row.names=F)
 
 ### grouped boxplots
@@ -302,6 +304,13 @@ ggplot(allWQ_data, aes(x = Group, y = TN_ppb, fill = Month_factor)) +
   geom_boxplot() + 
   theme_classic() +
   labs(x = "Lake Type", y = "Total nitrogen (ppb)")+
+  scale_fill_manual("Month", values=month_colors)
+
+## TN/TP
+ggplot(allWQ_data, aes(x = Group, y = TNTP, fill = Month_factor)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "Lake Type", y = "TN/TP")+
   scale_fill_manual("Month", values=month_colors)
 
 ## NO2NO3
@@ -706,7 +715,7 @@ dev.off()
 
 # DOC vs TN
 xlimz <- c(0,50)
-ylimz <- c(1,1500)
+ylimz <- c(0,1500)
 a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=ConnClass))+
   geom_point(size=2)+
   theme_classic()+
@@ -770,6 +779,75 @@ e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TN_ppb, color=Type, shape=Conn
 grid.arrange(a,b,c,d,e,legend)
 
 jpeg('Figures/DOC_vs_TN.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a,b,c,d,e,legend)
+dev.off()
+
+# DOC vs TN/TP
+xlimz <- c(0,50)
+ylimz <- c(0,80)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TNTP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=TNTP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=TNTP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=TNTP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TNTP, color=Type, shape=ConnClass))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+
+grid.arrange(a,b,c,d,e,legend)
+
+jpeg('Figures/DOC_vs_TNTP.jpeg',width = 7,height = 7,units = 'in',res=600)
   grid.arrange(a,b,c,d,e,legend)
 dev.off()
 
@@ -1720,6 +1798,151 @@ e+geom_smooth(method='lm')
 grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
              c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
              e+geom_smooth(method='lm'),legend2)
+
+# DOC vs TN
+xlimz <- c(0,50)
+ylimz <- c(0,1500)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TN_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+a+geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=TN_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b+geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=TN_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c+geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=TN_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d+geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TN_ppb, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN (ppb)', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e+geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
+# DOC vs TN/TP
+xlimz <- c(0,50)
+ylimz <- c(0,80)
+a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=TNTP, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('May 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Connectivity', color='Group')
+a+geom_smooth(method='lm')
+
+b <- ggplot(data=allWQ_data_jun, aes(x=DOC_ppm, y=TNTP, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('June 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+b+geom_smooth(method='lm')
+
+c <- ggplot(data=allWQ_data_jul, aes(x=DOC_ppm, y=TNTP, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('July 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+c+geom_smooth(method='lm')
+
+d <- ggplot(data=allWQ_data_aug, aes(x=DOC_ppm, y=TNTP, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('August 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+d+geom_smooth(method='lm')
+
+e <- ggplot(data=allWQ_data_sep, aes(x=DOC_ppm, y=TNTP, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='DOC (ppm)',limits=xlimz)+
+  scale_y_continuous(name='TN/TP', limits=ylimz)+
+  ggtitle('September 2022')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  labs(shape='Class', color='Type')
+e+geom_smooth(method='lm')
+
+grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+             e+geom_smooth(method='lm'),legend2)
+
 
 # TN vs TP
 xlimz <- c(0,1500)

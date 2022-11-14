@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 
+# updated: 11-14-22
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -348,6 +348,97 @@ allmonthsTN_plot
 
 grid.arrange(mayTN_plot, junTN_plot, julTN_plot,
              augTN_plot, sepTN_plot, allmonthsTN_plot, nrow=2)
+
+## TN/TP
+xlimitz <- c(0,125)
+ylimitz <- c(0,0.06)
+mayTNTP_plot <- ggplot(mayWQ, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('May 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+mayTNTP_plot
+
+junTNTP_plot <- ggplot(junWQ, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('Jun 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+junTNTP_plot
+
+julTNTP_plot <- ggplot(julWQ, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('Jul 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+julTNTP_plot
+
+augTNTP_plot <- ggplot(augWQ, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('Aug 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+augTNTP_plot
+
+sepTNTP_plot <- ggplot(sepWQ, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('Sep 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+sepTNTP_plot
+
+allmonthsTNTP_plot  <- ggplot(waterquality, aes(x=TNTP, fill=Type)) + 
+  geom_density(alpha=0.4, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c(0.8,0.8))+
+  xlab('TN/TP')+
+  ylab('Density')+
+  ggtitle('All months 2022')+
+  scale_x_continuous(limits=xlimitz)+
+  scale_y_continuous(limits=ylimitz)+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+allmonthsTNTP_plot
+
+grid.arrange(mayTNTP_plot, junTNTP_plot, julTNTP_plot,
+             augTNTP_plot, sepTNTP_plot, allmonthsTNTP_plot, nrow=2)
+
 
 ## DOC
 xlimitz <- c(0,50)
