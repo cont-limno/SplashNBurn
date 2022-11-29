@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 11-14-22; added TN/TP ratios
+# updated: 11-29-22; added breakpoint analysis at end
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1274,3 +1274,595 @@ plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
 plotSep
 
 grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, nrow=2)
+
+
+##### Segmented regression #####
+library(segmented)
+# good help here: https://rpubs.com/MarkusLoew/12164
+
+# burn table to help with interpretation of plots
+burntable <- juneWQ_fire[,c('Site','Type','ws_vbs_High_pct','ws_vbs_total_burn_pct')]
+par(mfrow=c(1,1))
+hist(burntable$ws_vbs_total_burn_pct, main='Watershed % burned', xlab='',
+     breaks=seq(0,100,10))
+hist(burntable$ws_vbs_High_pct, main='Watershed % burned high severity', 
+     xlab='', breaks=seq(0,100,10))
+
+## May TP
+plot(logTP ~ ws_vbs_High_pct, data=mayWQ_fire, pch=16, main='May TP',
+     xlab='Watershed % high severity burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_High_pct, data=mayWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                    seg.Z = ~ ws_vbs_High_pct, 
+                    psi = list(ws_vbs_High_pct = c(10, 30)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## Jun TP (warning: no breakpoint estimated)
+plot(logTP ~ ws_vbs_High_pct, data=juneWQ_fire, pch=16, main='June TP',
+     xlab='Watershed % high severity burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_High_pct, data=juneWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 30)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul TP: no point, basically flat line
+plot(logTP ~ ws_vbs_High_pct, data=julyWQ_fire, pch=16, main='July TP',
+     xlab='Watershed % high severity burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_High_pct, data=julyWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 30)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug TP: warning, no breakpoint estimated
+plot(logTP ~ ws_vbs_High_pct, data=augWQ_fire, pch=16, main='August TP',
+     xlab='Watershed % high severity burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_High_pct, data=augWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 30))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## Sep TP
+plot(logTP ~ ws_vbs_High_pct, data=sepWQ_fire, pch=16, main='September TP',
+     xlab='Watershed % high severity burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_High_pct, data=sepWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 20))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+### same analysis for TN
+## May TN
+plot(logTN ~ ws_vbs_High_pct, data=mayWQ_fire, pch=16, main='May TN',
+     xlab='Watershed % high severity burn', ylab='logTN')
+tp_lm <- lm(logTN ~ ws_vbs_High_pct, data=mayWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 30)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## Jun TN
+plot(logTN ~ ws_vbs_High_pct, data=juneWQ_fire, pch=16, main='June TN',
+     xlab='Watershed % high severity burn', ylab='logTN')
+tp_lm <- lm(logTN ~ ws_vbs_High_pct, data=juneWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 30)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul TN
+plot(logTN ~ ws_vbs_High_pct, data=julyWQ_fire, pch=16, main='July TN',
+     xlab='Watershed % high severity burn', ylab='logTN')
+tp_lm <- lm(logTN ~ ws_vbs_High_pct, data=julyWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 20)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug TN: warning, no breakpoint estimated
+plot(logTN ~ ws_vbs_High_pct, data=augWQ_fire, pch=16, main='August TN',
+     xlab='Watershed % high severity burn', ylab='logTN')
+tp_lm <- lm(logTN ~ ws_vbs_High_pct, data=augWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(10, 20))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## Sep TN
+plot(logTN ~ ws_vbs_High_pct, data=sepWQ_fire, pch=16, main='September TN',
+     xlab='Watershed % high severity burn', ylab='logTN')
+tp_lm <- lm(logTN ~ ws_vbs_High_pct, data=sepWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_High_pct, 
+                      psi = list(ws_vbs_High_pct = c(5, 20))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+### limitation of high severity gradient is loss of Fourth McDougal after June
+# due to accessibility, so perhaps total % watershed burned is better for this
+## May TP
+plot(logTP ~ ws_vbs_total_burn_pct, data=mayWQ_fire, pch=16, main='May TP',
+     xlab='Watershed % total burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_total_burn_pct, data=mayWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## Jun TP
+plot(logTP ~ ws_vbs_total_burn_pct, data=juneWQ_fire, pch=16, main='June TP',
+     xlab='Watershed % total burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_total_burn_pct, data=juneWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul TP (Warning: no breakpoint estimated)
+plot(logTP ~ ws_vbs_total_burn_pct, data=julyWQ_fire, pch=16, main='July TP',
+     xlab='Watershed % total burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_total_burn_pct, data=julyWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug TP: warning, no breakpoint estimated
+plot(logTP ~ ws_vbs_total_burn_pct, data=augWQ_fire, pch=16, main='August TP',
+     xlab='Watershed % total burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_total_burn_pct, data=augWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) 
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Sep TP
+plot(logTP ~ ws_vbs_total_burn_pct, data=sepWQ_fire, pch=16, main='September TP',
+     xlab='Watershed % total burn', ylab='logTP')
+tp_lm <- lm(logTP ~ ws_vbs_total_burn_pct, data=sepWQ_fire)
+summary(tp_lm)
+
+test_seg <- segmented(tp_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+## May TN
+plot(logTN ~ ws_vbs_total_burn_pct, data=mayWQ_fire, pch=16, main='May TN',
+     xlab='Watershed % total burn', ylab='logTN')
+TN_lm <- lm(logTN ~ ws_vbs_total_burn_pct, data=mayWQ_fire)
+summary(TN_lm)
+
+test_seg <- segmented(TN_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jun TN
+plot(logTN ~ ws_vbs_total_burn_pct, data=juneWQ_fire, pch=16, main='June TN',
+     xlab='Watershed % total burn', ylab='logTN')
+TN_lm <- lm(logTN ~ ws_vbs_total_burn_pct, data=juneWQ_fire)
+summary(TN_lm)
+
+test_seg <- segmented(TN_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul TN
+plot(logTN ~ ws_vbs_total_burn_pct, data=julyWQ_fire, pch=16, main='July TN',
+     xlab='Watershed % total burn', ylab='logTN')
+TN_lm <- lm(logTN ~ ws_vbs_total_burn_pct, data=julyWQ_fire)
+summary(TN_lm)
+
+test_seg <- segmented(TN_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug TN: warning, no breakpoint estimated
+plot(logTN ~ ws_vbs_total_burn_pct, data=augWQ_fire, pch=16, main='August TN',
+     xlab='Watershed % total burn', ylab='logTN')
+TN_lm <- lm(logTN ~ ws_vbs_total_burn_pct, data=augWQ_fire)
+summary(TN_lm)
+
+test_seg <- segmented(TN_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) 
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Sep TN
+plot(logTN ~ ws_vbs_total_burn_pct, data=sepWQ_fire, pch=16, main='September TN',
+     xlab='Watershed % total burn', ylab='logTN')
+TN_lm <- lm(logTN ~ ws_vbs_total_burn_pct, data=sepWQ_fire)
+summary(TN_lm)
+
+test_seg <- segmented(TN_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+#### chloro: no breakpoints detected outside September for total % ws burned
+## May Chloro
+plot(logChloro ~ ws_vbs_total_burn_pct, data=mayWQ_fire, pch=16, main='May Chloro',
+     xlab='Watershed % total burn', ylab='logChloro')
+Chloro_lm <- lm(logChloro ~ ws_vbs_total_burn_pct, data=mayWQ_fire)
+summary(Chloro_lm)
+
+test_seg <- segmented(Chloro_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jun Chloro
+plot(logChloro ~ ws_vbs_total_burn_pct, data=juneWQ_fire, pch=16, main='June Chloro',
+     xlab='Watershed % total burn', ylab='logChloro')
+Chloro_lm <- lm(logChloro ~ ws_vbs_total_burn_pct, data=juneWQ_fire)
+summary(Chloro_lm)
+
+test_seg <- segmented(Chloro_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul Chloro
+plot(logChloro ~ ws_vbs_total_burn_pct, data=julyWQ_fire, pch=16, main='July Chloro',
+     xlab='Watershed % total burn', ylab='logChloro')
+Chloro_lm <- lm(logChloro ~ ws_vbs_total_burn_pct, data=julyWQ_fire)
+summary(Chloro_lm)
+
+test_seg <- segmented(Chloro_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug Chloro: warning, no breakpoint estimated
+plot(logChloro ~ ws_vbs_total_burn_pct, data=augWQ_fire, pch=16, main='August Chloro',
+     xlab='Watershed % total burn', ylab='logChloro')
+Chloro_lm <- lm(logChloro ~ ws_vbs_total_burn_pct, data=augWQ_fire)
+summary(Chloro_lm)
+
+test_seg <- segmented(Chloro_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) 
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Sep Chloro
+plot(logChloro ~ ws_vbs_total_burn_pct, data=sepWQ_fire, pch=16, main='September Chloro',
+     xlab='Watershed % total burn', ylab='logChloro')
+Chloro_lm <- lm(logChloro ~ ws_vbs_total_burn_pct, data=sepWQ_fire)
+summary(Chloro_lm)
+
+test_seg <- segmented(Chloro_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+### trying with DOC
+## May DOC
+plot(logDOC ~ ws_vbs_total_burn_pct, data=mayWQ_fire, pch=16, main='May DOC',
+     xlab='Watershed % total burn', ylab='logDOC')
+DOC_lm <- lm(logDOC ~ ws_vbs_total_burn_pct, data=mayWQ_fire)
+summary(DOC_lm)
+
+test_seg <- segmented(DOC_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jun DOC
+plot(logDOC ~ ws_vbs_total_burn_pct, data=juneWQ_fire, pch=16, main='June DOC',
+     xlab='Watershed % total burn', ylab='logDOC')
+DOC_lm <- lm(logDOC ~ ws_vbs_total_burn_pct, data=juneWQ_fire)
+summary(DOC_lm)
+
+test_seg <- segmented(DOC_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Jul DOC
+plot(logDOC ~ ws_vbs_total_burn_pct, data=julyWQ_fire, pch=16, main='July DOC',
+     xlab='Watershed % total burn', ylab='logDOC')
+DOC_lm <- lm(logDOC ~ ws_vbs_total_burn_pct, data=julyWQ_fire)
+summary(DOC_lm)
+
+test_seg <- segmented(DOC_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60)))
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Aug DOC: warning, no breakpoint estimated
+plot(logDOC ~ ws_vbs_total_burn_pct, data=augWQ_fire, pch=16, main='August DOC',
+     xlab='Watershed % total burn', ylab='logDOC')
+DOC_lm <- lm(logDOC ~ ws_vbs_total_burn_pct, data=augWQ_fire)
+summary(DOC_lm)
+
+test_seg <- segmented(DOC_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) 
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+## Sep DOC
+plot(logDOC ~ ws_vbs_total_burn_pct, data=sepWQ_fire, pch=16, main='September DOC',
+     xlab='Watershed % total burn', ylab='logDOC')
+DOC_lm <- lm(logDOC ~ ws_vbs_total_burn_pct, data=sepWQ_fire)
+summary(DOC_lm)
+
+test_seg <- segmented(DOC_lm, 
+                      seg.Z = ~ ws_vbs_total_burn_pct, 
+                      psi = list(ws_vbs_total_burn_pct = c(5, 60))) #tried 20, 25 as endpoints also
+summary(test_seg)
+test_seg$psi
+
+plot.segmented(test_seg, add=T)
+points.segmented(test_seg, col='firebrick', pch=16)
+seg_lines <- test_seg$psi[,2]
+abline(v=seg_lines[1], lty=2, xpd=F)
+abline(v=seg_lines[2], lty=2, xpd=F)
+
+
+#### trying generalized additive models ####
+library(mgcv)
+# bring in LAGOS variables
+LAGOS <- read.csv("Data/LAGOS/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
+
+mayWQ_fire <- merge(mayWQ_fire, LAGOS, by='lagoslakeid')
+juneWQ_fire <- merge(juneWQ_fire, LAGOS, by='lagoslakeid')
+julyWQ_fire <- merge(julyWQ_fire, LAGOS, by='lagoslakeid')
+augWQ_fire <- merge(augWQ_fire, LAGOS, by='lagoslakeid')
+sepWQ_fire <- merge(sepWQ_fire, LAGOS, by='lagoslakeid')
+
+plot(logTP ~ ws_vbs_High_pct, data=mayWQ_fire, pch=16)
+tp_gam <- gam(logTP ~ ws_vbs_High_pct, data=mayWQ_fire,
+              main='May TP')# this is still the basic linear model
+summary(tp_gam)
+
+tp_gam <- gam(logTP ~ s(ws_vbs_High_pct, bs='cr'), data=mayWQ_fire)
+summary(tp_gam)
+plot(tp_gam, main='May TP')
+
+tp_gam2 <- gam(logTP ~ s(ws_vbs_High_pct) + s(ws_lake_arearatio), data=mayWQ_fire)
+summary(tp_gam2)
+plot(tp_gam2, main='May TP')
+
+
+
