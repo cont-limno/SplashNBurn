@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 10-18-22, now with soil and veg burn severity data corrected
+# updated: 12-1-22; reorder geom bars
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -49,18 +49,27 @@ ws_burn_severity_pct_melted$Severity <- factor(ws_burn_severity_pct_melted$Sever
 
 # get rid of word 'Lake' to make labels smaller
 ws_burn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",ws_burn_severity_pct_melted$Site)
+ws_burn_severity_pct_melted$LakeFac <- as.factor(ws_burn_severity_pct_melted$Lake)
+ws_burn_severity_pct_melted$LakeFac <- factor(ws_burn_severity_pct_melted$Lake, levels=c("Fourth McDougal","Middle McDougal","Wampus ","North McDougal",
+                                                             "Stony ","Fishtrap ","South McDougal","Sand ","Slate "," Gegoka",
+                                                             "Greenwood ","West Chub ","Teamster ","Lil Chub ","Unnamed "))
 
 jpeg('Figures/BurnSeverity_byLake.jpeg',width = 7,height = 5,units = 'in',res=600)
-ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) + 
+ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) + 
   geom_bar(position="stack", stat="identity")+
   theme_classic()+
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
-        axis.text.y=element_text(color='black'))+
+  theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x.bottom=element_blank())+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+
   ggtitle('Watershed vegetation burn severity')
 dev.off()
+
+ggplot(melted, aes(x = factor(c, levels=c("C_2", "C_4", "C_8", "C_16")), y = value)) + 
+  geom_bar(stat="identity", width = 0.3) + 
+  geom_hline(yintercept  = 33)
 
 ### watershed soil burn severity ###
 # how correlated are % ws soilburn variables? Seem to be highly so
