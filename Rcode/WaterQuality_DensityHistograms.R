@@ -486,7 +486,7 @@ grid.arrange(mayTNTP_plot, junTNTP_plot, julTNTP_plot,
 
 ## DOC
 xlimitz <- c(0,50)
-ylimitz <- c(0,0.08)
+ylimitz <- c(0,0.1)
 mayDOC_plot <- ggplot(mayWQ, aes(x=DOC_ppm, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
@@ -574,10 +574,10 @@ allmonthsDOC_plot
 grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
              augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
 
-# jpeg('Figures/supplemental_density_plots/DOC_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
-#       grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
-#                    augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
-# dev.off()
+jpeg('Figures/supplemental_density_plots/DOC_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
+       grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
+                    augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
+dev.off()
 
 ## Chlorophyll-a
 xlimitz <- c(0,25)
@@ -676,7 +676,7 @@ grid.arrange(mayChla_plot, junChla_plot, julChla_plot,
 
 ## Secchi
 xlimitz <- c(0,5)
-ylimitz <- c(0,2)
+ylimitz <- c(0,2.2)
 maySecchi_plot <- ggplot(mayWQ, aes(x=SecchiDepth_m, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
@@ -765,8 +765,8 @@ grid.arrange(maySecchi_plot, junSecchi_plot, julSecchi_plot,
              augSecchi_plot, sepSecchi_plot, allmonthsSecchi_plot, nrow=2)
 
 # jpeg('Figures/supplemental_density_plots/Secchi_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
-#   grid.arrange(maySecchi_plot, junSecchi_plot, julSecchi_plot,
-#              augSecchi_plot, sepSecchi_plot, allmonthsSecchi_plot, nrow=2)
+#    grid.arrange(maySecchi_plot, junSecchi_plot, julSecchi_plot,
+#               augSecchi_plot, sepSecchi_plot, allmonthsSecchi_plot, nrow=2)
 # dev.off()
 
 ## TSS
@@ -1602,7 +1602,7 @@ allmonthsChla_plot  <- ggplot(waterquality, aes(x=Chloro_ppb, fill=Type)) +
   ylab('Density')+
   ggtitle('E) Chlorophyll-a')+
   scale_x_continuous(limits=c(0,25))+
-  scale_y_continuous(limits=c(0,0.3))+
+  scale_y_continuous(limits=c(0,0.25))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
 allmonthsChla_plot
 
