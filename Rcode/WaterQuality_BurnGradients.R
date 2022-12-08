@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-7-22; new correlation matrices, analyses with soil burn severity
+# updated: 12-8-22; new correlation matrices, analyses with soil burn severity
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -8,6 +8,8 @@
 library(ggplot2)
 library(gridExtra)
 library(rstatix)
+library(Hmisc)
+library(dplyr)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
@@ -88,8 +90,8 @@ allmonths <- rbind.data.frame(mayWQ_fire, juneWQ_fire, julyWQ_fire, augWQ_fire, 
 ## calculate 5-month averages for each water quality variable, then merge to burn_severity
 # to see what fire variables are most correlated with water quality
 TP_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanTP = mean(TP_ppb, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanTP = mean(TP_ppb, na.rm=T),
             meanlogTP = mean(logTP, na.rm=T))
 TP_all_list <- list(mayWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
                     juneWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
@@ -102,11 +104,29 @@ colnames(TP_all_list) <- c('lagoslakeid','mayTP','maylogTP', 'junTP','junlogTP',
 
 TP_all <- merge(TP_all, TP_all_list, by='lagoslakeid',all=T) 
 TP_all <- merge(TP_all, burn_severity, by='lagoslakeid', all=T)
-TP_cor <- as.data.frame(cor(TP_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+TP_cor <- as.data.frame(cor(TP_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+TP_cor_ext <- TP_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                        'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                        'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+TP_cor_ext <- TP_cor_ext[c('maylogTP','junlogTP','jullogTP','auglogTP',
+                           'seplogTP','meanlogTP'),] #extract desired rows
+TP_cor_ext <- round(TP_cor_ext, 2)
+#write.csv(TP_cor_ext, file='Data/Correlation_matrices/TP_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- TP_all[,c('maylogTP','junlogTP','jullogTP','auglogTP',
+                  'seplogTP','meanlogTP','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                  'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                  'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+TP_P <- rcorr(as.matrix(psdf), type='pearson')
+TP_P <- as.data.frame(TP_P$P)[c(1:6),c(7:12)]
 
 chloro_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanChloro = mean(Chloro_ppb, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanChloro = mean(Chloro_ppb, na.rm=T),
             meanlogChloro = mean(logChloro, na.rm=T))
 chloro_all_list <- list(mayWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
                         juneWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
@@ -119,12 +139,30 @@ colnames(chloro_all_list) <- c('lagoslakeid','maychloro','maylogChloro', 'junchl
 
 chloro_all <- merge(chloro_all, chloro_all_list, by='lagoslakeid',all=T) 
 chloro_all <- merge(chloro_all, burn_severity, by='lagoslakeid', all=T)
-chloro_cor <- as.data.frame(cor(chloro_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+chloro_cor <- as.data.frame(cor(chloro_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+chloro_cor_ext <- chloro_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                        'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                        'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+chloro_cor_ext <- chloro_cor_ext[c('maylogChloro','junlogChloro','jullogChloro','auglogChloro',
+                           'seplogChloro','meanlogChloro'),] #extract desired rows
+chloro_cor_ext <- round(chloro_cor_ext, 2)
+#write.csv(chloro_cor_ext, file='Data/Correlation_matrices/chloro_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- chloro_all[,c('maylogChloro','junlogChloro','jullogChloro','auglogChloro',
+                      'seplogChloro','meanlogChloro','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                      'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                      'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+chloro_P <- rcorr(as.matrix(psdf), type='pearson')
+chloro_P <- as.data.frame(chloro_P$P)[c(1:6),c(7:12)]
 
 
 TN_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanTN = mean(TN_ppb, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanTN = mean(TN_ppb, na.rm=T),
             meanlogTN = mean(logTN, na.rm=T))
 TN_all_list <- list(mayWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
                     juneWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
@@ -137,11 +175,30 @@ colnames(TN_all_list) <- c('lagoslakeid','mayTN','maylogTN', 'junTN','junlogTN',
 
 TN_all <- merge(TN_all, TN_all_list, by='lagoslakeid',all=T) 
 TN_all <- merge(TN_all, burn_severity, by='lagoslakeid', all=T)
-TN_cor <- as.data.frame(cor(TN_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+TN_cor <- as.data.frame(cor(TN_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+TN_cor_ext <- TN_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                        'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                        'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+TN_cor_ext <- TN_cor_ext[c('maylogTN','junlogTN','jullogTN','auglogTN',
+                           'seplogTN','meanlogTN'),] #extract desired rows
+TN_cor_ext <- round(TN_cor_ext, 2)
+#write.csv(TN_cor_ext, file='Data/Correlation_matrices/TN_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- TN_all[,c('maylogTN','junlogTN','jullogTN','auglogTN',
+                  'seplogTN','meanlogTN','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                  'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                  'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+TN_P <- rcorr(as.matrix(psdf), type='pearson')
+TN_P <- as.data.frame(TN_P$P)[c(1:6),c(7:12)]
+
 
 DOC_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanDOC = mean(DOC_ppm, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanDOC = mean(DOC_ppm, na.rm=T),
             meanlogDOC = mean(logDOC, na.rm=T))
 DOC_all_list <- list(mayWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
                      juneWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
@@ -154,11 +211,30 @@ colnames(DOC_all_list) <- c('lagoslakeid','mayDOC','maylogDOC', 'junDOC','junlog
 
 DOC_all <- merge(DOC_all, DOC_all_list, by='lagoslakeid',all=T) 
 DOC_all <- merge(DOC_all, burn_severity, by='lagoslakeid', all=T)
-DOC_cor <- as.data.frame(cor(DOC_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+DOC_cor <- as.data.frame(cor(DOC_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+DOC_cor_ext <- DOC_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                          'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                          'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+DOC_cor_ext <- DOC_cor_ext[c('maylogDOC','junlogDOC','jullogDOC','auglogDOC',
+                             'seplogDOC','meanlogDOC'),] #extract desired rows
+DOC_cor_ext <- round(DOC_cor_ext, 2)
+#write.csv(DOC_cor_ext, file='Data/Correlation_matrices/DOC_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- DOC_all[,c('maylogDOC','junlogDOC','jullogDOC','auglogDOC',
+                   'seplogDOC','meanlogDOC','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                   'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                   'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+DOC_P <- rcorr(as.matrix(psdf), type='pearson')
+DOC_P <- as.data.frame(DOC_P$P)[c(1:6),c(7:12)]
+
 
 TSS_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanTSS = mean(TSS_mgL, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanTSS = mean(TSS_mgL, na.rm=T),
             meanlogTSS = mean(logTSS, na.rm=T))
 TSS_all_list <- list(mayWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
                      juneWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
@@ -171,11 +247,30 @@ colnames(TSS_all_list) <- c('lagoslakeid','mayTSS','maylogTSS', 'junTSS','junlog
 
 TSS_all <- merge(TSS_all, TSS_all_list, by='lagoslakeid',all=T) 
 TSS_all <- merge(TSS_all, burn_severity, by='lagoslakeid', all=T)
-TSS_cor <- as.data.frame(cor(TSS_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+TSS_cor <- as.data.frame(cor(TSS_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+TSS_cor_ext <- TSS_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                          'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                          'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+TSS_cor_ext <- TSS_cor_ext[c('maylogTSS','junlogTSS','jullogTSS','auglogTSS',
+                             'seplogTSS','meanlogTSS'),] #extract desired rows
+TSS_cor_ext <- round(TSS_cor_ext, 2)
+#write.csv(TSS_cor_ext, file='Data/Correlation_matrices/TSS_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- TSS_all[,c('maylogTSS','junlogTSS','jullogTSS','auglogTSS',
+                   'seplogTSS','meanlogTSS','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                   'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                   'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+TSS_P <- rcorr(as.matrix(psdf), type='pearson')
+TSS_P <- as.data.frame(TSS_P$P)[c(1:6),c(7:12)]
+
 
 Secchi_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanSecchi = mean(SecchiDepth_m, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanSecchi = mean(SecchiDepth_m, na.rm=T),
             meanlogSecchi = mean(logSecchi, na.rm=T))
 Secchi_all_list <- list(mayWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
                         juneWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
@@ -188,11 +283,30 @@ colnames(Secchi_all_list) <- c('lagoslakeid','maySecchi','maylogSecchi', 'junSec
 
 Secchi_all <- merge(Secchi_all, Secchi_all_list, by='lagoslakeid',all=T) 
 Secchi_all <- merge(Secchi_all, burn_severity, by='lagoslakeid', all=T)
-Secchi_cor <- as.data.frame(cor(Secchi_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+Secchi_cor <- as.data.frame(cor(Secchi_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+Secchi_cor_ext <- Secchi_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                                'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                                'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+Secchi_cor_ext <- Secchi_cor_ext[c('maylogSecchi','junlogSecchi','jullogSecchi','auglogSecchi',
+                                   'seplogSecchi','meanlogSecchi'),] #extract desired rows
+Secchi_cor_ext <- round(Secchi_cor_ext, 2)
+#write.csv(Secchi_cor_ext, file='Data/Correlation_matrices/Secchi_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- Secchi_all[,c('maylogSecchi','junlogSecchi','jullogSecchi','auglogSecchi',
+                      'seplogSecchi','meanlogSecchi','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                      'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                      'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+Secchi_P <- rcorr(as.matrix(psdf), type='pearson')
+Secchi_P <- as.data.frame(Secchi_P$P)[c(1:6),c(7:12)]
+
 
 pH_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanpH = mean(pH, na.rm=T)) #seems approx normally distributed
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanpH = mean(pH, na.rm=T)) #seems approx normally distributed
 pH_all_list <- list(mayWQ_fire[,c('lagoslakeid','pH')],
                     juneWQ_fire[,c('lagoslakeid','pH')],
                     julyWQ_fire[,c('lagoslakeid','pH')],
@@ -204,7 +318,16 @@ colnames(pH_all_list) <- c('lagoslakeid','maypH','junpH',
 
 pH_all <- merge(pH_all, pH_all_list, by='lagoslakeid',all=T) 
 pH_all <- merge(pH_all, burn_severity, by='lagoslakeid', all=T)
-pH_cor <- as.data.frame(cor(pH_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+pH_cor <- as.data.frame(cor(pH_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+pH_cor_ext <- pH_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                        'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                        'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+pH_cor_ext <- pH_cor_ext[c('maypH','junpH','julpH','augpH',
+                           'seppH','meanpH'),] #extract desired rows
+pH_cor_ext <- round(pH_cor_ext, 2)
+#write.csv(pH_cor_ext, file='Data/Correlation_matrices/pH_correlation_matrix.csv', row.names=T)
 
 
 NO2NO3_all <- allmonths %>%

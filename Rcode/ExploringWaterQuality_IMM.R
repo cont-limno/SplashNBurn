@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 11-14-22# TN/TP vs DOC
+# updated: 12-8-22; revised TP vs chla plot
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -11,6 +11,7 @@ library(gridExtra)
 library(lubridate)
 library(tidyr)
 library(tidyverse)
+library(Hmisc)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
@@ -1514,76 +1515,218 @@ legendplot <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=SecchiDepth_m, color=
 
 legend2 <- g_legend(legendplot)
 
-# TP vs chloro
-xlimz <- c(0,50)
-ylimz <- c(0,10)
-a <- ggplot(data=allWQ_data_may, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+### TP vs chloro #candidate Ms figure (axes are a pain in this one)
+xlimz <- c(2,5.5)
+ylimz <- c(0,5)
+
+rvalx_burn <- 2.5 #control where r and p values are placed on plots
+rvaly_burn <- 5
+pvalx_burn <- 2.5
+pvaly_burn <- 4.6
+rvalx_control <- 2.5
+rvaly_control <- 4.2
+pvalx_control <- 2.5
+pvaly_control <- 3.8
+
+mayburn <- subset(allWQ_data_may, Type=='Burned')
+maycontrol <- subset(allWQ_data_may, Type=='Control')
+mayburn_stats <- rcorr(mayburn$logChloro, mayburn$logTP, type='pearson')
+mayburn_rval <- round(mayburn_stats$r[1,2],2)
+mayburn_pval <- round(mayburn_stats$P[1,2],2)
+maycontrol_stats <- rcorr(maycontrol$logChloro, maycontrol$logTP, type='pearson')
+maycontrol_rval <- round(maycontrol_stats$r[1,2],2)
+maycontrol_pval <- round(maycontrol_stats$P[1,2],2)
+
+a <- ggplot(data=allWQ_data_may, aes(x=logTP, y=logChloro, color=Type))+
   geom_point(size=2)+
   theme_classic()+
-  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
-  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
   ggtitle('May 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c(0.1,0.7))+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",mayburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",mayburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",maycontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",maycontrol_pval),
+           color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors, guide='none')
 a + geom_smooth(method='lm')
 
-b <- ggplot(data=allWQ_data_jun, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+junburn <- subset(allWQ_data_jun, Type=='Burned')
+juncontrol <- subset(allWQ_data_jun, Type=='Control')
+junburn_stats <- rcorr(junburn$logChloro, junburn$logTP, type='pearson')
+junburn_rval <- round(junburn_stats$r[1,2],2)
+junburn_pval <- round(junburn_stats$P[1,2],2)
+juncontrol_stats <- rcorr(juncontrol$logChloro, juncontrol$logTP, type='pearson')
+juncontrol_rval <- round(juncontrol_stats$r[1,2],2)
+juncontrol_pval <- round(juncontrol_stats$P[1,2],2)
+
+b <- ggplot(data=allWQ_data_jun, aes(x=logTP, y=logChloro, color=Type))+
   geom_point(size=2)+
   theme_classic()+
-  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
-  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
   ggtitle('June 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
-        legend.position=c('none'))+
+        legend.position=c(0.8,0.8))+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",junburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",junburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",juncontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",juncontrol_pval),
+           color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors)+
   labs(shape='Class', color='Type')
 b + geom_smooth(method='lm')
 
-c <- ggplot(data=allWQ_data_jul, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+julburn <- subset(allWQ_data_jul, Type=='Burned')
+julcontrol <- subset(allWQ_data_jul, Type=='Control')
+julburn_stats <- rcorr(julburn$logChloro, julburn$logTP, type='pearson')
+julburn_rval <- round(julburn_stats$r[1,2],2)
+julburn_pval <- round(julburn_stats$P[1,2],2)
+julcontrol_stats <- rcorr(julcontrol$logChloro, julcontrol$logTP, type='pearson')
+julcontrol_rval <- round(julcontrol_stats$r[1,2],2)
+julcontrol_pval <- round(julcontrol_stats$P[1,2],2)
+
+c <- ggplot(data=allWQ_data_jul, aes(x=logTP, y=logChloro, color=Type))+
   geom_point(size=2)+
   theme_classic()+
-  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
-  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
   ggtitle('July 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",julburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",julburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",julcontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",julcontrol_pval),
+           color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors)+
   labs(shape='Class', color='Type')
 c + geom_smooth(method='lm')
 
-d <- ggplot(data=allWQ_data_aug, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+augburn <- subset(allWQ_data_aug, Type=='Burned')
+augcontrol <- subset(allWQ_data_aug, Type=='Control')
+augburn_stats <- rcorr(augburn$logChloro, augburn$logTP, type='pearson')
+augburn_rval <- round(augburn_stats$r[1,2],2)
+augburn_pval <- round(augburn_stats$P[1,2],2)
+augcontrol_stats <- rcorr(augcontrol$logChloro, augcontrol$logTP, type='pearson')
+augcontrol_rval <- round(augcontrol_stats$r[1,2],2)
+augcontrol_pval <- round(augcontrol_stats$P[1,2],2)
+
+d <- ggplot(data=allWQ_data_aug, aes(x=logTP, y=logChloro, color=Type))+
   geom_point(size=2)+
   theme_classic()+
-  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
-  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
   ggtitle('August 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",augburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",augburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",augcontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",augcontrol_pval),
+           color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors)+
   labs(shape='Class', color='Type')
 d + geom_smooth(method='lm')
 
-e <- ggplot(data=allWQ_data_sep, aes(x=TP_ppb, y=Chloro_ppb, color=Type))+
+sepburn <- subset(allWQ_data_sep, Type=='Burned')
+sepcontrol <- subset(allWQ_data_sep, Type=='Control')
+sepburn_stats <- rcorr(sepburn$logChloro, sepburn$logTP, type='pearson')
+sepburn_rval <- round(sepburn_stats$r[1,2],2)
+sepburn_pval <- round(sepburn_stats$P[1,2],2)
+sepcontrol_stats <- rcorr(sepcontrol$logChloro, sepcontrol$logTP, type='pearson')
+sepcontrol_rval <- round(sepcontrol_stats$r[1,2],2)
+sepcontrol_pval <- round(sepcontrol_stats$P[1,2],2)
+
+e <- ggplot(data=allWQ_data_sep, aes(x=logTP, y=logChloro, color=Type))+
   geom_point(size=2)+
   theme_classic()+
-  scale_x_continuous(name='TP (ppb)',limits=xlimz)+
-  scale_y_continuous(name='Chlorophyll-a (ppb)', limits=ylimz)+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
   ggtitle('September 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
   scale_color_manual(values=burn_colors)+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",sepburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",sepburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",sepcontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",sepcontrol_pval),
+           color="dodgerblue", size=3)+
   labs(shape='Class', color='Type')
 e + geom_smooth(method='lm')
 
+# all months
+allmonths_TP_chla_means <- allWQ_data %>%
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanTP=mean(TP_ppb, na.rm=T),
+            meanlogTP=mean(logTP, na.rm=T),
+            meanChloro=mean(Chloro_ppb, na.rm=T),
+            meanlogChloro=mean(logChloro, na.rm=T))
+
+allmonths_TP_chla_means <- merge(allmonths_TP_chla_means, LAGOS_layover[,c('lagoslakeid','Type')], all=F)
+allmonths_TP_chla_means_burned <- subset(allmonths_TP_chla_means, Type=='Burned')
+allmonths_TP_chla_means_control <- subset(allmonths_TP_chla_means, Type=='Control')
+
+allburn_stats <- rcorr(allmonths_TP_chla_means_burned$meanlogChloro, allmonths_TP_chla_means_burned$meanlogTP, type='pearson')
+allburn_rval <- round(allburn_stats$r[1,2],2)
+allburn_pval <- round(allburn_stats$P[1,2],2)
+allcontrol_stats <- rcorr(allmonths_TP_chla_means_control$meanlogChloro, allmonths_TP_chla_means_control$meanlogTP, type='pearson')
+allcontrol_rval <- round(allcontrol_stats$r[1,2],2)
+allcontrol_pval <- round(allcontrol_stats$P[1,2],2)
+
+f <- ggplot(data=allmonths_TP_chla_means, aes(x=meanlogTP, y=meanlogChloro, color=Type))+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
+  scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
+  ggtitle('All months')+
+  theme(axis.text.x=element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        legend.position=c('none'))+
+  scale_color_manual(values=burn_colors)+
+  annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",allburn_rval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",allburn_pval),
+           color="firebrick", size=3)+
+  annotate(geom="text", x=rvalx_control, y=rvaly_control, label=paste0("r=",allcontrol_rval),
+           color="dodgerblue", size=3)+
+  annotate(geom="text", x=pvalx_control, y=pvaly_control, label=paste0("p=",allcontrol_pval),
+           color="dodgerblue", size=3)+
+  labs(shape='Class', color='Type')
+f + geom_smooth(method='lm')
+
 grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
              c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
-             e+geom_smooth(method='lm'),legend2)
+             e+geom_smooth(method='lm'),f + geom_smooth(method='lm'))
+
+jpeg('Figures/TP_vs_chloro_regressions.jpeg',width = 7,height = 7,units = 'in',res=600)
+  grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
+               c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+               e+geom_smooth(method='lm'),f + geom_smooth(method='lm'), nrow=3)
+dev.off()
+
 
 ## DOC vs Secchi
 a <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=SecchiDepth_m, color=Type))+
