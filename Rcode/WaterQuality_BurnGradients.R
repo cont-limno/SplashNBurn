@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-2-22; spruced up chla and tp figs for manuscript
+# updated: 12-7-22; new correlation matrices, analyses with soil burn severity
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -81,6 +81,161 @@ augWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",augWQ_fire$Site)
 sepWQ_fire$LakeName <- gsub(paste('Lake',collapse='|'),"",sepWQ_fire$Site)
 
 allmonths <- rbind.data.frame(mayWQ_fire, juneWQ_fire, julyWQ_fire, augWQ_fire, sepWQ_fire)
+#allmonths_list <- list(mayWQ_fire, juneWQ_fire, julyWQ_fire, augWQ_fire, sepWQ_fire)
+#allmonths <- Reduce(function(x, y) merge(x, y, all=T), allmonths_list)
+
+
+## calculate 5-month averages for each water quality variable, then merge to burn_severity
+# to see what fire variables are most correlated with water quality
+TP_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanTP = mean(TP_ppb, na.rm=T),
+            meanlogTP = mean(logTP, na.rm=T))
+TP_all_list <- list(mayWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
+                    juneWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
+                    julyWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
+                    augWQ_fire[,c('lagoslakeid','TP_ppb','logTP')],
+                    sepWQ_fire[,c('lagoslakeid','TP_ppb','logTP')])
+TP_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), TP_all_list)
+colnames(TP_all_list) <- c('lagoslakeid','mayTP','maylogTP', 'junTP','junlogTP',
+                           'julTP','jullogTP','augTP','auglogTP','sepTP','seplogTP')
+
+TP_all <- merge(TP_all, TP_all_list, by='lagoslakeid',all=T) 
+TP_all <- merge(TP_all, burn_severity, by='lagoslakeid', all=T)
+TP_cor <- as.data.frame(cor(TP_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+chloro_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanChloro = mean(Chloro_ppb, na.rm=T),
+            meanlogChloro = mean(logChloro, na.rm=T))
+chloro_all_list <- list(mayWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
+                        juneWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
+                        julyWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
+                        augWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')],
+                        sepWQ_fire[,c('lagoslakeid','Chloro_ppb','logChloro')])
+chloro_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), chloro_all_list)
+colnames(chloro_all_list) <- c('lagoslakeid','maychloro','maylogChloro', 'junchloro','junlogChloro',
+                               'julchloro','jullogChloro','augchloro','auglogChloro','sepchloro','seplogChloro')
+
+chloro_all <- merge(chloro_all, chloro_all_list, by='lagoslakeid',all=T) 
+chloro_all <- merge(chloro_all, burn_severity, by='lagoslakeid', all=T)
+chloro_cor <- as.data.frame(cor(chloro_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+
+TN_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanTN = mean(TN_ppb, na.rm=T),
+            meanlogTN = mean(logTN, na.rm=T))
+TN_all_list <- list(mayWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
+                    juneWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
+                    julyWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
+                    augWQ_fire[,c('lagoslakeid','TN_ppb','logTN')],
+                    sepWQ_fire[,c('lagoslakeid','TN_ppb','logTN')])
+TN_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), TN_all_list)
+colnames(TN_all_list) <- c('lagoslakeid','mayTN','maylogTN', 'junTN','junlogTN',
+                           'julTN','jullogTN','augTN','auglogTN','sepTN','seplogTN')
+
+TN_all <- merge(TN_all, TN_all_list, by='lagoslakeid',all=T) 
+TN_all <- merge(TN_all, burn_severity, by='lagoslakeid', all=T)
+TN_cor <- as.data.frame(cor(TN_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+DOC_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanDOC = mean(DOC_ppm, na.rm=T),
+            meanlogDOC = mean(logDOC, na.rm=T))
+DOC_all_list <- list(mayWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
+                     juneWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
+                     julyWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
+                     augWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')],
+                     sepWQ_fire[,c('lagoslakeid','DOC_ppm','logDOC')])
+DOC_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), DOC_all_list)
+colnames(DOC_all_list) <- c('lagoslakeid','mayDOC','maylogDOC', 'junDOC','junlogDOC',
+                            'julDOC','jullogDOC','augDOC','auglogDOC','sepDOC','seplogDOC')
+
+DOC_all <- merge(DOC_all, DOC_all_list, by='lagoslakeid',all=T) 
+DOC_all <- merge(DOC_all, burn_severity, by='lagoslakeid', all=T)
+DOC_cor <- as.data.frame(cor(DOC_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+TSS_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanTSS = mean(TSS_mgL, na.rm=T),
+            meanlogTSS = mean(logTSS, na.rm=T))
+TSS_all_list <- list(mayWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
+                     juneWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
+                     julyWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
+                     augWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')],
+                     sepWQ_fire[,c('lagoslakeid','TSS_mgL','logTSS')])
+TSS_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), TSS_all_list)
+colnames(TSS_all_list) <- c('lagoslakeid','mayTSS','maylogTSS', 'junTSS','junlogTSS',
+                            'julTSS','jullogTSS','augTSS','auglogTSS','sepTSS','seplogTSS')
+
+TSS_all <- merge(TSS_all, TSS_all_list, by='lagoslakeid',all=T) 
+TSS_all <- merge(TSS_all, burn_severity, by='lagoslakeid', all=T)
+TSS_cor <- as.data.frame(cor(TSS_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+Secchi_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanSecchi = mean(SecchiDepth_m, na.rm=T),
+            meanlogSecchi = mean(logSecchi, na.rm=T))
+Secchi_all_list <- list(mayWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
+                        juneWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
+                        julyWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
+                        augWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')],
+                        sepWQ_fire[,c('lagoslakeid','SecchiDepth_m','logSecchi')])
+Secchi_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), Secchi_all_list)
+colnames(Secchi_all_list) <- c('lagoslakeid','maySecchi','maylogSecchi', 'junSecchi','junlogSecchi',
+                               'julSecchi','jullogSecchi','augSecchi','auglogSecchi','sepSecchi','seplogSecchi')
+
+Secchi_all <- merge(Secchi_all, Secchi_all_list, by='lagoslakeid',all=T) 
+Secchi_all <- merge(Secchi_all, burn_severity, by='lagoslakeid', all=T)
+Secchi_cor <- as.data.frame(cor(Secchi_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+pH_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanpH = mean(pH, na.rm=T)) #seems approx normally distributed
+pH_all_list <- list(mayWQ_fire[,c('lagoslakeid','pH')],
+                    juneWQ_fire[,c('lagoslakeid','pH')],
+                    julyWQ_fire[,c('lagoslakeid','pH')],
+                    augWQ_fire[,c('lagoslakeid','pH')],
+                    sepWQ_fire[,c('lagoslakeid','pH')])
+pH_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), pH_all_list)
+colnames(pH_all_list) <- c('lagoslakeid','maypH','junpH',
+                           'julpH','augpH','seppH')
+
+pH_all <- merge(pH_all, pH_all_list, by='lagoslakeid',all=T) 
+pH_all <- merge(pH_all, burn_severity, by='lagoslakeid', all=T)
+pH_cor <- as.data.frame(cor(pH_all, method='pearson', use='pairwise.complete.obs'))[,c(2:13)]
+
+
+NO2NO3_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanNO2NO3 = mean(NO2NO3_ppb, na.rm=T),
+            meanlogNO2NO3 = mean(logNO2NO3, na.rm=T))
+
+NH4N_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanNH4N = mean(NH4N_ppb, na.rm=T),
+            meanlogNH4N = mean(logNH4N, na.rm=T))
+
+ANC_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanANCmg = mean(ANC_mgCaCO3L, na.rm=T),
+            meanlogANCmg = mean(logANCmg, na.rm=T))
+
+DO_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanDOpct = mean(LDO_pct, na.rm=T),
+            meanDOmgL = mean(LDO_mgL, na.rm=T)) #seems approx normally distributed
+
+TempC_all <- allmonths %>%
+  group_by(lagoslakeid) %>%
+  summarize(meanTempC = mean(WaterTemp_C, na.rm=T)) #seems approx normally distributed
+
+# waterquality_all_list <- list(TP_all, TN_all, DOC_all, TSS_all, chloro_all, Secchi_all,
+#                               pH_all, ANC_all, NO2NO3_all, NH4N_all, DO_all, TempC_all)
+# 
+# waterquality_monthly_means <- Reduce(function(x, y) merge(x, y, all=T), waterquality_all_list)
+# waterquality_monthly_means_fire <- merge(waterquality_monthly_means, burn_severity, by='lagoslakeid', all=T)
 
 
 #### Gradient plots ####
@@ -88,19 +243,20 @@ allmonths <- rbind.data.frame(mayWQ_fire, juneWQ_fire, julyWQ_fire, augWQ_fire, 
 ## Chlorophyll-a
 # set variables and plotting parameters for all plots
 wqvar <- 'logChloro'
-#firevar <- 'ws_vbs_High_pct'
-firevar <- 'ws_vbs_total_burn_pct'
+firevar <- 'ws_vbs_High_pct'
+#firevar <- 'ws_vbs_total_burn_pct'
 colorvar <- 'ConnClass'
 labelvar <- 'LakeName'
 xlimz <- c(0,100)
 ylimz <- c(-1,3)
-#xlabb <- 'Watershed % burned high severity'
-xlabb <- 'Watershed % burned'
+xlabb <- 'Watershed % burned high severity (veg)'
+#xlabb <- 'Watershed % burned'
 ylabb <- 'log(Chlorophyll-a) (ppb)'
 rvalx <- 95
 rvaly <- -0.4
 pvalx <- 95
 pvaly <- -0.7
+labelnudge <- 0.5
 
 # May
 plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
@@ -110,7 +266,7 @@ plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
 plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('A) May')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -138,7 +294,7 @@ plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
 plotJun <- ggplot(data=juneWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('B) June')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -166,7 +322,7 @@ plotlm <- lm(julyWQ_fire[,wqvar] ~ julyWQ_fire[,firevar])
 plotJul <- ggplot(data=julyWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('C) July')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -194,7 +350,7 @@ plotlm <- lm(augWQ_fire[,wqvar] ~ augWQ_fire[,firevar])
 plotAug <- ggplot(data=augWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('D) August')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -222,7 +378,7 @@ plotlm <- lm(sepWQ_fire[,wqvar] ~ sepWQ_fire[,firevar])
 plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('E) September')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -243,14 +399,16 @@ plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
 plotSep
 
 # all months
-plotcor <- cor.test(allmonths[,wqvar], allmonths[,firevar], method='pearson')
+wqvarall <- 'meanlogChloro'
+chloro_plot_data <- merge(chloro_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(chloro_all$meanlogChloro, chloro_all[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
-plotlm <- lm(allmonths[,wqvar] ~ allmonths[,firevar])
-plotAll <- ggplot(data=allmonths, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+plotlm <- lm(chloro_all$meanlogChloro ~ chloro_all[,firevar])
+plotAll <- ggplot(data=chloro_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
   ggtitle('F) All months')+
   geom_point(size=2)+ 
-  #geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -336,19 +494,20 @@ wqvar <- 'logTP'
 firevar <- 'ws_vbs_total_burn_pct'
 colorvar <- 'ConnClass'
 labelvar <- 'LakeName'
-xlimz <- c(0,100)
+xlimz <- c(0,100) #0-100 for vbs, 0-5 for sbs
 ylimz <- c(2,4)
-#xlabb <- 'Watershed % burned high severity'
+#xlabb <- 'Watershed % burned high severity (veg)'
 xlabb <- 'Watershed % burned'
 ylabb <- 'log(Total phosphorus) (ppb)'
 # rvalx <- 5
 # rvaly <- 4
 # pvalx <- 5
 # pvaly <- 3.8
-rvalx <- 95 #from chla plots
+rvalx <- 95 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 2.3
 pvalx <- 95
 pvaly <- 2.1
+labelnudge <- 0.5 #had been 0.5 for vbs, 0.1 for sbs
 
 # May
 plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
@@ -358,7 +517,7 @@ plotlm <- lm(mayWQ_fire[,wqvar] ~ mayWQ_fire[,firevar])
 plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('A) May')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -374,7 +533,7 @@ plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
         axis.text.y=element_text(color='black'),
         axis.title.x=element_text(size=9),
         axis.title.y=element_text(size=9),
-        legend.position=c(0.55,0.2))+
+        legend.position=c(0.25,0.2))+ #0.25 for sbs, 0.55 for vbs (or keep at 0.25)
   scale_color_manual("", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
 plotMay
 
@@ -386,7 +545,7 @@ plotlm <- lm(juneWQ_fire[,wqvar] ~ juneWQ_fire[,firevar])
 plotJun <- ggplot(data=juneWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('B) June')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -414,7 +573,7 @@ plotlm <- lm(julyWQ_fire[,wqvar] ~ julyWQ_fire[,firevar])
 plotJul <- ggplot(data=julyWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('C) July')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -442,7 +601,7 @@ plotlm <- lm(augWQ_fire[,wqvar] ~ augWQ_fire[,firevar])
 plotAug <- ggplot(data=augWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('D) August')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -470,7 +629,7 @@ plotlm <- lm(sepWQ_fire[,wqvar] ~ sepWQ_fire[,firevar])
 plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
   ggtitle('E) September')+
   geom_point(size=2)+ 
-  geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -491,14 +650,16 @@ plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
 plotSep
 
 # all months
-plotcor <- cor.test(allmonths[,wqvar], allmonths[,firevar], method='pearson')
+wqvarall <- 'meanlogTP'
+TP_plot_data <- merge(TP_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(TP_all$meanlogTP, TP_all[,firevar], method='pearson')
 rval <- round(plotcor$estimate, 2)
 pval <- round(plotcor$p.value, 2)
-plotlm <- lm(allmonths[,wqvar] ~ allmonths[,firevar])
-plotAll <- ggplot(data=allmonths, aes_string(x=firevar, y=wqvar, color=colorvar, label=labelvar))+
+plotlm <- lm(TP_all$meanlogTP ~ TP_all[,firevar])
+plotAll <- ggplot(data=TP_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
   ggtitle('F) All months')+
   geom_point(size=2)+ 
-  #geom_text(hjust=0, vjust=0, size=2, nudge_x=0.5)+
+  geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
   #geom_smooth(method='lm')+ separate lines for isolated and drainage
   geom_abline(slope = coef(plotlm)[2], 
               intercept = coef(plotlm)[["(Intercept)"]])+
@@ -521,12 +682,16 @@ plotAll
 grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 
 # jpeg('Figures/multipanel_HSburn_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
-#    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
+#     grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 # dev.off()
 
-jpeg('Figures/multipanel_totalburn_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
-   grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
-dev.off()
+#jpeg('Figures/multipanel_HSburnsoil_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
+#    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
+#dev.off()
+
+# jpeg('Figures/multipanel_totalburn_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
+#    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
+# dev.off()
 
 ### TN ###
 # set variables and plotting parameters for all plots
@@ -2012,5 +2177,17 @@ tp_gam2 <- gam(logTP ~ s(ws_vbs_High_pct) + s(ws_lake_arearatio), data=mayWQ_fir
 summary(tp_gam2)
 plot(tp_gam2, main='May TP')
 
+#### What are the best fire predictors of a given water quality variable? ####
+# first make sure all profile depths are 0
+mayWQ_fire$ProfileDepth_m <- 0
+juneWQ_fire$ProfileDepth_m <- 0
+julyWQ_fire$ProfileDepth_m <- 0
+augWQ_fire$ProfileDepth_m <- 0
+sepWQ_fire$ProfileDepth_m <- 0
+allmonths$ProfileDepth_m <- 0
 
+maycor <- cor(mayWQ_fire[, unlist(lapply(mayWQ_fire, is.numeric))], method='pearson', use='pairwise.complete.obs')
+maycor <- as.data.frame(maycor)[14:58]
+
+df_list <- list(mayWQ_fire, juneWQ_fire, julyWQ_fire, augWQ_fire, sepWQ_fire)
 
