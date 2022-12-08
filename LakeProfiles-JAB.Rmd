@@ -3,10 +3,19 @@ title: "RAPID Fire Project - Lake Profile Data"
 date: "2022-10-03"
 author: "J. Brentrup"
 output: html_notebook
+editor_options: 
+  chunk_output_type: console
 ---
+
+Lakes are cool
+good place for notes
+this section of code will load my library
 
 # Load Libraries
 ```{r, message=FALSE}
+
+# install.packages("tidyverse")
+
 library(tidyverse)
 library(googledrive)
 library(readxl)
@@ -38,101 +47,73 @@ drive_download("Field Sampling_Lake Profiles_Round2.xlsx",
 
 ```
 
-# Load profile data
-```{r}
+# Load profile data - full time complete
+```{r, warning=FALSE}
 
-profiles_may <- read_xlsx("Data/WaterQuality/Field Sampling_Lake Profiles_Round1.xlsx", sheet = 1, col_types = c(
-  ID = "numeric",
-  Site = "text",
-  Date = "date",
-  Field2 = "logical",
- `Profile Depth (m)` = "numeric",
- `Water Temp (°C)` = "numeric",
-`Spec Cond (µS/cm)` = "numeric",
-`LDO (mg/L)` = "numeric",
-`LDO %` = "numeric",
-pH = "numeric",
-Field1 = "logical"
+profiles_all <- read_csv("Data/WaterQuality/Field-Sampling_Lake-Profiles10-19-22Complete.csv", col_types = c(
+  Site = col_character(),
+  Date = col_character(),
+  ProfileDepth_m = col_double(),
+  WaterTemp_C = col_double(),
+  SpecCond_uScm = col_double(),
+  LDO_mgL = col_double(),
+  LDO_pct = col_double(),
+  pH = col_double()
   
 ))
 
-str(profiles_may)
+str(profiles_all)
+# Convert date to posixt for
 
-profiles_june <- read_xlsx("Data/WaterQuality/Field Sampling_Lake Profiles_Round2.xlsx", sheet = 1, col_types = c(
-  ID = "numeric",
-  Site = "text",
-  Date = "date",
-  Field2 = "logical",
- `Profile Depth (m)` = "numeric",
- `Water Temp (°C)` = "numeric",
-`Spec Cond (µS/cm)` = "numeric",
-`LDO (mg/L)` = "numeric",
-`LDO %` = "numeric",
-pH = "numeric",
-Field1 = "logical"
-  
-))
+profiles_all$Date <- as_date(profiles_all$Date, format = " %m/%d/%Y")
 
-str(profiles_june)
+# add month
+profiles_all <- profiles_all %>% 
+  mutate(Month = month(Date))
 
 ```
 
-# Load attribute data - stored on Github
+# Check profile data
 ```{r}
-attribute_data <- read_csv("Data/attribute_data.csv")
-spec(attribute_data)
-```
+summary(profiles_all)
 
-# Download and load latest water quality data - through Aug. 2022
-```{r}
-drive_download("Lab Analyses_ Lakes9-30-22.xlsx",
-               path = "Data/WaterQuality/Lab Analyses_ Lakes9-30-22.xlsx", 
-               overwrite = TRUE)
+# Fix high DO in Eighteen lake
+which.max(profiles_all$LDO_mgL) # high value for eighteen lake DO concentration and %Sat switched in July
 
-wq_data <- read_xlsx("Data/WaterQuality/Lab Analyses_ Lakes9-30-22.xlsx")
-# str(wq_data)
+# Fix high DO values- got switched % Sat and for mg/L
+profiles_all[361,6] <- 9.02
+profiles_all[361,7] <- 108.9
 
-#May June July data with lake characteristics (burn vs. control)
-wq_data_AE <- read_csv("Data/WaterQuality/may_june_july.csv")
+profiles_all[362,6] <- 9.18
+profiles_all[362,7] <- 108.8
 
-str(wq_data_AE)
+profiles_all[363,6] <- 9.2
+profiles_all[363,7] <- 109.7
 
-```
+profiles_all[364,6] <- 9.34
+profiles_all[364,7] <- 111.5
 
 
-# Check May data
-```{r}
-summary(profiles_may)
 
-# Total number of lakes - 29
-unique(profiles_may$Site)
+# Total number of lakes - 30
+unique(profiles_all$Site)
 
-#Filter for lakes > 2m - 11 lakes
+#Filter for lakes > 2m - 14 lakes
 
-deep_lakes <- profiles_may %>% 
-  filter(`Profile Depth (m)` > 2) %>% 
+deep_lakes <- profiles_all %>% 
+  filter(ProfileDepth_m > 2) %>% 
   count(Site)
 
-```
-
-# Plot May water temp profiles
-```{r}
-
-# Deepest lake - 4th McDougal
-deep_lake <- profiles_may %>% 
-  filter(Site == "Fourth McDougal")
-
-ggplot(data = deep_lake, aes(x = `Water Temp (°C)`, y = `Profile Depth (m)`)) +
-  scale_y_reverse()+
-  scale_x_continuous(position = "top")+
-  geom_point()+
-  geom_path()
-
 # Filter for deep lakes (profiles > 2 m)
-deep_lakes_profiles <- profiles_may %>% 
+deep_lakes_profiles <- profiles_all %>% 
    filter(Site %in% deep_lakes$Site)
 
-ggplot(data = deep_lakes_profiles, aes(x = `Water Temp (°C)`, y = `Profile Depth (m)`, color = Site)) +
+```
+
+# Plot water temp profiles for deep lakes
+```{r}
+
+ggplot(data = deep_lakes_profiles, aes(x = WaterTemp_C, y = ProfileDepth_m, color = factor(Month))) +
   scale_y_reverse()+
   scale_x_continuous(position = "top")+
   geom_point()+
@@ -141,34 +122,116 @@ ggplot(data = deep_lakes_profiles, aes(x = `Water Temp (°C)`, y = `Profile Dept
 
 ```
 
-# Combine May and June data 
+
+# Download and load latest water quality data
 ```{r}
-profiles_all <- full_join(profiles_may, profiles_june) %>% 
-  mutate(month = month(Date))
+# drive_download("Lab Analyses_Lakes9-30-22.xlsx",
+#                path = "Data/WaterQuality/LabAnalyses_Lakes9-30-22.xlsx", 
+#                overwrite = TRUE)
+
+wq_data <- read_csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
+# str(wq_data)
+
+str(wq_data)
+summary(wq_data)
+
+which.max(wq_data$LDO_mgL) # high value for eighteen lake DO concentration and %Sat switched in July
+
+# Fix high DO values- got switched 108.9 for % Sat and 9.02 for mg/L
+wq_data[23,36] <- 9.02
+wq_data[23,37] <- 108.9
+
+# Rename depth column in WQ to separate from profile depth
+wq_data <- wq_data %>% 
+  rename(Depth_m = ProfileDepth_m)
+
+
 ```
 
-# Plot May & June water temp profiles
+
+# Join profile and WQ data 
+- match by site name and month to get just lake characteristic attributes (burn, connectivity class)
 ```{r}
 
-# Deepest lake - 4th McDougal
-deep_lake <- profiles_may %>% 
+profiles_wq_data <- full_join(profiles_all, wq_data[,c(1:2, 16, 18:19)], by = c("Site", "Month"))
+
+summary(profiles_wq_data)
+
+```
+
+
+# Plot profiles
+```{r}
+
+# Deepest lake - 4th McDougal only in May
+deep_lake <- deep_lakes_profiles_all %>% 
   filter(Site == "Fourth McDougal")
 
-ggplot(data = deep_lake, aes(x = `Water Temp (°C)`, y = `Profile Depth (m)`)) +
+ggplot(data = deep_lake, aes(x = WaterTemp_C, y = ProfileDepth_m)) +
   scale_y_reverse()+
   scale_x_continuous(position = "top")+
   geom_point()+
   geom_path()
 
 # Filter for deep lakes (profiles > 2 m)
-deep_lakes_profiles_all <- profiles_all %>% 
-   filter(Site %in% deep_lakes$Site)
+deep_lakes_profiles_all <- profiles_wq_data %>% 
+   filter(Site %in% deep_lakes$Site) %>% 
+  filter(!is.na(Month))
 
-ggplot(data = deep_lakes_profiles_all, aes(x = `Water Temp (°C)`, y = `Profile Depth (m)`, color = factor(month))) +
+# Water Temp
+ggplot(data = deep_lakes_profiles_all, aes(x = WaterTemp_C, y = ProfileDepth_m, color = Group, shape = factor(Month))) +
   scale_y_reverse()+
   scale_x_continuous(position = "top")+
   geom_point()+
   geom_path()+
+  labs(color = "Lake Type", shape = "Month")+
+  facet_wrap(~Site)
+
+# DO mg/L
+names(deep_lakes_profiles_all)
+
+ggplot(data = deep_lakes_profiles_all, aes(x = LDO_mgL, y = ProfileDepth_m, color = Group, shape = factor(Month))) +
+  scale_y_reverse()+
+  scale_x_continuous(position = "top")+
+  geom_point()+
+  geom_path()+
+  labs(color = "Lake Type", shape = "Month")+
+  facet_wrap(~Site)
+
+# DO % Sat
+ggplot(data = deep_lakes_profiles_all, aes(x = LDO_pct, y = ProfileDepth_m, color = Group, shape = factor(Month))) +
+  scale_y_reverse()+
+  scale_x_continuous(position = "top")+
+  geom_point()+
+  geom_path()+
+  labs(color = "Lake Type", shape = "Month")+
+  facet_wrap(~Site)
+
+# pH
+ggplot(data = deep_lakes_profiles_all, aes(x = pH, y = ProfileDepth_m, color = Group, shape = factor(Month))) +
+  scale_y_reverse()+
+  scale_x_continuous(position = "top")+
+  geom_point()+
+  geom_path()+
+  labs(color = "Lake Type", shape = "Month")+
+  facet_wrap(~Site)
+
+# specific conductivity
+ggplot(data = deep_lakes_profiles_all, aes(x = SpecCond_uScm, y = ProfileDepth_m, color = Group, shape = factor(Month))) +
+  scale_y_reverse()+
+  scale_x_continuous(position = "top")+
+  geom_point()+
+  geom_path()+
+  labs(color = "Lake Type", shape = "Month")+
   facet_wrap(~Site)
 
 ```
+
+# Summary
+```{r}
+burn_lakes <- deep_lakes_profiles_all %>% 
+  group_by(Group, Month) %>% 
+  summarize(mean = mean(LDO_mgL, na.rm = T), min = min(LDO_mgL, na.rm = T), max = max(LDO_mgL, na.rm = T), sd = sd(LDO_mgL, na.rm = T)) 
+
+```
+
