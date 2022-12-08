@@ -1517,16 +1517,16 @@ legend2 <- g_legend(legendplot)
 
 ### TP vs chloro #candidate Ms figure (axes are a pain in this one)
 xlimz <- c(2,5.5)
-ylimz <- c(0,5)
+ylimz <- c(0,3.5)
 
-rvalx_burn <- 2.5 #control where r and p values are placed on plots
-rvaly_burn <- 5
-pvalx_burn <- 2.5
-pvaly_burn <- 4.6
-rvalx_control <- 2.5
-rvaly_control <- 4.2
-pvalx_control <- 2.5
-pvaly_control <- 3.8
+rvalx_burn <- 2.2 #control where r and p values are placed on plots
+rvaly_burn <- 3.5
+pvalx_burn <- 2.2
+pvaly_burn <- 3.2
+rvalx_control <- 2.2
+rvaly_control <- 2.9
+pvalx_control <- 2.2
+pvaly_control <- 2.6
 
 mayburn <- subset(allWQ_data_may, Type=='Burned')
 maycontrol <- subset(allWQ_data_may, Type=='Control')
@@ -1538,14 +1538,14 @@ maycontrol_rval <- round(maycontrol_stats$r[1,2],2)
 maycontrol_pval <- round(maycontrol_stats$P[1,2],2)
 
 a <- ggplot(data=allWQ_data_may, aes(x=logTP, y=logChloro, color=Type))+
-  geom_point(size=2)+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('May 2022')+
+  ggtitle('A) May 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
-        legend.position=c(0.1,0.7))+
+        legend.position=c('none'))+
   annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",mayburn_rval),
            color="firebrick", size=3)+
   annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",mayburn_pval),
@@ -1567,11 +1567,11 @@ juncontrol_rval <- round(juncontrol_stats$r[1,2],2)
 juncontrol_pval <- round(juncontrol_stats$P[1,2],2)
 
 b <- ggplot(data=allWQ_data_jun, aes(x=logTP, y=logChloro, color=Type))+
-  geom_point(size=2)+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('June 2022')+
+  ggtitle('B) June 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c(0.8,0.8))+
@@ -1585,7 +1585,8 @@ b <- ggplot(data=allWQ_data_jun, aes(x=logTP, y=logChloro, color=Type))+
            color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors)+
   labs(shape='Class', color='Type')
-b + geom_smooth(method='lm')
+b + geom_smooth(method='lm') + guides(shape='none')
+#b + guides(shape='none')
 
 julburn <- subset(allWQ_data_jul, Type=='Burned')
 julcontrol <- subset(allWQ_data_jul, Type=='Control')
@@ -1597,11 +1598,11 @@ julcontrol_rval <- round(julcontrol_stats$r[1,2],2)
 julcontrol_pval <- round(julcontrol_stats$P[1,2],2)
 
 c <- ggplot(data=allWQ_data_jul, aes(x=logTP, y=logChloro, color=Type))+
-  geom_point(size=2)+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('July 2022')+
+  ggtitle('C) July 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
@@ -1627,14 +1628,14 @@ augcontrol_rval <- round(augcontrol_stats$r[1,2],2)
 augcontrol_pval <- round(augcontrol_stats$P[1,2],2)
 
 d <- ggplot(data=allWQ_data_aug, aes(x=logTP, y=logChloro, color=Type))+
-  geom_point(size=2)+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('August 2022')+
+  ggtitle('D) August 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
-        legend.position=c('none'))+
+        legend.position=c(0.8,0.8))+
   annotate(geom="text", x=rvalx_burn, y=rvaly_burn, label=paste0("r=",augburn_rval),
            color="firebrick", size=3)+
   annotate(geom="text", x=pvalx_burn, y=pvaly_burn, label=paste0("p=",augburn_pval),
@@ -1645,7 +1646,7 @@ d <- ggplot(data=allWQ_data_aug, aes(x=logTP, y=logChloro, color=Type))+
            color="dodgerblue", size=3)+
   scale_color_manual(values=burn_colors)+
   labs(shape='Class', color='Type')
-d + geom_smooth(method='lm')
+d + geom_smooth(method='lm') + guides(color='none')
 
 sepburn <- subset(allWQ_data_sep, Type=='Burned')
 sepcontrol <- subset(allWQ_data_sep, Type=='Control')
@@ -1657,11 +1658,11 @@ sepcontrol_rval <- round(sepcontrol_stats$r[1,2],2)
 sepcontrol_pval <- round(sepcontrol_stats$P[1,2],2)
 
 e <- ggplot(data=allWQ_data_sep, aes(x=logTP, y=logChloro, color=Type))+
-  geom_point(size=2)+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('September 2022')+
+  ggtitle('E) September 2022')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
@@ -1685,7 +1686,7 @@ allmonths_TP_chla_means <- allWQ_data %>%
             meanChloro=mean(Chloro_ppb, na.rm=T),
             meanlogChloro=mean(logChloro, na.rm=T))
 
-allmonths_TP_chla_means <- merge(allmonths_TP_chla_means, LAGOS_layover[,c('lagoslakeid','Type')], all=F)
+allmonths_TP_chla_means <- merge(allmonths_TP_chla_means, LAGOS_layover[,c('lagoslakeid','Type','ConnClass')], all=F)
 allmonths_TP_chla_means_burned <- subset(allmonths_TP_chla_means, Type=='Burned')
 allmonths_TP_chla_means_control <- subset(allmonths_TP_chla_means, Type=='Control')
 
@@ -1696,12 +1697,12 @@ allcontrol_stats <- rcorr(allmonths_TP_chla_means_control$meanlogChloro, allmont
 allcontrol_rval <- round(allcontrol_stats$r[1,2],2)
 allcontrol_pval <- round(allcontrol_stats$P[1,2],2)
 
-f <- ggplot(data=allmonths_TP_chla_means, aes(x=meanlogTP, y=meanlogChloro, color=Type))+
-  geom_point(size=2)+
+f <- ggplot(data=allmonths_TP_chla_means, aes(x=meanlogTP, y=meanlogChloro, color=Type, shape=ConnClass))+
+  geom_point(size=2, aes(shape=ConnClass))+
   theme_classic()+
   scale_x_continuous(name='log(TP (ppb))',limits=xlimz)+
   scale_y_continuous(name='log(Chlorophyll-a (ppb))', limits=ylimz)+
-  ggtitle('All months')+
+  ggtitle('F) All months')+
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'),
         legend.position=c('none'))+
@@ -1717,13 +1718,13 @@ f <- ggplot(data=allmonths_TP_chla_means, aes(x=meanlogTP, y=meanlogChloro, colo
   labs(shape='Class', color='Type')
 f + geom_smooth(method='lm')
 
-grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
-             c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
-             e+geom_smooth(method='lm'),f + geom_smooth(method='lm'))
+# grid.arrange(a+geom_smooth(method='lm'),b + geom_smooth(method='lm') + guides(shape='none'),
+#              c+geom_smooth(method='lm'),d + geom_smooth(method='lm') + guides(color='none'),
+#              e+geom_smooth(method='lm'),f + geom_smooth(method='lm'))
 
 jpeg('Figures/TP_vs_chloro_regressions.jpeg',width = 7,height = 7,units = 'in',res=600)
-  grid.arrange(a+geom_smooth(method='lm'),b+geom_smooth(method='lm'),
-               c+geom_smooth(method='lm'),d+geom_smooth(method='lm'),
+  grid.arrange(a+geom_smooth(method='lm'),b + geom_smooth(method='lm') + guides(shape='none'),
+               c+geom_smooth(method='lm'),d + geom_smooth(method='lm') + guides(color='none'),
                e+geom_smooth(method='lm'),f + geom_smooth(method='lm'), nrow=3)
 dev.off()
 
