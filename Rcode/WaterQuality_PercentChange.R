@@ -548,20 +548,6 @@ ggplot(SpecCond_uScm_byMonth, aes(x=Month_factor, y=SpecCond_uScm_MedianDiffPct)
   ggtitle('SpecCond_uScm')+
   geom_hline(yintercept = 0, linetype='dashed')
 
-# basic plot
-ggplot(SpecCond_uScm_byMonth, aes(x=Month_factor, y=SpecCond_uScm_MedianDiff))+
-  geom_bar(stat='identity', fill='firebrick')+
-  theme_classic()+
-  scale_y_continuous('Percent difference',limits=common_y_limits, breaks=common_y_breaks)+
-  scale_x_discrete('Month')+
-  theme(axis.title.y=element_text(color='black'),
-        axis.title.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
-        axis.text.x=element_text(color='black'))+
-  ggtitle('Specific conductivity')+
-  geom_hline(yintercept = 0, linetype='dashed')
-
-
 ## ANC
 ANC_mgCaCO3L <- waterquality[,c('ANC_mgCaCO3L','Month_factor','Type')]
 ANC_mgCaCO3L_burned <- subset(ANC_mgCaCO3L, Type=='Burned')
