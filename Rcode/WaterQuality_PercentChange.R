@@ -29,12 +29,12 @@ TP_control_median <- median(TP_control$TP_ppb, na.rm=T)
 TP_byMonth_burned <- TP_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TP_MedianBurned=median(TP_ppb, na.rm=T),
-                   nTP_burned=n())
+                   nTP_burned=sum(!is.na(TP_ppb)))
 
 TP_byMonth_control <- TP_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TP_MedianControl=median(TP_ppb, na.rm=T),
-                   nTP_control=n())
+                   nTP_control=sum(!is.na(TP_ppb)))
 
 TP_byMonth <- merge(TP_byMonth_burned, TP_byMonth_control, by='Month_factor', all=T)
 TP_byMonth <- TP_byMonth %>%
@@ -79,12 +79,12 @@ TN_control_median <- median(TN_control$TN_ppb, na.rm=T)
 TN_byMonth_burned <- TN_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TN_MedianBurned=median(TN_ppb, na.rm=T),
-                   nTN_burned=n())
+                   nTN_burned=sum(!is.na(TN_ppb)))
 
 TN_byMonth_control <- TN_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TN_MedianControl=median(TN_ppb, na.rm=T),
-                   nTN_control=n())
+                   nTN_control=sum(!is.na(TN_ppb)))
 
 TN_byMonth <- merge(TN_byMonth_burned, TN_byMonth_control, by='Month_factor', all=T)
 TN_byMonth <- TN_byMonth %>%
@@ -161,12 +161,12 @@ NH4N_control_median <- median(NH4N_control$NH4N_ppb, na.rm=T)
 NH4N_byMonth_burned <- NH4N_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(NH4N_MedianBurned=median(NH4N_ppb, na.rm=T),
-                   nNH4N_burned=n())
+                   nNH4N_burned=sum(!is.na(NH4N_ppb)))
 
 NH4N_byMonth_control <- NH4N_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(NH4N_MedianControl=median(NH4N_ppb, na.rm=T),
-                   nNH4N_control=n())
+                   nNH4N_control=sum(!is.na(NH4N_ppb)))
 
 NH4N_byMonth <- merge(NH4N_byMonth_burned, NH4N_byMonth_control, by='Month_factor', all=T)
 NH4N_byMonth <- NH4N_byMonth %>%
@@ -210,12 +210,12 @@ DOC_control_median <- median(DOC_control$DOC_ppm, na.rm=T)
 DOC_byMonth_burned <- DOC_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(DOC_MedianBurned=median(DOC_ppm, na.rm=T),
-                   nDOC_burned=n())
+                   nDOC_burned=sum(!is.na(DOC_ppm)))
 
 DOC_byMonth_control <- DOC_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(DOC_MedianControl=median(DOC_ppm, na.rm=T),
-                   nDOC_control=n())
+                   nDOC_control=sum(!is.na(DOC_ppm)))
 
 DOC_byMonth <- merge(DOC_byMonth_burned, DOC_byMonth_control, by='Month_factor', all=T)
 DOC_byMonth <- DOC_byMonth %>%
@@ -260,12 +260,12 @@ TSS_control_median <- median(TSS_control$TSS_mgL, na.rm=T)
 TSS_byMonth_burned <- TSS_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TSS_MedianBurned=median(TSS_mgL, na.rm=T),
-                   nTSS_burned=n())
+                   nTSS_burned=sum(!is.na(TSS_mgL)))
 
 TSS_byMonth_control <- TSS_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(TSS_MedianControl=median(TSS_mgL, na.rm=T),
-                   nTSS_control=n())
+                   nTSS_control=sum(!is.na(TSS_mgL)))
 
 TSS_byMonth <- merge(TSS_byMonth_burned, TSS_byMonth_control, by='Month_factor', all=T)
 TSS_byMonth <- TSS_byMonth %>%
@@ -310,12 +310,12 @@ Chloro_control_median <- median(Chloro_control$Chloro_ppb, na.rm=T)
 Chloro_byMonth_burned <- Chloro_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(Chloro_MedianBurned=median(Chloro_ppb, na.rm=T),
-                   nChloro_burned=n())
+                   nChloro_burned=sum(!is.na(Chloro_ppb)))
 
 Chloro_byMonth_control <- Chloro_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(Chloro_MedianControl=median(Chloro_ppb, na.rm=T),
-                   nChloro_control=n())
+                   nChloro_control=sum(!is.na(Chloro_ppb)))
 
 Chloro_byMonth <- merge(Chloro_byMonth_burned, Chloro_byMonth_control, by='Month_factor', all=T)
 Chloro_byMonth <- Chloro_byMonth %>%
@@ -360,12 +360,12 @@ Secchi_control_median <- median(Secchi_control$SecchiDepth_m, na.rm=T)
 Secchi_byMonth_burned <- Secchi_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(Secchi_MedianBurned=median(SecchiDepth_m, na.rm=T),
-                   nSecchi_burned=n())
+                   nSecchi_burned=sum(!is.na(SecchiDepth_m)))
 
 Secchi_byMonth_control <- Secchi_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(Secchi_MedianControl=median(SecchiDepth_m, na.rm=T),
-                   nSecchi_control=n())
+                   nSecchi_control=sum(!is.na(SecchiDepth_m)))
 
 Secchi_byMonth <- merge(Secchi_byMonth_burned, Secchi_byMonth_control, by='Month_factor', all=T)
 Secchi_byMonth <- Secchi_byMonth %>%
@@ -410,12 +410,12 @@ pH_control_median <- median(pH_control$pH, na.rm=T)
 pH_byMonth_burned <- pH_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(pH_MedianBurned=median(pH, na.rm=T),
-                   npH_burned=n())
+                   npH_burned=sum(!is.na(pH)))
 
 pH_byMonth_control <- pH_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(pH_MedianControl=median(pH, na.rm=T),
-                   npH_control=n())
+                   npH_control=sum(!is.na(pH)))
 
 pH_byMonth <- merge(pH_byMonth_burned, pH_byMonth_control, by='Month_factor', all=T)
 pH_byMonth <- pH_byMonth %>%
@@ -459,12 +459,12 @@ WaterTemp_C_control_median <- median(WaterTemp_C_control$WaterTemp_C, na.rm=T)
 WaterTemp_C_byMonth_burned <- WaterTemp_C_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(WaterTemp_C_MedianBurned=median(WaterTemp_C, na.rm=T),
-                   nWaterTemp_C_burned=n())
+                   nWaterTemp_C_burned=sum(!is.na(WaterTemp_C)))
 
 WaterTemp_C_byMonth_control <- WaterTemp_C_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(WaterTemp_C_MedianControl=median(WaterTemp_C, na.rm=T),
-                   nWaterTemp_C_control=n())
+                   nWaterTemp_C_control=sum(!is.na(WaterTemp_C)))
 
 WaterTemp_C_byMonth <- merge(WaterTemp_C_byMonth_burned, WaterTemp_C_byMonth_control, by='Month_factor', all=T)
 WaterTemp_C_byMonth <- WaterTemp_C_byMonth %>%
@@ -509,12 +509,12 @@ SpecCond_uScm_control_median <- median(SpecCond_uScm_control$SpecCond_uScm, na.r
 SpecCond_uScm_byMonth_burned <- SpecCond_uScm_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(SpecCond_uScm_MedianBurned=median(SpecCond_uScm, na.rm=T),
-                   nSpecCond_uScm_burned=n())
+                   nSpecCond_uScm_burned=sum(!is.na(SpecCond_uScm)))
 
 SpecCond_uScm_byMonth_control <- SpecCond_uScm_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(SpecCond_uScm_MedianControl=median(SpecCond_uScm, na.rm=T),
-                   nSpecCond_uScm_control=n())
+                   nSpecCond_uScm_control=sum(!is.na(SpecCond_uScm)))
 
 SpecCond_uScm_byMonth <- merge(SpecCond_uScm_byMonth_burned, SpecCond_uScm_byMonth_control, by='Month_factor', all=T)
 SpecCond_uScm_byMonth <- SpecCond_uScm_byMonth %>%
@@ -558,12 +558,12 @@ ANC_mgCaCO3L_control_median <- median(ANC_mgCaCO3L_control$ANC_mgCaCO3L, na.rm=T
 ANC_mgCaCO3L_byMonth_burned <- ANC_mgCaCO3L_burned %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(ANC_mgCaCO3L_MedianBurned=median(ANC_mgCaCO3L, na.rm=T),
-                   nANC_mgCaCO3L_burned=n())
+                   nANC_mgCaCO3L_burned=sum(!is.na(ANC_mgCaCO3L)))
 
 ANC_mgCaCO3L_byMonth_control <- ANC_mgCaCO3L_control %>%
   dplyr::group_by(Month_factor) %>%
   dplyr::summarize(ANC_mgCaCO3L_MedianControl=median(ANC_mgCaCO3L, na.rm=T),
-                   nANC_mgCaCO3L_control=n())
+                   nANC_mgCaCO3L_control=sum(!is.na(ANC_mgCaCO3L)))
 
 ANC_mgCaCO3L_byMonth <- merge(ANC_mgCaCO3L_byMonth_burned, ANC_mgCaCO3L_byMonth_control, by='Month_factor', all=T)
 ANC_mgCaCO3L_byMonth <- ANC_mgCaCO3L_byMonth %>%

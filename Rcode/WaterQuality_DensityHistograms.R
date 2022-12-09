@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-2-22; supplemental plots across variables 
+# updated: 12-9-22; updated with missing Fourth McDougal data for June
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1430,10 +1430,10 @@ allmonthsDO_plot
 grid.arrange(mayDO_plot, junDO_plot, julDO_plot,
              augDO_plot, sepDO_plot, allmonthsDO_plot, nrow=2)
 
-#jpeg('Figures/supplemental_density_plots/DO_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
+# jpeg('Figures/supplemental_density_plots/DO_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
 #  grid.arrange(mayDO_plot, junDO_plot, julDO_plot,
 #             augDO_plot, sepDO_plot, allmonthsDO_plot, nrow=2)
-#dev.off()
+# dev.off()
 
 ## Spec conductivity
 xlimitz <- c(0,250)
