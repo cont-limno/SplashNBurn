@@ -1,6 +1,6 @@
 ################### Control vs. burned percent change #########################
 # Date: 11-17-22
-# updated: 12-9-22; build in dplyr::
+# updated: 12-12-22; rerun with corrected July Teamster TP data
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 

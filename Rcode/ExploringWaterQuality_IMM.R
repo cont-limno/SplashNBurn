@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 12-8-22; revised TP vs chla plot
+# updated: 12-12-22; revised TP vs chla plot with corrected July Teamster TP
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1516,7 +1516,7 @@ legendplot <- ggplot(data=allWQ_data_may, aes(x=DOC_ppm, y=SecchiDepth_m, color=
 legend2 <- g_legend(legendplot)
 
 ### TP vs chloro #candidate Ms figure (axes are a pain in this one)
-xlimz <- c(2,5.5)
+xlimz <- c(2,4.5)
 ylimz <- c(0,3.5)
 
 rvalx_burn <- 2.2 #control where r and p values are placed on plots

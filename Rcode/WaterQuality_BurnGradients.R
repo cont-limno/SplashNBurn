@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-8-22; new correlation matrices, analyses with soil burn severity
+# updated: 12-12-22; updated corr matrices and figs with corrected Teamster TP
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -331,28 +331,28 @@ pH_cor_ext <- round(pH_cor_ext, 2)
 
 
 NO2NO3_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanNO2NO3 = mean(NO2NO3_ppb, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanNO2NO3 = mean(NO2NO3_ppb, na.rm=T),
             meanlogNO2NO3 = mean(logNO2NO3, na.rm=T))
 
 NH4N_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanNH4N = mean(NH4N_ppb, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanNH4N = mean(NH4N_ppb, na.rm=T),
             meanlogNH4N = mean(logNH4N, na.rm=T))
 
 ANC_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanANCmg = mean(ANC_mgCaCO3L, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanANCmg = mean(ANC_mgCaCO3L, na.rm=T),
             meanlogANCmg = mean(logANCmg, na.rm=T))
 
 DO_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanDOpct = mean(LDO_pct, na.rm=T),
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanDOpct = mean(LDO_pct, na.rm=T),
             meanDOmgL = mean(LDO_mgL, na.rm=T)) #seems approx normally distributed
 
 TempC_all <- allmonths %>%
-  group_by(lagoslakeid) %>%
-  summarize(meanTempC = mean(WaterTemp_C, na.rm=T)) #seems approx normally distributed
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanTempC = mean(WaterTemp_C, na.rm=T)) #seems approx normally distributed
 
 # waterquality_all_list <- list(TP_all, TN_all, DOC_all, TSS_all, chloro_all, Secchi_all,
 #                               pH_all, ANC_all, NO2NO3_all, NH4N_all, DO_all, TempC_all)
@@ -613,24 +613,24 @@ residcor_allmonths <- resid_predictors %>% cor_test(
 ### TP ###
 # set variables and plotting parameters for all plots
 wqvar <- 'logTP'
-#firevar <- 'ws_vbs_High_pct'
-firevar <- 'ws_vbs_total_burn_pct'
+firevar <- 'ws_sbs_High_pct'
+#firevar <- 'ws_vbs_total_burn_pct'
 colorvar <- 'ConnClass'
 labelvar <- 'LakeName'
-xlimz <- c(0,100) #0-100 for vbs, 0-5 for sbs
+xlimz <- c(0,3) #0-100 for vbs, 0-3 for sbs
 ylimz <- c(2,4)
-#xlabb <- 'Watershed % burned high severity (veg)'
-xlabb <- 'Watershed % burned'
+xlabb <- 'Watershed % burned high severity (soil)'
+#xlabb <- 'Watershed % burned'
 ylabb <- 'log(Total phosphorus) (ppb)'
 # rvalx <- 5
 # rvaly <- 4
 # pvalx <- 5
 # pvaly <- 3.8
-rvalx <- 95 #from chla plots #2.5 for sbs, 95 for vbs
+rvalx <- 2.5 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 2.3
-pvalx <- 95
+pvalx <- 2.5
 pvaly <- 2.1
-labelnudge <- 0.5 #had been 0.5 for vbs, 0.1 for sbs
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 
 # May
 plotcor <- cor.test(mayWQ_fire[,wqvar], mayWQ_fire[,firevar], method='pearson')
@@ -656,7 +656,7 @@ plotMay <- ggplot(data=mayWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
         axis.text.y=element_text(color='black'),
         axis.title.x=element_text(size=9),
         axis.title.y=element_text(size=9),
-        legend.position=c(0.25,0.2))+ #0.25 for sbs, 0.55 for vbs (or keep at 0.25)
+        legend.position=c(0.25,0.2))+ # or keep at (0.25, 0.2) for veg
   scale_color_manual("", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
 plotMay
 
@@ -808,9 +808,9 @@ grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 #     grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 # dev.off()
 
-#jpeg('Figures/multipanel_HSburnsoil_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
-#    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
-#dev.off()
+jpeg('Figures/multipanel_HSburnsoil_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
+   grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
+dev.off()
 
 # jpeg('Figures/multipanel_totalburn_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
 #    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)

@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-9-22; updated with missing Fourth McDougal data for June
+# updated: 12-12-22; updated with corrected July Teamster TP data
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
