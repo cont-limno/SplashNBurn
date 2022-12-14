@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-12-22; updated corr matrices and figs with corrected Teamster TP
+# updated: 12-14-22; updated corr matrices for pH and water temp
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -44,6 +44,7 @@ rownames(corPearson_df_total) <- rownames(corPearson_df)
 ## prepare individual months
 waterquality$logSecchi <- log(waterquality$SecchiDepth_m)
 waterquality$logTNTP <- log(waterquality$TNTP)
+waterquality$logWaterTemp_C <- log(waterquality$WaterTemp_C)
 
 # May
 mayWQ <- subset(waterquality, Month_factor=='May')
@@ -329,6 +330,50 @@ pH_cor_ext <- pH_cor_ext[c('maypH','junpH','julpH','augpH',
 pH_cor_ext <- round(pH_cor_ext, 2)
 #write.csv(pH_cor_ext, file='Data/Correlation_matrices/pH_correlation_matrix.csv', row.names=T)
 
+# get p values
+psdf <- pH_all[,c('maypH','junpH','julpH','augpH',
+                  'seppH','meanpH','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                  'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                  'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+pH_P <- rcorr(as.matrix(psdf), type='pearson')
+pH_P <- as.data.frame(pH_P$P)[c(1:6),c(7:12)]
+
+
+WaterTemp_C_all <- allmonths %>%
+  dplyr::group_by(lagoslakeid) %>%
+  dplyr::summarize(meanWaterTemp_C = mean(WaterTemp_C, na.rm=T),
+                   meanlogWaterTemp_C = mean(logWaterTemp_C, na.rm=T))
+WaterTemp_C_all_list <- list(mayWQ_fire[,c('lagoslakeid','WaterTemp_C','logWaterTemp_C')],
+                             juneWQ_fire[,c('lagoslakeid','WaterTemp_C','logWaterTemp_C')],
+                             julyWQ_fire[,c('lagoslakeid','WaterTemp_C','logWaterTemp_C')],
+                             augWQ_fire[,c('lagoslakeid','WaterTemp_C','logWaterTemp_C')],
+                             sepWQ_fire[,c('lagoslakeid','WaterTemp_C','logWaterTemp_C')])
+WaterTemp_C_all_list <- Reduce(function(x, y) merge(x, y, all=T, by='lagoslakeid'), WaterTemp_C_all_list)
+colnames(WaterTemp_C_all_list) <- c('lagoslakeid','mayWaterTemp_C','maylogWaterTemp_C', 'junWaterTemp_C','junlogWaterTemp_C',
+                                    'julWaterTemp_C','jullogWaterTemp_C','augWaterTemp_C','auglogWaterTemp_C','sepWaterTemp_C','seplogWaterTemp_C')
+
+WaterTemp_C_all <- merge(WaterTemp_C_all, WaterTemp_C_all_list, by='lagoslakeid',all=T) 
+WaterTemp_C_all <- merge(WaterTemp_C_all, burn_severity, by='lagoslakeid', all=T)
+WaterTemp_C_cor <- as.data.frame(cor(WaterTemp_C_all, method='pearson', use='pairwise.complete.obs'))#[,c(2:13)]
+
+# extract select variables from correlation matrix
+WaterTemp_C_cor_ext <- WaterTemp_C_cor[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                                          'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                                          'buff100m_vbs_High_pct','buff100m_sbs_High_pct')] #extract desired columns
+WaterTemp_C_cor_ext <- WaterTemp_C_cor_ext[c('maylogWaterTemp_C','junlogWaterTemp_C','jullogWaterTemp_C','auglogWaterTemp_C',
+                                             'seplogWaterTemp_C','meanlogWaterTemp_C'),] #extract desired rows
+WaterTemp_C_cor_ext <- round(WaterTemp_C_cor_ext, 2)
+#write.csv(WaterTemp_C_cor_ext, file='Data/Correlation_matrices/WaterTemp_C_correlation_matrix.csv', row.names=T)
+
+# get p values
+psdf <- WaterTemp_C_all[,c('maylogWaterTemp_C','junlogWaterTemp_C','jullogWaterTemp_C','auglogWaterTemp_C',
+                           'seplogWaterTemp_C','meanlogWaterTemp_C','ws_vbs_total_burn_pct','ws_vbs_High_pct',
+                           'ws_sbs_High_pct','buff100m_vbs_total_burn_pct',
+                           'buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+
+WaterTemp_C_P <- rcorr(as.matrix(psdf), type='pearson')
+WaterTemp_C_P <- as.data.frame(WaterTemp_C_P$P)[c(1:6),c(7:12)]
 
 NO2NO3_all <- allmonths %>%
   dplyr::group_by(lagoslakeid) %>%
