@@ -1,11 +1,12 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-12-22; updated with corrected July Teamster TP data
+# updated: 12-19-22; updated multipanel plot with temp and pH
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
 #### R libraries ####
 library(dplyr)
+library(ggplot2)
 library(gridExtra)
 
 #### Input data ####
@@ -1531,16 +1532,21 @@ grid.arrange(maySpecCond_plot, junSpecCond_plot, julSpecCond_plot,
 # dev.off()
 
 ##### manuscript-worthy integrative figure (Candidate, at least) ########
+title_font <- 10
+xax_font <- 8
+lab_font <- 8
 allmonthsTP_plot  <- ggplot(waterquality, aes(x=TP_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c(0.8,0.8),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total phosphorus (ppb)')+
   ylab('Density')+
-  ggtitle('A) Total phosphorus')+
+  ggtitle('A) TP')+
   scale_x_continuous(limits=c(0,60))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1549,13 +1555,15 @@ allmonthsTP_plot
 allmonthsTN_plot  <- ggplot(waterquality, aes(x=TN_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total nitrogen (ppb)')+
   ylab('Density')+
-  ggtitle('B) Total nitrogen')+
+  ggtitle('B) TN')+
   scale_x_continuous(limits=c(0,2000))+
   scale_y_continuous(limits=c(0,0.003))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1564,13 +1572,15 @@ allmonthsTN_plot
 allmonthsDOC_plot  <- ggplot(waterquality, aes(x=DOC_ppm, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Dissolved organic carbon (ppm)')+
   ylab('Density')+
-  ggtitle('C) Dissolved organic carbon')+
+  ggtitle('C) DOC')+
   scale_x_continuous(limits=c(0,50))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1579,13 +1589,15 @@ allmonthsDOC_plot
 allmonthsTSS_plot  <- ggplot(waterquality, aes(x=TSS_mgL, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total suspended solids (mg/L)')+
   ylab('Density')+
-  ggtitle('D) Total suspended solids')+
+  ggtitle('E) TSS')+
   scale_x_continuous(limits=c(0,15))+
   scale_y_continuous(limits=c(0,0.5))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1594,13 +1606,15 @@ allmonthsTSS_plot
 allmonthsChla_plot  <- ggplot(waterquality, aes(x=Chloro_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Chlorophyll-a (ppb)')+
   ylab('Density')+
-  ggtitle('E) Chlorophyll-a')+
+  ggtitle('F) Chlorophyll-a')+
   scale_x_continuous(limits=c(0,25))+
   scale_y_continuous(limits=c(0,0.25))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1609,22 +1623,58 @@ allmonthsChla_plot
 allmonthsSecchi_plot  <- ggplot(waterquality, aes(x=SecchiDepth_m, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Secchi (m)')+
   ylab('Density')+
-  ggtitle('F) Secchi')+
+  ggtitle('G) Secchi')+
   scale_x_continuous(limits=c(0,5))+
   scale_y_continuous(limits=c(0,1))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
 allmonthsSecchi_plot
 
-grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, nrow=2)
+allmonthspH_plot  <- ggplot(waterquality, aes(x=pH, fill=Type)) + 
+  geom_density(alpha=0.8, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
+        legend.position=c('none'),
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
+  xlab('pH')+
+  ylab('Density')+
+  ggtitle('D) pH')+
+  scale_x_continuous(limits=c(5,10))+
+  scale_y_continuous(limits=c())+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+allmonthspH_plot
 
-jpeg('Figures/multipanel_densityplots_allmonths_6var.jpeg',width = 8,height = 6,units = 'in',res=600)
-  grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, nrow=2)
+allmonthsTemp_plot  <- ggplot(waterquality, aes(x=WaterTemp_C, fill=Type)) + 
+  geom_density(alpha=0.8, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
+        legend.position=c('none'),
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
+  xlab('Temperature (°C)')+
+  ylab('Density')+
+  ggtitle('H) Temperature')+
+  scale_x_continuous(limits=c(5,32))+
+  scale_y_continuous(limits=c())+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+allmonthsTemp_plot
+
+grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
+
+jpeg('Figures/multipanel_densityplots_allmonths_8var.jpeg',width = 8,height = 6,units = 'in',res=600)
+  grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
 dev.off()
