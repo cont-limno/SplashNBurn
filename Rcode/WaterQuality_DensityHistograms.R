@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-19-22; updated multipanel plot with temp and pH
+# updated: 12-19-22; ks-tests, updated multipanel plot with temp and pH
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1678,3 +1678,16 @@ jpeg('Figures/multipanel_densityplots_allmonths_8var.jpeg',width = 8,height = 6,
   grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
              allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
 dev.off()
+
+#### Kolmogorov-Smirnov tests on burned vs control lakes ####
+wq_burned <- subset(waterquality, Type=='Burned')
+wq_control <- subset(waterquality, Type=='Control')
+
+ks.test(wq_burned$TP_ppb, wq_control$TP_ppb)
+ks.test(wq_burned$TN_ppb, wq_control$TN_ppb)
+ks.test(wq_burned$DOC_ppm, wq_control$DOC_ppm)
+ks.test(wq_burned$TSS_mgL, wq_control$TSS_mgL)
+ks.test(wq_burned$Chloro_ppb, wq_control$Chloro_ppb)
+ks.test(wq_burned$SecchiDepth_m, wq_control$SecchiDepth_m)
+ks.test(wq_burned$pH, wq_control$pH)
+ks.test(wq_burned$WaterTemp_C, wq_control$WaterTemp_C)
