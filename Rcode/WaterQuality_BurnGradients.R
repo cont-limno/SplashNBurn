@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-14-22; updated corr matrices for pH and water temp
+# updated: 12-20-22; new 4x2 multipanel plot with top burn predictors
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1755,6 +1755,376 @@ plotSep <- ggplot(data=sepWQ_fire, aes_string(x=firevar, y=wqvar, color=colorvar
 plotSep
 
 grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, nrow=2)
+
+
+#### 4 x 2 multipanel plot of WQ vars along top predictor burn gradient (all months) ####
+# TP
+wqvarall <- 'meanlogTP'
+firevar <- 'ws_sbs_High_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,3) #0-100 for vbs, 0-3 for sbs
+ylimz <- c(2,4)
+xlabb <- 'Watershed % burned HS (soil)'
+ylabb <- 'log(Total phosphorus) (ppb)'
+rvalx <- 2.5 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 2.25
+pvalx <- 2.5
+pvaly <- 2.1
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+title_font <- 10
+
+TP_plot_data <- merge(TP_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(TP_all$meanlogTP, TP_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(TP_all$meanlogTP ~ TP_all[,firevar])
+plotAll_TP <- ggplot(data=TP_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('A) TP')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c(0.3,0.14), #don't need this legend in other panels 
+        plot.title=element_text(size=title_font),
+        legend.title=element_blank(),
+        legend.key.size=unit(0.5, 'cm'),
+        legend.margin=margin(c(0.25,0.25,0.25,0.25)))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_TP
+
+
+# TN
+wqvarall <- 'meanlogTN'
+firevar <- 'buff100m_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(6,7)
+xlabb <- '100m buffer % total burned'
+ylabb <- 'log(Total nitrogen) (ppb)'
+rvalx <- 90 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 6.1
+pvalx <- 90
+pvaly <- 6.05
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+TN_plot_data <- merge(TN_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(TN_all$meanlogTN, TN_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(TN_all$meanlogTN ~ TN_all[,firevar])
+plotAll_TN <- ggplot(data=TN_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('B) TN')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_TN
+
+
+# DOC
+wqvarall <- 'meanlogDOC'
+firevar <- 'ws_sbs_High_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,3)
+ylimz <- c(1.5,4)
+xlabb <- 'Watershed % burned HS (soil)'
+ylabb <- 'log(Dissolved organic carbon) (ppm)'
+rvalx <- 2.5 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 1.78
+pvalx <- 2.5
+pvaly <- 1.6
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+DOC_plot_data <- merge(DOC_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(DOC_all$meanlogDOC, DOC_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(DOC_all$meanlogDOC ~ DOC_all[,firevar])
+plotAll_DOC <- ggplot(data=DOC_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('C) DOC')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_DOC
+
+
+# pH
+wqvarall <- 'meanpH'
+firevar <- 'ws_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(6.5,8.5)
+xlabb <- 'Watershed % total burned'
+ylabb <- 'pH'
+rvalx <- 90 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 6.7
+pvalx <- 90
+pvaly <- 6.55
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+pH_plot_data <- merge(pH_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(pH_all$meanpH, pH_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(pH_all$meanpH ~ pH_all[,firevar])
+plotAll_pH <- ggplot(data=pH_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('D) pH')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_pH
+
+
+# TSS
+wqvarall <- 'meanlogTSS'
+firevar <- 'buff100m_vbs_High_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(0,2)
+xlabb <- '100m buffer % burned HS (veg)'
+ylabb <- 'log(Total suspended solids) (mg/L)'
+rvalx <- 90 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 0.25
+pvalx <- 90
+pvaly <- 0.1
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+TSS_plot_data <- merge(TSS_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(TSS_all$meanlogTSS, TSS_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(TSS_all$meanlogTSS ~ TSS_all[,firevar])
+plotAll_TSS <- ggplot(data=TSS_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('E) TSS')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_TSS
+
+
+# chloro
+wqvarall <- 'meanlogChloro'
+firevar <- 'buff100m_vbs_High_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c()
+xlabb <- '100m buffer % burned HS (veg)'
+ylabb <- 'log(Chlorophyll-a) (ppb)'
+rvalx <- 90 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 0
+pvalx <- 90
+pvaly <- -0.15
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+chloro_plot_data <- merge(chloro_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(chloro_all$meanlogChloro, chloro_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(chloro_all$meanlogChloro ~ chloro_all[,firevar])
+plotAll_chloro <- ggplot(data=chloro_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('F) Chlorophyll-a')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_chloro
+
+
+# Secchi
+wqvarall <- 'meanlogSecchi'
+firevar <- 'ws_sbs_High_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,3)
+ylimz <- c(-1,0.5)
+xlabb <- 'Watershed % burned HS (soil)'
+ylabb <- 'log(Secchi) (m)'
+rvalx <- 2.5 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- -0.8
+pvalx <- 2.5
+pvaly <- -0.9
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+Secchi_plot_data <- merge(Secchi_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(Secchi_all$meanlogSecchi, Secchi_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(Secchi_all$meanlogSecchi ~ Secchi_all[,firevar])
+plotAll_Secchi <- ggplot(data=Secchi_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('G) Secchi')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_Secchi
+
+
+# Water temp
+wqvarall <- 'meanlogWaterTemp_C'
+firevar <- 'buff100m_vbs_total_burn_pct'
+colorvar <- 'ConnClass'
+labelvar <- 'LakeName'
+xlimz <- c(0,100)
+ylimz <- c(2.7,3.1)
+xlabb <- '100m buffer % total burned'
+ylabb <- 'log(Temperature) (°C)'
+rvalx <- 90 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 2.75
+pvalx <- 90
+pvaly <- 2.72
+labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
+
+WaterTemp_C_plot_data <- merge(WaterTemp_C_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
+plotcor <- cor.test(WaterTemp_C_all$meanlogWaterTemp_C, WaterTemp_C_all[,firevar], method='pearson')
+rval <- round(plotcor$estimate, 2)
+pval <- round(plotcor$p.value, 2)
+plotlm <- lm(WaterTemp_C_all$meanlogWaterTemp_C ~ WaterTemp_C_all[,firevar])
+plotAll_WaterTemp_C <- ggplot(data=WaterTemp_C_plot_data, aes_string(x=firevar, y=wqvarall, color=colorvar, label=labelvar))+
+  ggtitle('H) Temperature')+
+  geom_point(size=1.5)+ 
+  #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
+  #geom_smooth(method='lm')+ separate lines for isolated and drainage
+  geom_abline(slope = coef(plotlm)[2], 
+              intercept = coef(plotlm)[["(Intercept)"]])+
+  #geom_vline(xintercept=25, linetype='dashed')+
+  annotate(geom="text", x=rvalx, y=rvaly, label=paste0("r=",rval),
+           color="red", size=3)+
+  annotate(geom="text", x=pvalx, y=pvaly, label=paste0("p=",pval),
+           color="red", size=3)+
+  theme_classic()+
+  scale_x_continuous(limits=xlimz, name=xlabb)+
+  scale_y_continuous(limits=ylimz, name=ylabb)+
+  theme(axis.text.x = element_text(color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.position=c('none'),
+        plot.title=element_text(size=title_font))+
+  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
+plotAll_WaterTemp_C
+
+jpeg('Figures/multipanel_burn_gradient_8var.jpeg',width = 8,height = 6,units = 'in',res=600)
+  grid.arrange(plotAll_TP, plotAll_TN, plotAll_DOC, plotAll_pH, 
+             plotAll_TSS, plotAll_chloro, plotAll_Secchi, plotAll_WaterTemp_C,nrow=2)
+dev.off()
 
 
 ##### Segmented regression #####
