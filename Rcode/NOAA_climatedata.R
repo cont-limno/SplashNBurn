@@ -1,6 +1,6 @@
 ##################### Exploring NOAA climate data #############################
 # Date: 8-25-22
-# updated:
+# updated: 12-23-22; add dplyr::
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -31,8 +31,8 @@ precip$Precip_anomaly_mm <- as.numeric(precip$Precip_anomaly_in) * 25.4 #can't u
 precip <- precip[,c(1,5,4,6,7,8)]
 
 precip_wy <- precip %>%
-  group_by(WaterYear) %>%
-  summarize(WY_total=sum(Precip_mm), nMonths=n())
+  dplyr::group_by(WaterYear) %>%
+  dplyr::summarize(WY_total=sum(Precip_mm), nMonths=n())
 precip_wy <- subset(precip_wy, WaterYear < 2022) #2022 is incomplete year
 precip_base <- subset(precip_wy, WaterYear %in% seq(1991,2020,1)) 
 precip_wymean <- mean(precip_base$WY_total, na.rm=T)
@@ -49,8 +49,8 @@ legend('topleft', legend=c('1991-2020 avg','Greenwood fire'), col=c('black','fir
 dev.off()
 
 precip_anomaly_wy <- precip %>%
-  group_by(WaterYear) %>%
-  summarize(WY_anomaly_total=sum(Precip_anomaly_mm), nMonths=n())
+  dplyr::group_by(WaterYear) %>%
+  dplyr::summarize(WY_anomaly_total=sum(Precip_anomaly_mm), nMonths=n())
 precip_anomaly_wy <- subset(precip_anomaly_wy, WaterYear < 2022)
 
 plot(WY_anomaly_total ~ WaterYear, data=precip_anomaly_wy, type='b', col='navy', pch=20, xlab='Water year',
@@ -113,8 +113,8 @@ airtemp <- airtemp[,c(1:4,5,6,10,11,15,16)]
 colnames(airtemp)[c(2:4)] <- c('Month','Year','WaterYear')
 
 airtemp_wy <- airtemp %>%
-  group_by(WaterYear) %>%
-  summarize(WY_tmax=mean(tmax_C, na.rm=T),
+  dplyr::group_by(WaterYear) %>%
+  dplyr::summarize(WY_tmax=mean(tmax_C, na.rm=T),
             WY_tmin=mean(tmin_C, na.rm=T),
             WY_tmean=mean(tmean_C, na.rm=T), nMonths=n())
 airtemp_wy <- subset(airtemp_wy, WaterYear < 2022)
@@ -125,8 +125,8 @@ airtemp_wymax <- mean(airtemp_base$WY_tmax, na.rm=T)
 airtemp_wymin <- mean(airtemp_base$WY_tmin, na.rm=T)
 
 airtemp_anomaly_wy <- airtemp %>%
-  group_by(WaterYear) %>%
-  summarize(WY_tmax_anomaly=mean(tmax_anomaly_C, na.rm=T),
+  dplyr::group_by(WaterYear) %>%
+  dplyr::summarize(WY_tmax_anomaly=mean(tmax_anomaly_C, na.rm=T),
             WY_tmin_anomaly=mean(tmin_anomaly_C, na.rm=T),
             WY_tmean_anomaly=mean(tmean_anomaly_C, na.rm=T), nMonths=n())
 airtemp_anomaly_wy <- subset(airtemp_anomaly_wy, WaterYear < 2022)
@@ -200,8 +200,8 @@ airtemp$Season <- ifelse(airtemp$Month %in% c('Jun','Jul','Aug'), 'Summer', airt
 
 airtemp_summer <- subset(airtemp, Season=='Summer')
 airtemp_summery <- airtemp_summer %>%
-  group_by(WaterYear) %>%
-  summarize(summer_tmean=mean(tmean_C),
+  dplyr::group_by(WaterYear) %>%
+  dplyr::summarize(summer_tmean=mean(tmean_C),
             summer_tmax=mean(tmax_C),
             summer_tmin=mean(tmin_C),
             nMonths=n())
@@ -214,7 +214,7 @@ summer_tminbase <- mean(summer_base$summer_tmin)
 
 jpeg('Figures/NOAA_climate/summertmean_18952021.jpeg',width = 7,height = 5,units = 'in',res=600)
 plot(summer_tmean ~ WaterYear, data=airtemp_summery, type='b', col='black', pch=20, xlab='Water year',
-     ylab='Temperature (°C)', las=2, xaxt='n', ylim=c(14,19), main='Mean summer air temperature')
+     ylab='Temperature (?C)', las=2, xaxt='n', ylim=c(14,19), main='Mean summer air temperature')
 mtext('Lake County, MN', side=3)
 axis(1, at=seq(1895,2025,5), labels=seq(1895,2025,5), las=2)
 abline(h=summer_tmeanbase, lwd=2, col='black', lty=2)
