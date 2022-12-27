@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-19-22; ks-tests, updated multipanel plot with temp and pH
+# updated: 12-26-22; ks-tests
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1691,3 +1691,66 @@ ks.test(wq_burned$Chloro_ppb, wq_control$Chloro_ppb)
 ks.test(wq_burned$SecchiDepth_m, wq_control$SecchiDepth_m)
 ks.test(wq_burned$pH, wq_control$pH)
 ks.test(wq_burned$WaterTemp_C, wq_control$WaterTemp_C)
+
+# create subsets for individual months
+wq_burned_may <- subset(wq_burned, Month==5)
+wq_burned_jun <- subset(wq_burned, Month==6)
+wq_burned_jul <- subset(wq_burned, Month==7)
+wq_burned_aug <- subset(wq_burned, Month==8)
+wq_burned_sep <- subset(wq_burned, Month==9)
+
+wq_control_may <- subset(wq_control, Month==5)
+wq_control_jun <- subset(wq_control, Month==6)
+wq_control_jul <- subset(wq_control, Month==7)
+wq_control_aug <- subset(wq_control, Month==8)
+wq_control_sep <- subset(wq_control, Month==9)
+
+# may
+ks.test(wq_burned_may$TP_ppb, wq_control_may$TP_ppb)
+ks.test(wq_burned_may$TN_ppb, wq_control_may$TN_ppb)
+ks.test(wq_burned_may$DOC_ppm, wq_control_may$DOC_ppm)
+ks.test(wq_burned_may$TSS_mgL, wq_control_may$TSS_mgL)
+ks.test(wq_burned_may$Chloro_ppb, wq_control_may$Chloro_ppb)
+ks.test(wq_burned_may$SecchiDepth_m, wq_control_may$SecchiDepth_m)
+ks.test(wq_burned_may$pH, wq_control_may$pH)
+ks.test(wq_burned_may$WaterTemp_C, wq_control_may$WaterTemp_C)
+
+# jun
+ks.test(wq_burned_jun$TP_ppb, wq_control_jun$TP_ppb)
+ks.test(wq_burned_jun$TN_ppb, wq_control_jun$TN_ppb)
+ks.test(wq_burned_jun$DOC_ppm, wq_control_jun$DOC_ppm)
+ks.test(wq_burned_jun$TSS_mgL, wq_control_jun$TSS_mgL)
+ks.test(wq_burned_jun$Chloro_ppb, wq_control_jun$Chloro_ppb)
+ks.test(wq_burned_jun$SecchiDepth_m, wq_control_jun$SecchiDepth_m)
+ks.test(wq_burned_jun$pH, wq_control_jun$pH)
+ks.test(wq_burned_jun$WaterTemp_C, wq_control_jun$WaterTemp_C)
+
+# jul
+ks.test(wq_burned_jul$TP_ppb, wq_control_jul$TP_ppb)
+ks.test(wq_burned_jul$TN_ppb, wq_control_jul$TN_ppb)
+ks.test(wq_burned_jul$DOC_ppm, wq_control_jul$DOC_ppm)
+ks.test(wq_burned_jul$TSS_mgL, wq_control_jul$TSS_mgL)
+ks.test(wq_burned_jul$Chloro_ppb, wq_control_jul$Chloro_ppb)
+ks.test(wq_burned_jul$SecchiDepth_m, wq_control_jul$SecchiDepth_m)
+ks.test(wq_burned_jul$pH, wq_control_jul$pH)
+ks.test(wq_burned_jul$WaterTemp_C, wq_control_jul$WaterTemp_C)
+
+# aug
+ks.test(wq_burned_aug$TP_ppb, wq_control_aug$TP_ppb)
+ks.test(wq_burned_aug$TN_ppb, wq_control_aug$TN_ppb)
+ks.test(wq_burned_aug$DOC_ppm, wq_control_aug$DOC_ppm)
+ks.test(wq_burned_aug$TSS_mgL, wq_control_aug$TSS_mgL)
+ks.test(wq_burned_aug$Chloro_ppb, wq_control_aug$Chloro_ppb)
+ks.test(wq_burned_aug$SecchiDepth_m, wq_control_aug$SecchiDepth_m)
+ks.test(wq_burned_aug$pH, wq_control_aug$pH)
+ks.test(wq_burned_aug$WaterTemp_C, wq_control_aug$WaterTemp_C)
+
+# sep
+ks.test(wq_burned_sep$TP_ppb, wq_control_sep$TP_ppb)
+ks.test(wq_burned_sep$TN_ppb, wq_control_sep$TN_ppb)
+ks.test(wq_burned_sep$DOC_ppm, wq_control_sep$DOC_ppm)
+ks.test(wq_burned_sep$TSS_mgL, wq_control_sep$TSS_mgL)
+ks.test(wq_burned_sep$Chloro_ppb, wq_control_sep$Chloro_ppb)
+ks.test(wq_burned_sep$SecchiDepth_m, wq_control_sep$SecchiDepth_m)
+ks.test(wq_burned_sep$pH, wq_control_sep$pH)
+ks.test(wq_burned_sep$WaterTemp_C, wq_control_sep$WaterTemp_C)
