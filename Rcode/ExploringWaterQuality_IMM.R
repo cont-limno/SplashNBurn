@@ -1,6 +1,6 @@
 ####################### Exploring water quality data ##########################
 # Date: 8-19-22
-# updated: 12-22-22; revised multi-panel boxplot with pH and temp
+# updated: 12-27-22; created simpler multipanel boxplot without months
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -2681,7 +2681,9 @@ waterquality$Month_factor <- factor(waterquality$Month_factor,
 waterquality$GroupFac <- as.factor(waterquality$Group)
 waterquality$GroupFac <- factor(waterquality$GroupFac,
                                 levels=c("Burned_Drainage","Control_Drainage",
-                                         "Burned_Isolated","Control_Isolated"))
+                                         "Burned_Isolated","Control_Isolated"),
+                                labels=c("Burned_Drainage","Control_Drainage",
+                                "Burned_Isolated","Control_Isolated"))
 
 title_font <- 10
 
@@ -2829,3 +2831,159 @@ jpeg('Figures/multipanel_month_boxplots.jpeg',width = 8,height = 6,units = 'in',
   grid.arrange(TP_box, TN_box, DOC_box, pH_box,
                TSS_box, chla_box, secchi_box, WaterTemp_box, nrow=2)
 dev.off()
+
+#### Different version without individual months ####
+title_font <- 10
+
+TP_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = TP_ppb, fill=GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "Total phosphorus (ppb)")+
+  scale_y_continuous(limits=c(0,50))+ #0,50
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  ggtitle("A) TP")+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.background=element_rect(color = 'black', fill = 'white', linetype='solid'))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+TP_simple_box
+
+
+TN_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = TN_ppb, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "Total nitrogen (ppb)")+
+  scale_y_continuous(limits=c())+
+  ggtitle("B) TN")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+TN_simple_box
+
+colorlist <- c('firebrick','dodgerblue','firebrick','dodgerblue')
+names(colorlist) <- levels(waterquality$GroupFac)
+tops <- c("Burned_Drainage","Control_Drainage")
+DOC_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = DOC_ppm, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  labs(x = "", y = "Dissolved organic carbon (ppm)")+ #0,40
+  scale_y_continuous(limits=c())+
+  ggtitle("C) DOC")+
+  #scale_fill_manual(values=c('firebrick','dodgerblue','firebrick','dodgerblue'), labels=c('Burned','Isolated','',''))+
+  # this was the only way I could figure out to plot just burned and drainage when fill was GroupFac
+  # https://stackoverflow.com/questions/70197763/only-displaying-some-legend-contents
+  scale_fill_manual(values = colorlist, breaks = tops, labels=c('Burned','Drainage'))+
+  theme(legend.position=c(0.8,0.8), #0.85,0.8
+        plot.title=element_text(size=title_font),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        legend.title=element_blank(),
+        legend.key.size=unit(0.4, "cm"),
+        legend.key=element_rect(fill='transparent', color=NA), 
+        legend.margin=margin(c(0.25,0.25,0.25,0.25)))+
+  #legend.background=element_rect(color = 'black', fill = 'white', linetype='solid'))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+  #annotate("rect", xmin=1.8, xmax=2.5, ymin=30, ymax=36,
+  #         alpha = 1,fill = "gold") #tried to cover up part of legend, but legend plots on top of it
+DOC_simple_box
+
+TSS_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = TSS_mgL, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c(0,10))+
+  ggtitle("E) TSS")+
+  labs(x = "", y = "Total suspended solids (mg/L)")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+TSS_simple_box
+
+chla_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = Chloro_ppb, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  ggtitle("F) Chlorophyll-a")+
+  labs(x = "", y = "Chlorophyll-a (ppb)")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+chla_simple_box
+
+secchi_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = SecchiDepth_m, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  ggtitle("G) Secchi")+
+  labs(x = "", y = "Secchi (m)")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+secchi_simple_box
+
+pH_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = pH, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  ggtitle("D) pH")+
+  labs(x = "", y = "pH")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+pH_simple_box
+
+WaterTemp_simple_box <- ggplot(waterquality, aes(x = ConnClass, y = WaterTemp_C, fill = GroupFac)) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_y_continuous(limits=c())+
+  ggtitle("H) Temperature")+
+  labs(x = "", y = "Temperature (°C)")+
+  scale_fill_manual("ConnClass", values=c('firebrick','dodgerblue', 'firebrick','dodgerblue'))+
+  theme(legend.position=c('none'),
+        plot.title=element_text(size=title_font),
+        axis.title.x=element_text(size=8),
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(color='black', size=8),
+        axis.text.y=element_text(color='black', size=8))+
+  scale_x_discrete(labels=c('Drainage','Isolated'))
+WaterTemp_simple_box
+
+
+grid.arrange(TP_simple_box, TN_simple_box, DOC_simple_box, pH_simple_box,
+             TSS_simple_box, chla_simple_box, secchi_simple_box, WaterTemp_simple_box, nrow=2)
+
+jpeg('Figures/multipanel_month_boxplots_simple.jpeg',width = 8,height = 6,units = 'in',res=600)
+  grid.arrange(TP_simple_box, TN_simple_box, DOC_simple_box, pH_simple_box,
+             TSS_simple_box, chla_simple_box, secchi_simple_box, WaterTemp_simple_box, nrow=2)
+dev.off()
+

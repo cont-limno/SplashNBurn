@@ -20,37 +20,87 @@ common_y_limits <- c(-100,250)
 common_y_breaks <- seq(-100,250,25)
 
 ## TP
-TP <- waterquality[,c('TP_ppb','Month_factor','Type')]
+TP <- waterquality[,c('TP_ppb','Month_factor','Type','ConnClass')]
 TP_burned <- subset(TP, Type=='Burned')
+TP_burned_drainage <- subset(TP_burned, ConnClass=='Drainage')
+TP_burned_isolated <- subset(TP_burned, ConnClass=='Isolated')
 TP_control <- subset(TP, Type=='Control')
+TP_control_drainage <- subset(TP_control, ConnClass=='Drainage')
+TP_control_isolated <- subset(TP_control, ConnClass=='Isolated')
 TP_burned_median <- median(TP_burned$TP_ppb, na.rm=T)
+TP_burned_drainage_median <- median(TP_burned_drainage$TP_ppb, na.rm=T)
+TP_burned_isolated_median <- median(TP_burned_isolated$TP_ppb, na.rm=T)
 TP_control_median <- median(TP_control$TP_ppb, na.rm=T)
+TP_control_drainage_median <- median(TP_control_drainage$TP_ppb, na.rm=T)
+TP_control_isolated_median <- median(TP_control_isolated$TP_ppb, na.rm=T)
 
 TP_byMonth_burned <- TP_burned %>%
   dplyr::group_by(Month_factor) %>%
-  dplyr::summarize(TP_MedianBurned=median(TP_ppb, na.rm=T),
-                   nTP_burned=sum(!is.na(TP_ppb)))
+  dplyr::summarize(TP_MedianBurned_all=median(TP_ppb, na.rm=T),
+                   nTP_burned_all=sum(!is.na(TP_ppb)))
+
+TP_byMonth_burned_drainage <- TP_burned_drainage %>%
+  dplyr::group_by(Month_factor) %>%
+  dplyr::summarize(TP_MedianBurned_drainage=median(TP_ppb, na.rm=T),
+                   nTP_burned_drainage=sum(!is.na(TP_ppb)))
+
+TP_byMonth_burned_isolated <- TP_burned_isolated %>%
+  dplyr::group_by(Month_factor) %>%
+  dplyr::summarize(TP_MedianBurned_isolated=median(TP_ppb, na.rm=T),
+                   nTP_burned_isolated=sum(!is.na(TP_ppb)))
 
 TP_byMonth_control <- TP_control %>%
   dplyr::group_by(Month_factor) %>%
-  dplyr::summarize(TP_MedianControl=median(TP_ppb, na.rm=T),
-                   nTP_control=sum(!is.na(TP_ppb)))
+  dplyr::summarize(TP_MedianControl_all=median(TP_ppb, na.rm=T),
+                   nTP_control_all=sum(!is.na(TP_ppb)))
 
-TP_byMonth <- merge(TP_byMonth_burned, TP_byMonth_control, by='Month_factor', all=T)
+TP_byMonth_control_drainage <- TP_control_drainage %>%
+  dplyr::group_by(Month_factor) %>%
+  dplyr::summarize(TP_MedianControl_drainage=median(TP_ppb, na.rm=T),
+                   nTP_control_drainage=sum(!is.na(TP_ppb)))
+
+TP_byMonth_control_isolated <- TP_control_isolated %>%
+  dplyr::group_by(Month_factor) %>%
+  dplyr::summarize(TP_MedianControl_isolated=median(TP_ppb, na.rm=T),
+                   nTP_control_isolated=sum(!is.na(TP_ppb)))
+
+TP_merge_list <- list(TP_byMonth_burned, TP_byMonth_control, 
+                      TP_byMonth_burned_drainage, TP_byMonth_control_drainage,
+                      TP_byMonth_burned_isolated, TP_byMonth_control_isolated)
+#TP_byMonth <- merge(TP_byMonth_burned, TP_byMonth_control, by='Month_factor', all=T)
+TP_byMonth <- TP_merge_list %>% reduce(full_join, by='Month_factor')
+
 TP_byMonth <- TP_byMonth %>%
   mutate(Month_factor =  factor(Month_factor, levels = month_order)) %>%
   arrange(Month_factor)
-TP_byMonth[6,] <- c('All months', TP_burned_median, NA, TP_control_median,NA)
+TP_byMonth <- as.data.frame(TP_byMonth)
+TP_byMonth[6,] <- c('All months', TP_burned_median, sum(TP_byMonth$nTP_burned_all), 
+                    TP_control_median, sum(TP_byMonth$nTP_control_all),
+                    TP_burned_drainage_median, sum(TP_byMonth$nTP_burned_drainage),
+                    TP_control_drainage_median, sum(TP_byMonth$nTP_control_drainage),
+                    TP_burned_isolated_median, sum(TP_byMonth$nTP_burned_isolated),
+                    TP_control_isolated_median, sum(TP_byMonth$nTP_control_isolated))
 TP_byMonth$Month_factor <- c('May','Jun','Jul','Aug','Sep','All months')
-TP_byMonth[,c(2:5)] <- TP_byMonth[,c(2:5)] %>% mutate_if(is.character, as.numeric)
-TP_byMonth$TP_MedianDiffPct <- ((TP_byMonth$TP_MedianBurned - TP_byMonth$TP_MedianControl)/TP_byMonth$TP_MedianControl)*100
-TP_byMonth$TP_MedianDiffAbs <-  TP_byMonth$TP_MedianBurned - TP_byMonth$TP_MedianControl
-TP_byMonth[6,3] <- sum(TP_byMonth$nTP_burned, na.rm=T)
-TP_byMonth[6,5] <- sum(TP_byMonth$nTP_control, na.rm=T)
+TP_byMonth[,c(2:13)] <- TP_byMonth[,c(2:13)] %>% mutate_if(is.character, as.numeric)
+TP_byMonth$TP_MedianDiffPct <- ((TP_byMonth$TP_MedianBurned_all - TP_byMonth$TP_MedianControl_all)/TP_byMonth$TP_MedianControl_all)*100
+TP_byMonth$TP_MedianDiffAbs <-  TP_byMonth$TP_MedianBurned_all - TP_byMonth$TP_MedianControl_all
+TP_byMonth$TP_MedianDrainageDiffPct <- ((TP_byMonth$TP_MedianBurned_drainage - TP_byMonth$TP_MedianControl_drainage)/TP_byMonth$TP_MedianControl_drainage)*100
+TP_byMonth$TP_MedianDrainageDiffAbs <-  TP_byMonth$TP_MedianBurned_drainage - TP_byMonth$TP_MedianControl_drainage
+TP_byMonth$TP_MedianIsolatedDiffPct <- ((TP_byMonth$TP_MedianBurned_drainage - TP_byMonth$TP_MedianControl_isolated)/TP_byMonth$TP_MedianControl_isolated)*100
+TP_byMonth$TP_MedianIsolatedDiffAbs <-  TP_byMonth$TP_MedianBurned_drainage - TP_byMonth$TP_MedianControl_isolated
+
+#TP_byMonth[6,3] <- sum(TP_byMonth$nTP_burned, na.rm=T)
+#TP_byMonth[6,5] <- sum(TP_byMonth$nTP_control, na.rm=T)
 TP_formatted <- data.frame(Month=c(month_order, 'All months'), 
-                           TP_burned=paste0(TP_byMonth$TP_MedianBurned, ', ', TP_byMonth$nTP_burned),
-                           TP_control=paste0(TP_byMonth$TP_MedianControl, ', ', TP_byMonth$nTP_control),
-                           TP_diff=paste0(TP_byMonth$TP_MedianDiffAbs, ', ', round(TP_byMonth$TP_MedianDiffPct,2), '%'))
+                           TP_burned_drainage=paste0(TP_byMonth$TP_MedianBurned_drainage, ', ', TP_byMonth$nTP_burned_drainage),
+                           TP_control_drainage=paste0(TP_byMonth$TP_MedianControl_drainage, ', ', TP_byMonth$nTP_control_drainage),
+                           TP_diff_drainage=paste0(TP_byMonth$TP_MedianDrainageDiffAbs, ', ', round(TP_byMonth$TP_MedianDrainageDiffPct,2), '%'),
+                           TP_burned_isolated=paste0(TP_byMonth$TP_MedianBurned_isolated, ', ', TP_byMonth$nTP_burned_isolated),
+                           TP_control_isolated=paste0(TP_byMonth$TP_MedianControl_isolated, ', ', TP_byMonth$nTP_control_isolated),
+                           TP_diff_isolated=paste0(TP_byMonth$TP_MedianIsolatedDiffAbs, ', ', round(TP_byMonth$TP_MedianIsolatedDiffPct,2), '%'),
+                           TP_burned_all=paste0(TP_byMonth$TP_MedianBurned_all, ', ', TP_byMonth$nTP_burned_all),
+                           TP_control_all=paste0(TP_byMonth$TP_MedianControl_all, ', ', TP_byMonth$nTP_control_all),
+                           TP_diff_all=paste0(TP_byMonth$TP_MedianDiffAbs, ', ', round(TP_byMonth$TP_MedianDiffPct,2), '%'))
 
 TP_byMonth$Month_factor <- factor(TP_byMonth$Month_factor ,                                    # Change ordering manually
                   levels = c("May", "Jun", "Jul", "Aug", "Sep","All months"))

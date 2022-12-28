@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-20-22; new 4x2 multipanel plot with top burn predictors
+# updated: 12-27-22; fire variable 4x2 cor matrix
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -40,6 +40,12 @@ corPearson_df <- as.data.frame(cor(burn_severity, method='pearson', use='pairwis
 corPearson_df_total <- as.data.frame(corPearson_df$ws_vbs_total_burn_pct)
 colnames(corPearson_df_total) <- 'ws_vbs_total_burn_pct'
 rownames(corPearson_df_total) <- rownames(corPearson_df)
+
+cor_export <- corPearson_df[,c('ws_vbs_total_burn_pct','ws_vbs_High_pct','ws_sbs_High_pct',
+                               'buff100m_vbs_total_burn_pct','buff100m_vbs_High_pct','buff100m_sbs_High_pct')]
+cor_export <- cor_export[c('ws_vbs_total_burn_pct','ws_vbs_High_pct','ws_sbs_High_pct',
+                           'buff100m_vbs_total_burn_pct','buff100m_vbs_High_pct','buff100m_sbs_High_pct'),]
+#write.csv(cor_export, file='Data/Correlation_matrices/fire_variable_cormatrix_pearson.csv', row.names=T)
 
 ## prepare individual months
 waterquality$logSecchi <- log(waterquality$SecchiDepth_m)
