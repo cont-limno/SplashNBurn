@@ -2717,7 +2717,7 @@ summary(tp_gam)
 
 tp_gam <- gam(meanlogTP ~ s(ws_vbs_High_pct), data=TP_all)
 summary(tp_gam)
-plot(tp_gam, main='May TP')
+plot(tp_gam, main='Mean TP')
 
 # tp_gam2 <- gam(logTP ~ s(ws_vbs_High_pct) + s(ws_lake_arearatio), data=mayWQ_fire)
 # summary(tp_gam2)
