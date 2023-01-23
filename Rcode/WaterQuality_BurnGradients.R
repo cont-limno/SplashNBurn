@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 12-27-22; fire variable 4x2 cor matrix
+# updated: 1-23-23; updating GAMs
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -2700,26 +2700,57 @@ abline(v=seg_lines[2], lty=2, xpd=F)
 #### trying generalized additive models ####
 library(mgcv)
 # bring in LAGOS variables
-LAGOS <- read.csv("Data/LAGOS/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
+# LAGOS <- read.csv("Data/LAGOS/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
+# 
+# mayWQ_fire <- merge(mayWQ_fire, LAGOS, by='lagoslakeid')
+# juneWQ_fire <- merge(juneWQ_fire, LAGOS, by='lagoslakeid')
+# julyWQ_fire <- merge(julyWQ_fire, LAGOS, by='lagoslakeid')
+# augWQ_fire <- merge(augWQ_fire, LAGOS, by='lagoslakeid')
+# sepWQ_fire <- merge(sepWQ_fire, LAGOS, by='lagoslakeid')
 
-mayWQ_fire <- merge(mayWQ_fire, LAGOS, by='lagoslakeid')
-juneWQ_fire <- merge(juneWQ_fire, LAGOS, by='lagoslakeid')
-julyWQ_fire <- merge(julyWQ_fire, LAGOS, by='lagoslakeid')
-augWQ_fire <- merge(augWQ_fire, LAGOS, by='lagoslakeid')
-sepWQ_fire <- merge(sepWQ_fire, LAGOS, by='lagoslakeid')
+#write.csv(TP_all, file='Data/WaterQuality/TP_all.csv', row.names=F)
 
-plot(logTP ~ ws_vbs_High_pct, data=mayWQ_fire, pch=16)
-tp_gam <- gam(logTP ~ ws_vbs_High_pct, data=mayWQ_fire,
-              main='May TP')# this is still the basic linear model
+plot(meanlogTP ~ ws_vbs_High_pct, data=TP_all, pch=16)
+tp_gam <- gam(meanlogTP ~ ws_vbs_High_pct, data=TP_all,
+              main='Mean TP')# this is still the basic linear model
 summary(tp_gam)
 
-tp_gam <- gam(logTP ~ s(ws_vbs_High_pct, bs='tp'), data=mayWQ_fire)
+tp_gam <- gam(meanlogTP ~ s(ws_vbs_High_pct), data=TP_all)
 summary(tp_gam)
 plot(tp_gam, main='May TP')
 
-tp_gam2 <- gam(logTP ~ s(ws_vbs_High_pct) + s(ws_lake_arearatio), data=mayWQ_fire)
-summary(tp_gam2)
-plot(tp_gam2, main='May TP')
+# tp_gam2 <- gam(logTP ~ s(ws_vbs_High_pct) + s(ws_lake_arearatio), data=mayWQ_fire)
+# summary(tp_gam2)
+# plot(tp_gam2, main='May TP')
+
+## automate it:
+firevars <- c('ws_vbs_High_pct','ws_sbs_High_pct','ws_vbs_total_burn_pct',
+              'buff100m_vbs_High_pct','buff100m_sbs_High_pct',
+              'buff100m_vbs_total_burn_pct')
+
+## TP
+gam1 <- gam(meanlogTP ~ s(ws_vbs_High_pct), data=TP_all)
+summary(gam1)
+# x <- summary(gam1)
+# x$s.table[4]
+# x$r.sq
+# x$dev.expl
+
+# response_var <- 'meanlogTP'
+# predictor_var <- 'ws_vbs_High_pct'
+# dataset <- TP_all
+# 
+# gam_function <- function(response_var, predictor_var, dataset){
+#   #response_var: water quality variable
+#   #predictor_var: fire variable
+#   #dataset: data frame with response and predictor variables
+#   gamz <- gam(dataset[,response_var] ~ s(dataset[,predictor_var]), data=dataset)
+#   
+# }
+#
+# for (i in 1:length(firevars)) {
+#   firegam <- gam(meanlogTP ~ s(TP_all[,firevars[i]]), data=TP_all)
+# }
 
 #### What are the best fire predictors of a given water quality variable? ####
 # first make sure all profile depths are 0
