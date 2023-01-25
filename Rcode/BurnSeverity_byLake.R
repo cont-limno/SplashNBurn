@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 1-1-23; change plot title
+# updated: 1-24-23; change plot title
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -64,7 +64,7 @@ ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) +
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+
-  ggtitle('Watershed vegetation burn severity')
+  ggtitle('B) Watershed vegetation burn severity')
 dev.off()
 
 ### watershed soil burn severity ###
