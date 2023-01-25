@@ -60,7 +60,8 @@ ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) +
   theme_classic()+
   theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
         axis.text.y=element_text(color='black'),
-        axis.title.x.bottom=element_blank())+
+        axis.title.x.bottom=element_blank(),
+        legend.position=c(0.87,0.65))+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+

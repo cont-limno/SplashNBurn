@@ -13,17 +13,22 @@ library(corrplot)
 library(ggpubr)
 library(circlize)
 
+setwd("C:/Users/immcc/Documents/SplashNBurn")
+
 # load data ---------------------------------------------------------------
-chem_dat = read_csv("../data/combined_lab_field_may_sep_NEWJan13.csv")
+#chem_dat = read_csv("../data/combined_lab_field_may_sep_NEWJan13.csv")
+chem_dat <- read.csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
 str(chem_dat)
 dim(chem_dat)
 
-burn_dat = read_csv("../data/all_burn_severity_variables.csv")
+#burn_dat = read_csv("../data/all_burn_severity_variables.csv")
+burn_dat <- read.csv("Data/BurnSeverity/Ian_calculations/all_burn_severity_variables.csv")
 str(burn_dat)
 dim(burn_dat)
 
 
-locus_dat = read_csv("../data/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
+#locus_dat = read_csv("../data/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
+locus_dat <- read.csv("Data/LAGOS/LAGOS_LOCUS_GEO_DEPTH_combined.csv")
 str(locus_dat)
 dim(locus_dat)
 
@@ -50,6 +55,9 @@ depths <- dat %>%
 # Join in mean depths
 dat <- dat %>% 
   left_join(depths, by="lagoslakeid")
+# Join in burn data (but if you do this, you can only run analysis on burned lakes)
+dat <- dat %>%
+  left_join(burn_dat, by='lagoslakeid')
 
 # Remove NAs
 dat <- dat %>% 
@@ -76,7 +84,7 @@ summary(ydat)
 # Predictor matrix
 xdat <- dat %>% 
   dplyr::select(ws_area_ha, ws_lake_arearatio, lake_totalarea_ha, Burned,
-         Month, ConnClass, lagoslakeid, mean_depth)
+         Month, ConnClass, lagoslakeid, mean_depth, ws_vbs_total_burn_pct)
 summary(xdat)
 
 ##############################
@@ -87,7 +95,7 @@ studyDesign = data.frame(lake = as.factor(dat$lagoslakeid) )
 
 rL1 = HmscRandomLevel(units = levels(studyDesign$lake))
 m <- Hmsc(Y=ydat, XData=xdat, XFormula = ~ ws_area_ha + ws_lake_arearatio +
-            lake_totalarea_ha + Burned + Month + ConnClass, 
+            lake_totalarea_ha + Burned + Month + ConnClass + mean_depth , 
            distr="normal",
           studyDesign = studyDesign, ranLevels=list(
             "lake"=rL1)
@@ -152,20 +160,35 @@ t1
 # Sort predictors as a function of % variance explained by Burned
 plot.long <- plot.long %>%
   mutate(variable = fct_relevel(variable, 
-                                 "SecchiDepth_m", "logDOC","logTN",
-                                 "logTP", "logTSS", "logChloro", "pH", "WaterTemp_C"))
+                                 "SecchiDepth_m", "logDOC","logTP",
+                                 "logTN", "logTSS", "logChloro", "pH", "WaterTemp_C"))
 
+plot.long <- plot.long %>%
+  mutate(predictor=fct_relevel(predictor,
+                              'Burned','ConnClass','ws_lake_arearatio','lake_totalarea_ha',
+                              'mean_depth','Month','Random: lake','ws_area_ha'))
+
+# rename predictors for plotting
+#plot.long$plot_predictor <- ifelse(plot.long$predictor=='ws_area_ha', 'Watershed area (ha)', plot.long$predictor)
+#plot.long$plot_predictor <- ifelse(plot.long$predictor=='mean_depth', 'Max depth (m)', plot.long$predictor)
+
+jpeg('Figures/VariancePartitioning.jpeg',width = 7,height = 5,units = 'in',res=600)
 ggplot(plot.long, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
   ggtitle("Variance partitioning") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 0.65, hjust=0.6),
-        axis.text.y = element_text(size = 12),
-        axis.title = element_text(size = 12)) +
+  theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 12, color='black'),
+        axis.title = element_text(size = 12),
+        axis.title.x=element_blank()) +
   ylab("Variance explained") +
-  xlab("Lake response variable") 
-ggsave("burn_lakes.pdf", height=8, width=8, units="in")
-
+  #xlab("Lake response variable")+
+  scale_x_discrete(breaks=c("SecchiDepth_m","logDOC","logTN","logTP","logTSS","logChloro","pH","WaterTemp_C"),
+                   labels=c("Secchi","DOC","TN","TP","TSS","Chlorophyll","pH","Temp"))+
+  scale_fill_manual("Predictor", values=c('darkred','khaki','salmon','blue','navy','navajowhite4','gray70','aquamarine'),
+                    labels=c('Burned','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
+#ggsave("burn_lakes.pdf", height=8, width=8, units="in")
+dev.off()
 
 ####################
 # Re-order factor levels for plotting
