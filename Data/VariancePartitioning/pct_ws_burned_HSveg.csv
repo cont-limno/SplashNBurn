@@ -1,0 +1,65 @@
+"predictor","variable","variance"
+"ws_area_ha","logTP",0.0794770109061757
+"ws_lake_arearatio","logTP",0.072681971315367
+"lake_totalarea_ha","logTP",0.0356801145362115
+"ws_vbs_High_pct","logTP",0.282105901483019
+"Month","logTP",0.0350263656197586
+"ConnClass","logTP",0.154593289614489
+"mean_depth","logTP",0.0436228753400778
+"Random: lake","logTP",0.296812471184901
+"ws_area_ha","logTN",0.337827293375454
+"ws_lake_arearatio","logTN",0.137479978136758
+"lake_totalarea_ha","logTN",0.0489133241216173
+"ws_vbs_High_pct","logTN",0.0758745012338385
+"Month","logTN",0.20725337566451
+"ConnClass","logTN",0.037260506471718
+"mean_depth","logTN",0.0241325353449352
+"Random: lake","logTN",0.131258485651168
+"ws_area_ha","logDOC",0.266080677284682
+"ws_lake_arearatio","logDOC",0.0992676609913136
+"lake_totalarea_ha","logDOC",0.0345867773028154
+"ws_vbs_High_pct","logDOC",0.0339824011703343
+"Month","logDOC",0.0803675786799677
+"ConnClass","logDOC",0.0814890810262339
+"mean_depth","logDOC",0.0466466860420953
+"Random: lake","logDOC",0.357579137502558
+"ws_area_ha","pH",0.131646945185407
+"ws_lake_arearatio","pH",0.14609089240843
+"lake_totalarea_ha","pH",0.0677363336703922
+"ws_vbs_High_pct","pH",0.0351426997443803
+"Month","pH",0.0693001598245888
+"ConnClass","pH",0.0334648695737873
+"mean_depth","pH",0.0568109117353531
+"Random: lake","pH",0.459807187857662
+"ws_area_ha","logTSS",0.102741110377839
+"ws_lake_arearatio","logTSS",0.174626485293099
+"lake_totalarea_ha","logTSS",0.0466129328284118
+"ws_vbs_High_pct","logTSS",0.097441414970523
+"Month","logTSS",0.0844585277543859
+"ConnClass","logTSS",0.0448527483504652
+"mean_depth","logTSS",0.0429131596600042
+"Random: lake","logTSS",0.406353620765272
+"ws_area_ha","logChloro",0.249271445213277
+"ws_lake_arearatio","logChloro",0.196358675275411
+"lake_totalarea_ha","logChloro",0.0420612818993207
+"ws_vbs_High_pct","logChloro",0.047115150084167
+"Month","logChloro",0.113065963719358
+"ConnClass","logChloro",0.0416249297209758
+"mean_depth","logChloro",0.0499317627962639
+"Random: lake","logChloro",0.260570791291226
+"ws_area_ha","SecchiDepth_m",0.576639348319382
+"ws_lake_arearatio","SecchiDepth_m",0.139847656818631
+"lake_totalarea_ha","SecchiDepth_m",0.0382095017513711
+"ws_vbs_High_pct","SecchiDepth_m",0.0183860281005756
+"Month","SecchiDepth_m",0.0637287213072422
+"ConnClass","SecchiDepth_m",0.0428754050021896
+"mean_depth","SecchiDepth_m",0.0237892431913109
+"Random: lake","SecchiDepth_m",0.0965240955092975
+"ws_area_ha","WaterTemp_C",0.16717770036606
+"ws_lake_arearatio","WaterTemp_C",0.0692373438860739
+"lake_totalarea_ha","WaterTemp_C",0.0868181715064326
+"ws_vbs_High_pct","WaterTemp_C",0.0116551449844796
+"Month","WaterTemp_C",0.632941280915953
+"ConnClass","WaterTemp_C",0.0152947948385507
+"mean_depth","WaterTemp_C",0.0127721777670733
+"Random: lake","WaterTemp_C",0.00410338573537537
