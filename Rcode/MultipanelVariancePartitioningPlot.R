@@ -1,12 +1,13 @@
 ############## Multipanel variance partitioning results plot ##################
 # Date: 1-26-23
-# updated: 
+# updated: 1-27-23
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
 #### R libraries ####
 library(ggplot2)
 library(gridExtra)
+library(egg)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
@@ -47,12 +48,14 @@ pct_buff_burn_HSsoil$variable <- factor(pct_buff_burn_HSsoil$variable, levels=c(
 # set up plots individually
 pct_ws_burn_plot <- ggplot(pct_ws_burn, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Watershed burned") +
+  ggtitle("A) % Watershed burned") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        plot.title=element_text(size=9),
+        legend.position=c('none')) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","pH","logTN","logChloro","logTSS","logDOC","SecchiDepth_m","WaterTemp_C"),
@@ -63,28 +66,32 @@ pct_ws_burn_plot
 
 pct_ws_HSburnveg_plot <- ggplot(pct_ws_burn_HSveg, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Watershed burned HS (veg)") +
+  ggtitle("B) % Watershed burned HS (veg)") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        legend.position=c('none'),
+        plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTSS","logTN","logChloro","pH","logDOC","SecchiDepth_m","WaterTemp_C"),
                    labels=c("TP","TSS","TN","Chlorophyll","pH","DOC","Secchi","Temp"))+
   scale_fill_manual("Predictor", values=c('darkred','khaki','salmon','blue','navy','navajowhite4','gray70','aquamarine'),
-                    labels=c('% WS HS veg','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
+                    labels=c('Fire variable','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
 pct_ws_HSburnveg_plot
 
 pct_buff_burn_plot <- ggplot(pct_buff_burn, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Shoreline burned") +
+  ggtitle("D) % Shoreline burned") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        legend.position=c('none'),
+        plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTN","logTSS","pH","logChloro","SecchiDepth_m","logDOC","WaterTemp_C"),
@@ -95,12 +102,14 @@ pct_buff_burn_plot
 
 pct_buff_HSburnveg_plot <- ggplot(pct_buff_burn_HSveg, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Shoreline burned HS (veg)") +
+  ggtitle("E) % Shoreline burned HS (veg)") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        legend.position=c('none'),
+        plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTSS","logTN","logChloro","pH","logDOC","SecchiDepth_m","WaterTemp_C"),
@@ -112,12 +121,14 @@ pct_buff_HSburnveg_plot
 
 pct_buff_HSburnsoil_plot <- ggplot(pct_buff_burn_HSsoil, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Shoreline burned HS (soil)") +
+  ggtitle("F) % Shoreline burned HS (soil)") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        legend.position=c('none'),
+        plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTSS","logDOC","pH","logChloro", "logTN", "SecchiDepth_m","WaterTemp_C"),
@@ -129,18 +140,20 @@ pct_buff_HSburnsoil_plot
 
 pct_ws_HSburnsoil_plot <- ggplot(pct_ws_burn_HSsoil, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("% Watershed burned HS (soil)") +
+  ggtitle("C) % Watershed burned HS (soil)") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
-        axis.text.y = element_text(size = 10, color='black'),
-        axis.title = element_text(size = 10),
-        axis.title.x=element_blank()) +
+  theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
+        axis.text.y = element_text(size = 9, color='black'),
+        axis.title = element_text(size = 9),
+        axis.title.x=element_blank(),
+        #legend.position=c('none'),
+        plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTSS","logDOC","pH","logTN", "logChloro", "SecchiDepth_m","WaterTemp_C"),
                    labels=c("TP","TSS","DOC","pH","TN","Chlorophyll", "Secchi","Temp"))+
   scale_fill_manual("Predictor", values=c('darkred','khaki','salmon','blue','navy','navajowhite4','gray70','aquamarine'),
-                    labels=c('% WS HS soil','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
+                    labels=c('Fire variable','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
 pct_ws_HSburnsoil_plot
 
 ### multipanel plot
@@ -149,3 +162,44 @@ grid.arrange(pct_ws_burn_plot, pct_buff_burn_plot,
              pct_ws_HSburnveg_plot, pct_buff_HSburnveg_plot,
              pct_ws_HSburnsoil_plot, pct_buff_HSburnsoil_plot,
              nrow=3)
+# another way
+jpeg('Figures/VariancePartitioningMultiPanel.jpeg',width = 8,height = 6,units = 'in',res=600)
+ggarrange(pct_ws_burn_plot +
+            theme(axis.ticks.y = element_blank(),
+                  plot.margin = margin(l = 1, b=1, t=2),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank()), 
+          pct_ws_HSburnveg_plot + 
+            theme(axis.text.y = element_blank(),
+                  axis.ticks.y = element_blank(),
+                  axis.title.y = element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank(),
+                  plot.margin = margin(l = 1, b=1, t=2)  ),
+          pct_ws_HSburnsoil_plot + 
+            theme(axis.text.y = element_blank(),
+                  axis.ticks.y = element_blank(),
+                  axis.title.y = element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank(),
+                  plot.margin = margin(l = 1, b=1, t=2)  ),
+          pct_buff_burn_plot + 
+            theme(#axis.text.y = element_blank(),
+                  #axis.ticks.y = element_blank(),
+                  #axis.title.y = element_blank(),
+                  #axis.ticks.x=element_blank(),
+                  #axis.text.x=element_blank(),
+                  plot.margin = margin(b=2, l = 1, t=2), ), 
+          pct_buff_HSburnveg_plot + 
+            theme(axis.ticks.y = element_blank(),
+                  axis.title.y=element_blank(),
+                  axis.text.y=element_blank(),
+                  plot.margin = margin(l = 1, b=2, t=2) ),
+
+          pct_buff_HSburnsoil_plot + 
+            theme(axis.text.y = element_blank(),
+                  axis.ticks.y = element_blank(),
+                  axis.title.y = element_blank(),
+                  plot.margin = margin(l = 1, b=2, t=2)  ),
+          nrow = 2)
+dev.off()
