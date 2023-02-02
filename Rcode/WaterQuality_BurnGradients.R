@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 1-23-23; updating GAMs + multipanel fig
+# updated: 2-2-23; updating GAMs + multipanel fig labels
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1877,7 +1877,7 @@ labelvar <- 'LakeName'
 xlimz <- c(0,100) #0-100 for vbs, 0-3 for sbs
 ylimz <- c(6.25,7.25)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
-xlabb <- '100m buffer % total burned' #gam
+xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Total nitrogen) (ppb)'
 rvalx <- 76 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 6.36
@@ -1935,7 +1935,7 @@ labelvar <- 'LakeName'
 xlimz <- c(0,100)
 ylimz <- c(1.75,3.75)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
-xlabb <- '100m buffer % total burned' #gam
+xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Dissolved organic carbon) (ppm)'
 rvalx <- 25 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 2
@@ -2038,7 +2038,7 @@ colorvar <- 'ConnClass'
 labelvar <- 'LakeName'
 xlimz <- c(0,75)
 ylimz <- c(0,2.5)
-xlabb <- '100m buffer % burned HS (veg)'
+xlabb <- 'Shoreline % burned HS (veg)'
 ylabb <- 'log(Total suspended solids) (mg/L)'
 rvalx <- 55 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 0.25
@@ -2090,8 +2090,8 @@ colorvar <- 'ConnClass'
 labelvar <- 'LakeName'
 xlimz <- c(0,100)
 ylimz <- c()
-#xlabb <- '100m buffer % burned HS (veg)' #lm
-xlabb <- '100m buffer % total burned'
+#xlabb <- 'Shoreline % burned HS (veg)' #lm
+xlabb <- 'Shoreline % total burned'
 ylabb <- 'log(Chlorophyll-a) (ppb)'
 rvalx <- 25 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 2.2
@@ -2144,7 +2144,7 @@ labelvar <- 'LakeName'
 xlimz <- c(0,100)
 ylimz <- c(-1,0.5)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
-xlabb <- '100m buffer % total burned' #gam
+xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Secchi) (m)'
 rvalx <- 65 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 0.5
