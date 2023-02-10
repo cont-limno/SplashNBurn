@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 12-1-22; reorder geom bars
+# updated: 1-24-23; change plot title
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -60,16 +60,13 @@ ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) +
   theme_classic()+
   theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
         axis.text.y=element_text(color='black'),
-        axis.title.x.bottom=element_blank())+
+        axis.title.x.bottom=element_blank(),
+        legend.position=c(0.87,0.65))+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+
-  ggtitle('Watershed vegetation burn severity')
+  ggtitle('B) Watershed vegetation burn severity')
 dev.off()
-
-ggplot(melted, aes(x = factor(c, levels=c("C_2", "C_4", "C_8", "C_16")), y = value)) + 
-  geom_bar(stat="identity", width = 0.3) + 
-  geom_hline(yintercept  = 33)
 
 ### watershed soil burn severity ###
 # how correlated are % ws soilburn variables? Seem to be highly so
@@ -93,13 +90,17 @@ ws_soilburn_severity_pct_melted$Severity <- factor(ws_soilburn_severity_pct_melt
 
 # get rid of word 'Lake' to make labels smaller
 ws_soilburn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",ws_soilburn_severity_pct_melted$Site)
-
+ws_soilburn_severity_pct_melted$LakeFac <- as.factor(ws_soilburn_severity_pct_melted$Lake)
+ws_soilburn_severity_pct_melted$LakeFac <- factor(ws_soilburn_severity_pct_melted$Lake, levels=c("Middle McDougal","Wampus ","Stony ", "Fourth McDougal", "North McDougal",
+                                                                                                 "South McDougal","Fishtrap ", "Sand ","Lil Chub ", "Slate ",
+                                                                                                 " Gegoka","Greenwood ","West Chub ", "Teamster ","Unnamed "))
 jpeg('Figures/soilburnSeverity_byLake.jpeg',width = 7,height = 5,units = 'in',res=600)
-ggplot(ws_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) + 
+ggplot(ws_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) + 
   geom_bar(position="stack", stat="identity")+
   theme_classic()+
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
-        axis.text.y=element_text(color='black'))+
+  theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x.bottom=element_blank())+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Unburned-Low','Low','Moderate','High'),
                     'Severity (%)')+
@@ -130,17 +131,22 @@ buffer_burn_severity_pct_melted$Severity <- factor(buffer_burn_severity_pct_melt
 
 # get rid of word 'Lake' to make labels smaller
 buffer_burn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",buffer_burn_severity_pct_melted$Site)
+buffer_burn_severity_pct_melted$LakeFac <- as.factor(buffer_burn_severity_pct_melted$Lake)
+buffer_burn_severity_pct_melted$LakeFac <- factor(buffer_burn_severity_pct_melted$Lake, levels=c("Fourth McDougal","Stony ", "South McDougal", "Middle McDougal", "Fishtrap ",
+                                                                                                 "Wampus ", "North McDougal", "Unnamed ","Greenwood ", " Gegoka",
+                                                                                                 "Lil Chub ","Sand ","Slate ", "Teamster ", "West Chub "))
 
 jpeg('Figures/BurnSeverity_buffer_byLake.jpeg',width = 7,height = 5,units = 'in',res=600)
-ggplot(buffer_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) + 
+ggplot(buffer_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) + 
   geom_bar(position="stack", stat="identity")+
   theme_classic()+
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
-        axis.text.y=element_text(color='black'))+
+  theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x.bottom = element_blank())+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+
-  ggtitle('Vegetation burn severity (100m shoreline buffer)')
+  ggtitle('100m lake buffer vegetation burn severity')
 dev.off()
 
 ## soil burn severity 100m buffer
@@ -165,13 +171,18 @@ buffer_soilburn_severity_pct_melted$Severity <- factor(buffer_soilburn_severity_
 
 # get rid of word 'Lake' to make labels smaller
 buffer_soilburn_severity_pct_melted$Lake <- gsub(paste('Lake',collapse='|'),"",buffer_soilburn_severity_pct_melted$Site)
+buffer_soilburn_severity_pct_melted$LakeFac <- as.factor(buffer_soilburn_severity_pct_melted$Lake)
+buffer_soilburn_severity_pct_melted$LakeFac <- factor(buffer_soilburn_severity_pct_melted$Lake, levels=c("Fishtrap ","South McDougal", "Stony ", "Fourth McDougal", "Wampus ",
+                                                                                                         "Middle McDougal","North McDougal", "Unnamed ","Greenwood ", " Gegoka",
+                                                                                                         "Lil Chub ","Sand ","Slate ", "Teamster ", "West Chub "))
 
 jpeg('Figures/soilburnSeverity_buffer_byLake.jpeg',width = 7,height = 5,units = 'in',res=600)
-ggplot(buffer_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=Lake)) + 
+ggplot(buffer_soilburn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) + 
   geom_bar(position="stack", stat="identity")+
   theme_classic()+
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
-        axis.text.y=element_text(color='black'))+
+  theme(axis.text.x=element_text(angle=70, vjust=1, hjust=1, color='black'),
+        axis.text.y=element_text(color='black'),
+        axis.title.x.bottom = element_blank())+
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Unburned-Low','Low','Moderate','High'),
                     'Severity (%)')+
@@ -181,8 +192,8 @@ dev.off()
 
 ### how correlated are vegetation and soil burn severity? ###
 # for now, analyzing watershed only (more data points)
-veg_soil_severity <- merge(ws_burn_severity_pct, ws_soilburn_severity_pct, by='lagoslakeid')[,c(1:13)]
-names(veg_soil_severity) <- c('lagoslakeid','veg_low_severity_pct','veg_moderate_low_severity_pct','veg_moderate_high_severity_pct',
-                             'veg_high_severity_pct','veg_total_ws_burn_pct','veg_unburned_pct','Site',
-                             'soil_low_severity_pct','soil_moderate_severity_pct','soil_high_severity_pct','soil_total_ws_burn_pct','soil_unburned_pct')
-cor(veg_soil_severity[,c(2:7,9:13)], method='pearson', use='pairwise.complete.obs')
+# veg_soil_severity <- merge(ws_burn_severity_pct, ws_soilburn_severity_pct, by='lagoslakeid')[,c(1:13)]
+# names(veg_soil_severity) <- c('lagoslakeid','veg_low_severity_pct','veg_moderate_low_severity_pct','veg_moderate_high_severity_pct',
+#                              'veg_high_severity_pct','veg_total_ws_burn_pct','veg_unburned_pct','Site',
+#                              'soil_low_severity_pct','soil_moderate_severity_pct','soil_high_severity_pct','soil_total_ws_burn_pct','soil_unburned_pct')
+# cor(veg_soil_severity[,c(2:7,9:13)], method='pearson', use='pairwise.complete.obs')

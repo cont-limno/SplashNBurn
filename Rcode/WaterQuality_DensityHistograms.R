@@ -1,11 +1,12 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-2-22; supplemental plots across variables 
+# updated: 12-26-22; ks-tests
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
 #### R libraries ####
 library(dplyr)
+library(ggplot2)
 library(gridExtra)
 
 #### Input data ####
@@ -1430,10 +1431,10 @@ allmonthsDO_plot
 grid.arrange(mayDO_plot, junDO_plot, julDO_plot,
              augDO_plot, sepDO_plot, allmonthsDO_plot, nrow=2)
 
-#jpeg('Figures/supplemental_density_plots/DO_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
+# jpeg('Figures/supplemental_density_plots/DO_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
 #  grid.arrange(mayDO_plot, junDO_plot, julDO_plot,
 #             augDO_plot, sepDO_plot, allmonthsDO_plot, nrow=2)
-#dev.off()
+# dev.off()
 
 ## Spec conductivity
 xlimitz <- c(0,250)
@@ -1531,16 +1532,21 @@ grid.arrange(maySpecCond_plot, junSpecCond_plot, julSpecCond_plot,
 # dev.off()
 
 ##### manuscript-worthy integrative figure (Candidate, at least) ########
+title_font <- 10
+xax_font <- 8
+lab_font <- 8
 allmonthsTP_plot  <- ggplot(waterquality, aes(x=TP_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c(0.8,0.8),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total phosphorus (ppb)')+
   ylab('Density')+
-  ggtitle('A) Total phosphorus')+
+  ggtitle('A) TP')+
   scale_x_continuous(limits=c(0,60))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1549,13 +1555,15 @@ allmonthsTP_plot
 allmonthsTN_plot  <- ggplot(waterquality, aes(x=TN_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total nitrogen (ppb)')+
   ylab('Density')+
-  ggtitle('B) Total nitrogen')+
+  ggtitle('B) TN')+
   scale_x_continuous(limits=c(0,2000))+
   scale_y_continuous(limits=c(0,0.003))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1564,13 +1572,15 @@ allmonthsTN_plot
 allmonthsDOC_plot  <- ggplot(waterquality, aes(x=DOC_ppm, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Dissolved organic carbon (ppm)')+
   ylab('Density')+
-  ggtitle('C) Dissolved organic carbon')+
+  ggtitle('C) DOC')+
   scale_x_continuous(limits=c(0,50))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1579,13 +1589,15 @@ allmonthsDOC_plot
 allmonthsTSS_plot  <- ggplot(waterquality, aes(x=TSS_mgL, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Total suspended solids (mg/L)')+
   ylab('Density')+
-  ggtitle('D) Total suspended solids')+
+  ggtitle('E) TSS')+
   scale_x_continuous(limits=c(0,15))+
   scale_y_continuous(limits=c(0,0.5))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1594,13 +1606,15 @@ allmonthsTSS_plot
 allmonthsChla_plot  <- ggplot(waterquality, aes(x=Chloro_ppb, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Chlorophyll-a (ppb)')+
   ylab('Density')+
-  ggtitle('E) Chlorophyll-a')+
+  ggtitle('F) Chlorophyll-a')+
   scale_x_continuous(limits=c(0,25))+
   scale_y_continuous(limits=c(0,0.25))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1609,22 +1623,134 @@ allmonthsChla_plot
 allmonthsSecchi_plot  <- ggplot(waterquality, aes(x=SecchiDepth_m, fill=Type)) + 
   geom_density(alpha=0.8, lwd=0.8)+
   theme_classic()+
-  theme(axis.text.x=element_text(color='black'),
-        axis.text.y=element_text(color='black'),
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
         legend.position=c('none'),
-        plot.title=element_text(size=11))+
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
   xlab('Secchi (m)')+
   ylab('Density')+
-  ggtitle('F) Secchi')+
+  ggtitle('G) Secchi')+
   scale_x_continuous(limits=c(0,5))+
   scale_y_continuous(limits=c(0,1))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
 allmonthsSecchi_plot
 
-grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, nrow=2)
+allmonthspH_plot  <- ggplot(waterquality, aes(x=pH, fill=Type)) + 
+  geom_density(alpha=0.8, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
+        legend.position=c('none'),
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
+  xlab('pH')+
+  ylab('Density')+
+  ggtitle('D) pH')+
+  scale_x_continuous(limits=c(5,10))+
+  scale_y_continuous(limits=c())+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+allmonthspH_plot
 
-jpeg('Figures/multipanel_densityplots_allmonths_6var.jpeg',width = 8,height = 6,units = 'in',res=600)
-  grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, nrow=2)
+allmonthsTemp_plot  <- ggplot(waterquality, aes(x=WaterTemp_C, fill=Type)) + 
+  geom_density(alpha=0.8, lwd=0.8)+
+  theme_classic()+
+  theme(axis.text.x=element_text(color='black', size=xax_font),
+        axis.text.y=element_text(color='black', size=xax_font),
+        legend.position=c('none'),
+        axis.title.x=element_text(color='black', size=lab_font),
+        axis.title.y=element_text(color='black', size=lab_font),
+        plot.title=element_text(size=title_font))+
+  xlab('Temperature (°C)')+
+  ylab('Density')+
+  ggtitle('H) Temperature')+
+  scale_x_continuous(limits=c(5,32))+
+  scale_y_continuous(limits=c())+
+  scale_fill_manual(values=c('firebrick','dodgerblue'))
+allmonthsTemp_plot
+
+grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
+
+jpeg('Figures/multipanel_densityplots_allmonths_8var.jpeg',width = 8,height = 6,units = 'in',res=600)
+  grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
 dev.off()
+
+#### Kolmogorov-Smirnov tests on burned vs control lakes ####
+wq_burned <- subset(waterquality, Type=='Burned')
+wq_control <- subset(waterquality, Type=='Control')
+
+ks.test(wq_burned$TP_ppb, wq_control$TP_ppb)
+ks.test(wq_burned$TN_ppb, wq_control$TN_ppb)
+ks.test(wq_burned$DOC_ppm, wq_control$DOC_ppm)
+ks.test(wq_burned$TSS_mgL, wq_control$TSS_mgL)
+ks.test(wq_burned$Chloro_ppb, wq_control$Chloro_ppb)
+ks.test(wq_burned$SecchiDepth_m, wq_control$SecchiDepth_m)
+ks.test(wq_burned$pH, wq_control$pH)
+ks.test(wq_burned$WaterTemp_C, wq_control$WaterTemp_C)
+
+# create subsets for individual months
+wq_burned_may <- subset(wq_burned, Month==5)
+wq_burned_jun <- subset(wq_burned, Month==6)
+wq_burned_jul <- subset(wq_burned, Month==7)
+wq_burned_aug <- subset(wq_burned, Month==8)
+wq_burned_sep <- subset(wq_burned, Month==9)
+
+wq_control_may <- subset(wq_control, Month==5)
+wq_control_jun <- subset(wq_control, Month==6)
+wq_control_jul <- subset(wq_control, Month==7)
+wq_control_aug <- subset(wq_control, Month==8)
+wq_control_sep <- subset(wq_control, Month==9)
+
+# may
+ks.test(wq_burned_may$TP_ppb, wq_control_may$TP_ppb)
+ks.test(wq_burned_may$TN_ppb, wq_control_may$TN_ppb)
+ks.test(wq_burned_may$DOC_ppm, wq_control_may$DOC_ppm)
+ks.test(wq_burned_may$TSS_mgL, wq_control_may$TSS_mgL)
+ks.test(wq_burned_may$Chloro_ppb, wq_control_may$Chloro_ppb)
+ks.test(wq_burned_may$SecchiDepth_m, wq_control_may$SecchiDepth_m)
+ks.test(wq_burned_may$pH, wq_control_may$pH)
+ks.test(wq_burned_may$WaterTemp_C, wq_control_may$WaterTemp_C)
+
+# jun
+ks.test(wq_burned_jun$TP_ppb, wq_control_jun$TP_ppb)
+ks.test(wq_burned_jun$TN_ppb, wq_control_jun$TN_ppb)
+ks.test(wq_burned_jun$DOC_ppm, wq_control_jun$DOC_ppm)
+ks.test(wq_burned_jun$TSS_mgL, wq_control_jun$TSS_mgL)
+ks.test(wq_burned_jun$Chloro_ppb, wq_control_jun$Chloro_ppb)
+ks.test(wq_burned_jun$SecchiDepth_m, wq_control_jun$SecchiDepth_m)
+ks.test(wq_burned_jun$pH, wq_control_jun$pH)
+ks.test(wq_burned_jun$WaterTemp_C, wq_control_jun$WaterTemp_C)
+
+# jul
+ks.test(wq_burned_jul$TP_ppb, wq_control_jul$TP_ppb)
+ks.test(wq_burned_jul$TN_ppb, wq_control_jul$TN_ppb)
+ks.test(wq_burned_jul$DOC_ppm, wq_control_jul$DOC_ppm)
+ks.test(wq_burned_jul$TSS_mgL, wq_control_jul$TSS_mgL)
+ks.test(wq_burned_jul$Chloro_ppb, wq_control_jul$Chloro_ppb)
+ks.test(wq_burned_jul$SecchiDepth_m, wq_control_jul$SecchiDepth_m)
+ks.test(wq_burned_jul$pH, wq_control_jul$pH)
+ks.test(wq_burned_jul$WaterTemp_C, wq_control_jul$WaterTemp_C)
+
+# aug
+ks.test(wq_burned_aug$TP_ppb, wq_control_aug$TP_ppb)
+ks.test(wq_burned_aug$TN_ppb, wq_control_aug$TN_ppb)
+ks.test(wq_burned_aug$DOC_ppm, wq_control_aug$DOC_ppm)
+ks.test(wq_burned_aug$TSS_mgL, wq_control_aug$TSS_mgL)
+ks.test(wq_burned_aug$Chloro_ppb, wq_control_aug$Chloro_ppb)
+ks.test(wq_burned_aug$SecchiDepth_m, wq_control_aug$SecchiDepth_m)
+ks.test(wq_burned_aug$pH, wq_control_aug$pH)
+ks.test(wq_burned_aug$WaterTemp_C, wq_control_aug$WaterTemp_C)
+
+# sep
+ks.test(wq_burned_sep$TP_ppb, wq_control_sep$TP_ppb)
+ks.test(wq_burned_sep$TN_ppb, wq_control_sep$TN_ppb)
+ks.test(wq_burned_sep$DOC_ppm, wq_control_sep$DOC_ppm)
+ks.test(wq_burned_sep$TSS_mgL, wq_control_sep$TSS_mgL)
+ks.test(wq_burned_sep$Chloro_ppb, wq_control_sep$Chloro_ppb)
+ks.test(wq_burned_sep$SecchiDepth_m, wq_control_sep$SecchiDepth_m)
+ks.test(wq_burned_sep$pH, wq_control_sep$pH)
+ks.test(wq_burned_sep$WaterTemp_C, wq_control_sep$WaterTemp_C)
