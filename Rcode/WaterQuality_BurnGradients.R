@@ -1,6 +1,6 @@
 ####################### Water quality/fire gradient analysis ##################
 # Date: 10-25-22
-# updated: 2-2-23; updating GAMs + multipanel fig labels
+# updated: 2-20-23; make plot vertical, adjust r2, p val, legend coords
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -10,6 +10,7 @@ library(gridExtra)
 library(rstatix)
 library(Hmisc)
 library(dplyr)
+library(mgcv)
 
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
@@ -859,9 +860,9 @@ grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 #     grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
 # dev.off()
 
-jpeg('Figures/multipanel_HSburnsoil_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
-   grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
-dev.off()
+# jpeg('Figures/multipanel_HSburnsoil_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
+#    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
+# dev.off()
 
 # jpeg('Figures/multipanel_totalburn_gradient_TP.jpeg',width = 8,height = 6,units = 'in',res=600)
 #    grid.arrange(plotMay, plotJun, plotJul, plotAug, plotSep, plotAll, nrow=2)
@@ -1775,10 +1776,10 @@ ylimz <- c(2,4.5)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
 xlabb <- 'Watershed % burned HS (veg)' #gam
 ylabb <- 'log(Total phosphorus) (ppb)'
-rvalx <- 55 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 2.3
-pvalx <- 48.8
-pvaly <- 2.15
+rvalx <- 20 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 4.45
+pvalx <- 16.5
+pvaly <- 4.15
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 title_font <- 10
 
@@ -1813,7 +1814,7 @@ plotAll_TP <- ggplot(data=TP_plot_data, aes_string(x=firevar, y=wqvarall))+
         axis.text.y=element_text(color='black'),
         axis.title.x=element_text(size=8),
         axis.title.y=element_text(size=8),
-        legend.position=c(0.3,0.9), #don't need this legend in other panels 
+        legend.position=c(0.8,0.25), #don't need this legend in other panels 
         plot.title=element_text(size=title_font),
         legend.title=element_blank(),
         legend.key.size=unit(0.5, 'cm'),
@@ -1879,8 +1880,8 @@ ylimz <- c(6.25,7.25)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
 xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Total nitrogen) (ppb)'
-rvalx <- 76 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 6.36
+rvalx <- 73 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 6.4
 pvalx <- 67
 pvaly <- 6.3
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
@@ -1937,8 +1938,8 @@ ylimz <- c(1.75,3.75)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
 xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Dissolved organic carbon) (ppm)'
-rvalx <- 25 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 2
+rvalx <- 21.3 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 2.1
 pvalx <- 15.2
 pvaly <- 1.88
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
@@ -1989,10 +1990,10 @@ xlimz <- c(0,100)
 ylimz <- c(6.5,8.5)
 xlabb <- 'Watershed % total burned'
 ylabb <- 'pH'
-rvalx <- 25 #from chla plots #2.5 for sbs, 95 for vbs
+rvalx <- 21.1 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 8.48
 pvalx <- 15.2
-pvaly <- 8.36
+pvaly <- 8.30
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 
 pH_plot_data <- merge(pH_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
@@ -2040,8 +2041,8 @@ xlimz <- c(0,75)
 ylimz <- c(0,2.5)
 xlabb <- 'Shoreline % burned HS (veg)'
 ylabb <- 'log(Total suspended solids) (mg/L)'
-rvalx <- 55 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 0.25
+rvalx <- 52.7 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 0.34
 pvalx <- 48.8
 pvaly <- 0.1
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
@@ -2093,10 +2094,10 @@ ylimz <- c()
 #xlabb <- 'Shoreline % burned HS (veg)' #lm
 xlabb <- 'Shoreline % total burned'
 ylabb <- 'log(Chlorophyll-a) (ppb)'
-rvalx <- 25 #from chla plots #2.5 for sbs, 95 for vbs
+rvalx <- 20.5 #from chla plots #2.5 for sbs, 95 for vbs
 rvaly <- 2.2
 pvalx <- 13.9
-pvaly <- 2.05
+pvaly <- 1.9
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 
 chloro_plot_data <- merge(chloro_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
@@ -2146,10 +2147,10 @@ ylimz <- c(-1,0.5)
 #xlabb <- 'Watershed % burned HS (soil)' #lm
 xlabb <- 'Shoreline % total burned' #gam
 ylabb <- 'log(Secchi) (m)'
-rvalx <- 65 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 0.5
+rvalx <- 61 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 0.48
 pvalx <- 55
-pvaly <- 0.41
+pvaly <- 0.33
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 
 Secchi_plot_data <- merge(Secchi_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
@@ -2163,7 +2164,7 @@ rval <- round(plotgam_sum$r.sq, 2) #adj R2
 pval <- round(plotgam_sum$s.table[4],2) #p val for smoothing term
 mylabel <- deparse(bquote("Adj R"^2 == .(format(rval))))
 plotAll_Secchi <- ggplot(data=Secchi_plot_data, aes_string(x=firevar, y=wqvarall))+
-  ggtitle('G) Secchi')+
+  ggtitle('G) Secchi Depth')+
   geom_point(size=1.5)+ 
   geom_point(size=1.5, aes_string(x=firevar, y=wqvarall, color=colorvar))+ #add another point layers with colors for conn class
   #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
@@ -2199,10 +2200,10 @@ ylimz <- c(2.7,3.1)
 #xlabb <- '100m buffer % total burned' #lm
 xlabb <- 'Watershed % total burned' #gam
 ylabb <- 'log(Temperature) (°C)'
-rvalx <- 65 #from chla plots #2.5 for sbs, 95 for vbs
-rvaly <- 3.1
+rvalx <- 61 #from chla plots #2.5 for sbs, 95 for vbs
+rvaly <- 3.07
 pvalx <- 55.2
-pvaly <- 3.075
+pvaly <- 3.03
 labelnudge <- 0.1 #had been 0.5 for vbs, 0.1 for sbs
 
 WaterTemp_C_plot_data <- merge(WaterTemp_C_all, juneWQ_fire[,c('lagoslakeid','LakeName','ConnClass')], by='lagoslakeid',all=T)
@@ -2216,7 +2217,7 @@ rval <- round(plotgam_sum$r.sq, 2) #adj R2
 pval <- round(plotgam_sum$s.table[4],2) #p val for smoothing term
 mylabel <- deparse(bquote("Adj R"^2 == .(format(rval))))
 plotAll_WaterTemp_C <- ggplot(data=WaterTemp_C_plot_data, aes_string(x=firevar, y=wqvarall))+
-  ggtitle('H) Temperature')+
+  ggtitle('H) Water Temperature')+
   geom_point(size=1.5)+ 
   geom_point(size=1.5, aes_string(x=firevar, y=wqvarall, color=colorvar))+ #add another point layers with colors for conn class
   #geom_text(hjust=0, vjust=0, size=2, nudge_x=labelnudge)+
@@ -2246,9 +2247,9 @@ plotAll_WaterTemp_C
 #              plotAll_TSS, plotAll_chloro, plotAll_Secchi, plotAll_WaterTemp_C,nrow=2)
 # dev.off()
 
-jpeg('Figures/multipanelGAM_burn_gradient_8var.jpeg',width = 8,height = 6,units = 'in',res=600)
+jpeg('Figures/multipanelGAM_burn_gradient_8var.jpeg',width = 6,height = 8,units = 'in',res=600)
   grid.arrange(plotAll_TP, plotAll_TN, plotAll_DOC, plotAll_pH, 
-             plotAll_TSS, plotAll_chloro, plotAll_Secchi, plotAll_WaterTemp_C,nrow=2)
+             plotAll_TSS, plotAll_chloro, plotAll_Secchi, plotAll_WaterTemp_C,nrow=4)
 dev.off()
 
 

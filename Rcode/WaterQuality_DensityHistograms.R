@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 12-26-22; ks-tests
+# updated: 2-20-23; make multipanel plot vertical
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -575,10 +575,10 @@ allmonthsDOC_plot
 grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
              augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
 
-jpeg('Figures/supplemental_density_plots/DOC_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
-       grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
-                    augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
-dev.off()
+# jpeg('Figures/supplemental_density_plots/DOC_density_plot.jpeg',width = 8,height = 6,units = 'in',res=600)
+#        grid.arrange(mayDOC_plot, junDOC_plot, julDOC_plot,
+#                     augDOC_plot, sepDOC_plot, allmonthsDOC_plot, nrow=2)
+# dev.off()
 
 ## Chlorophyll-a
 xlimitz <- c(0,25)
@@ -1631,7 +1631,7 @@ allmonthsSecchi_plot  <- ggplot(waterquality, aes(x=SecchiDepth_m, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Secchi (m)')+
   ylab('Density')+
-  ggtitle('G) Secchi')+
+  ggtitle('G) Secchi Depth')+
   scale_x_continuous(limits=c(0,5))+
   scale_y_continuous(limits=c(0,1))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1665,18 +1665,18 @@ allmonthsTemp_plot  <- ggplot(waterquality, aes(x=WaterTemp_C, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Temperature (°C)')+
   ylab('Density')+
-  ggtitle('H) Temperature')+
+  ggtitle('H) Water Temperature')+
   scale_x_continuous(limits=c(5,32))+
   scale_y_continuous(limits=c())+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
 allmonthsTemp_plot
 
 grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=4)
 
-jpeg('Figures/multipanel_densityplots_allmonths_8var.jpeg',width = 8,height = 6,units = 'in',res=600)
+jpeg('Figures/multipanel_densityplots_allmonths_8var.jpeg',width = 6,height = 8,units = 'in',res=600)
   grid.arrange(allmonthsTP_plot, allmonthsTN_plot, allmonthsDOC_plot, allmonthspH_plot,
-             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=2)
+             allmonthsTSS_plot, allmonthsChla_plot, allmonthsSecchi_plot, allmonthsTemp_plot, nrow=4)
 dev.off()
 
 #### Kolmogorov-Smirnov tests on burned vs control lakes ####

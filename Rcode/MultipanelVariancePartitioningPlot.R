@@ -1,6 +1,6 @@
 ############## Multipanel variance partitioning results plot ##################
 # Date: 1-26-23
-# updated: 1-27-23
+# updated: 2-20-23; make plot vertical
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -90,14 +90,14 @@ pct_buff_burn_plot <- ggplot(pct_buff_burn, aes(fill=predictor, y=variance, x=va
         axis.text.y = element_text(size = 9, color='black'),
         axis.title = element_text(size = 9),
         axis.title.x=element_blank(),
-        legend.position=c('none'),
+        #legend.position=c('none'),
         plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
   scale_x_discrete(breaks=c("logTP","logTN","logTSS","pH","logChloro","SecchiDepth_m","logDOC","WaterTemp_C"),
                    labels=c("TP","TN","TSS","pH","Chlorophyll","Secchi","DOC","Temp"))+
   scale_fill_manual("Predictor", values=c('darkred','khaki','salmon','blue','navy','navajowhite4','gray70','aquamarine'),
-                    labels=c('% Buff Burn','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
+                    labels=c('Fire variable','Connectivity','Drainage ratio','Lake area','Max depth','Month','Random:lake','Watershed area'))
 pct_buff_burn_plot
 
 pct_buff_HSburnveg_plot <- ggplot(pct_buff_burn_HSveg, aes(fill=predictor, y=variance, x=variable)) + 
@@ -146,7 +146,7 @@ pct_ws_HSburnsoil_plot <- ggplot(pct_ws_burn_HSsoil, aes(fill=predictor, y=varia
         axis.text.y = element_text(size = 9, color='black'),
         axis.title = element_text(size = 9),
         axis.title.x=element_blank(),
-        #legend.position=c('none'),
+        legend.position=c('none'),
         plot.title=element_text(size=9)) +
   ylab("Variance explained") +
   #xlab("Lake response variable")+
@@ -177,23 +177,23 @@ ggarrange(pct_ws_burn_plot +
                   axis.text.x=element_blank(),
                   plot.margin = margin(l = 1, b=1, t=2)  ),
           pct_ws_HSburnsoil_plot + 
+            theme(#axis.text.y = element_blank(),
+                  #axis.ticks.y = element_blank(),
+                  #axis.title.y = element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank(),
+                  plot.margin = margin(l = 1, b=1, t=2)  ),
+          pct_buff_burn_plot + 
             theme(axis.text.y = element_blank(),
                   axis.ticks.y = element_blank(),
                   axis.title.y = element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
-                  plot.margin = margin(l = 1, b=1, t=2)  ),
-          pct_buff_burn_plot + 
-            theme(#axis.text.y = element_blank(),
-                  #axis.ticks.y = element_blank(),
-                  #axis.title.y = element_blank(),
-                  #axis.ticks.x=element_blank(),
-                  #axis.text.x=element_blank(),
                   plot.margin = margin(b=2, l = 1, t=2), ), 
           pct_buff_HSburnveg_plot + 
-            theme(axis.ticks.y = element_blank(),
-                  axis.title.y=element_blank(),
-                  axis.text.y=element_blank(),
+            theme(#axis.ticks.y = element_blank(),
+                  #axis.title.y=element_blank(),
+                  #axis.text.y=element_blank(),
                   plot.margin = margin(l = 1, b=2, t=2) ),
 
           pct_buff_HSburnsoil_plot + 
@@ -201,5 +201,5 @@ ggarrange(pct_ws_burn_plot +
                   axis.ticks.y = element_blank(),
                   axis.title.y = element_blank(),
                   plot.margin = margin(l = 1, b=2, t=2)  ),
-          nrow = 2)
+          nrow = 3)
 dev.off()
