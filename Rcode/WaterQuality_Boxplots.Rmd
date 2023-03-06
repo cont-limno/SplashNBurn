@@ -1,19 +1,17 @@
 ---
-title: "Water Quality"
-date: "2022-10-26"
+title: "Script to generate water quality boxplots"
 author: "J. Brentrup"
-output: html_notebook
-editor_options: 
+date: '2022-10-26'
+output:
+  html_document:
+    df_print: paged
+    toc: true
+editor_options:
   chunk_output_type: console
 ---
 
 # Load Libraries
 ```{r, message=FALSE}
-
-# install.packages("tidyverse")
-# install.packages("ggnewscale")
-# install.packages("gridExtra")
-
 library(tidyverse)
 library(googledrive)
 library(readxl)
@@ -22,131 +20,19 @@ library(ggnewscale)
 library(gridExtra)
 ```
 
-# Load data- water quality May-Sep
+# Load Data
+### Water quality dataset for May-Sep 2022
 ```{r}
 wq_data <- read_csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
-str(wq_data)
+#str(wq_data)
 summary(wq_data)
-  
-unique(wq_data$Site)
-```
-
-# Burn severity gradient vs. TP - May
-```{r}
-
-attribute_data <- read_csv("Data/attribute_data.csv")
-
-lake_depth <- read_csv("Data/lake_depth.csv")
-
-mayWQ_fire <-  mayWQ_fire %>% 
-  select(-Site.y) %>% 
-  rename(Site = Site.x)
-
-mayWQ_fire_v2 <- left_join(mayWQ_fire, attribute_data, by = "lagoslakeid")
-
-mayWQ_fire_v3 <- left_join(mayWQ_fire_v2, LAGOStable, by = "lagoslakeid") %>% 
-  select(LakeName, ws_lake_arearatio, lake_waterarea_ha.x, ws_area_ha.y)
-
-summary(mayWQ_fire)
-
-ggplot(data=mayWQ_fire_v3, aes(x=ws_vbs_High_pct, y=logTP, color=ws_lake_arearatio, label=LakeName))+ #ws_lake_arearatio
-  #ggtitle('May total phosphorus')+
-  geom_point(size=4)+ 
-  geom_text(hjust=0, vjust=0, size=5, nudge_x=1)+
-  #geom_smooth()+ #separate lines for isolated and drainage
-  #geom_abline(slope = coef(plotlm)[2], 
-  #            intercept = coef(plotlm)[["(Intercept)"]])+
-  geom_vline(xintercept=25, linetype='dashed')+
-  #annotate(geom="text", x=5, y=4, label=paste0("r=",rval),
-  #         color="red")+
-  #annotate(geom="text", x=5, y=3.8, label=paste0("p=",pval),
-  #         color="red")+
-  theme_classic()+
-  scale_x_continuous(limits=c(0,100), name='Watershed High Severity Burn (%)')+
-  scale_y_continuous(limits=c(2.5,4), name='log(Total Phosphorus) (ppb)')+
- labs(color = "Watershead Area: \n Lake Area")+
-   theme(axis.title.x = element_text(size=24),
-              axis.title.y = element_text(size=24),
-              axis.text.y = element_text(size=22, color="black",margin = margin(l=10,r=5, unit = "pt")),
-              axis.text.x = element_text(size=22, color="black",margin = margin(b=10,t=5, unit = "pt")),
-              legend.title = element_text(size = 24),
-              #legend.position = "top", #c(0.77,0.83)  
-              legend.text = element_text(size=20,color="black", margin = margin(r=7,l=5, unit = "pt")))+
-        theme(axis.ticks.length = unit(.2, "cm"),
-              legend.position=c(0.8,0.2)) +
- # scale_color_stepsn(n.breaks = 7, colours = terrain.colors(7)) +
-  scale_color_binned(type = "viridis")+ #, breaks = levels(mayWQ_fire_v3$ws_lake_arearatio))
-  guides(colour = guide_coloursteps(show.limits = TRUE, even.steps = F))
-
-  scale_color_manual("Class", values=c('black','firebrick'), labels=c('Drainage','Isolated'))
-  
-  ggsave("~/Documents/RAPID Fire Grant/GLEON Poster/logTP_WatershedBurn.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-```
-
-# TP vs. TN
-
-```{r}
-# N:P ratio
-may_thru_sep <- may_thru_sep %>% 
-  mutate(N_P_ratio = TN_ppb/TP_ppb) %>% 
-  mutate(TP_microMolar = TP_ppb/31) %>% 
-    mutate(TN_microMolar = TN_ppb/14)
-
-mod <- lm(TN_ppb ~ TP_ppb, data = may_thru_sep)
-
-mod2 <- lm(logTN ~ logTP, data = may_thru_sep)
-summary(mod)
-coef(mod)
-
-ggplot(data=may_thru_sep, aes(x=logTP, y=logTN, color=Month_factor, shape=Group))+
-  geom_abline(slope = 0.49, intercept = 5.05)+
-  #geom_abline(slope = 1, intercept = 0, size=2, linetype =2)+ #1:1 line
-  geom_point(size=4)+
-  # xlim(2,8)+
-  # ylim(2,8)+
-  theme_classic()
-
-ggplot(data=may_thru_sep, aes(x=TP_microMolar, y=TN_microMolar, color=Group, shape=Group))+
-  #geom_abline(slope = 0.49, intercept = 5.05)+
- # geom_abline(slope = 1, intercept = 0, size=2, linetype =2)+ #1:1 line
-  geom_point(size=6, stroke = 1, alpha = 0.85)+
-  xlim(0,2)+
-  ylim(0,100)+
-  scale_color_manual(values = c("red", "red", "navyblue", "navyblue"))+
-  scale_shape_manual(values = c(1, 16,1,16))+
-  labs(color = "Lake Type", shape = "Lake Type",x = "Total Phosphorus (µM)", y = "Total Nitrogen (µM)")+
-  theme_classic()+
-  theme(axis.title.x = element_text(size=22),
-              axis.title.y = element_text(size=22),
-              axis.text.y = element_text(size=18, color="black",margin = margin(l=10,r=5, unit = "pt")),
-              axis.text.x = element_text(size=18, color="black",margin = margin(b=10,t=5, unit = "pt")),
-              legend.title = element_text(size = 22),
-              #legend.position = "top", #c(0.77,0.83)  
-              legend.text = element_text(size=18,color="black", margin = margin(r=7,l=5, unit = "pt")))+
-        theme(axis.ticks.length = unit(.2, "cm"),
-              legend.position=c(0.8,0.2))
-
- ggsave("~/Documents/RAPID Fire Grant/GLEON Poster/TN_v_TP.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
- 
-
-
 
 ```
 
-#Boxplots for all water chem
+# Boxplot Code
+### Order: TP, TN, DOC, pH, TSS, Chl-a, Secchi Depth, Water Temp
 ```{r}
-# library(khroma)
-# sunset <- colour("sunset")
-# sunset(9)
-# PRGn <- colour("PRGn")
-# PRGn(9)
-# 
-# iridescent <- colour("iridescent")
-# iridescent(23)
-
-#month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
-#month_colors <- c("#364B9A", "#FFEE99", "#F99858", "#E34D34","#83B8D7" ) #red blue gradient
-#month_colors <- c("#762A83", "#9970AB", "#C2A5CF", "#E7D4E8", "#DDDDDD") # purple gradient #F7F7F7
+# Create 2 color gradients for burn lakes (red) and control lakes (blue)
 
 month_colors_red <- c("#bd0026", '#f03b20', "#fd8d3c", "#fecc5c", "#ffffb2") # red gradient
 month_colors_blue <- c("#364b9a", '#5385bc', "#83b8d7", "#b7ddeb", "#eff3ff") # blue gradient
@@ -187,8 +73,6 @@ TP_box <- ggplot(wq_data) +
 
 TP_box
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TP_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-
 # TP Plot - old order, burned lakes group vs. control group
 # TP_box <- ggplot(wq_data) +
 #   geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_red"), outlier.size = 1) + 
@@ -211,18 +95,6 @@ ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TP_laketype.pdf", width 
 #               legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
 #               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
 #         theme(axis.ticks.length = unit(.2, "cm"))
-
-
-# Poster sizing
-  # theme(axis.title.x = element_text(size=24),
-  #             axis.title.y = element_text(size=24),
-  #             axis.text.y = element_text(size=22, color="black",margin = margin(l=10,r=5, unit = "pt")),
-  #             axis.text.x = element_text(size=20, color="black",margin = margin(b=10,t=5, unit = "pt")),
-  #             legend.title = element_text(size = 24),
-  #             #legend.position = "top", #c(0.77,0.83)  
-  #             legend.text = element_text(size=20,color="black", margin = margin(r=7,l=5, unit = "pt")))+
-  #       theme(axis.ticks.length = unit(.2, "cm"),
-  #             legend.position=c(0.8,0.8))
 
 
 #TN
@@ -251,10 +123,8 @@ TN_box <- ggplot(wq_data) +
 
 TN_box
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TN_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-
 #DOC
-max(wq_data$DOC_ppm)
+range(wq_data$DOC_ppm)
 
 DOC_box <- ggplot(wq_data) +
   geom_boxplot(aes(x = Group, y = DOC_ppm, fill = Month_factor), outlier.size = 1) + #,  filter(wq_data, color_group=="group_red")
@@ -279,9 +149,8 @@ DOC_box <- ggplot(wq_data) +
 
 DOC_box
 
- ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/DOC_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
  
- #pH
+#pH
 range(wq_data$pH, na.rm = T)
 
 pH_box <- ggplot(wq_data) +
@@ -307,9 +176,7 @@ pH_box <- ggplot(wq_data) +
 
 pH_box
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/pH_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-
- #TSS
+#TSS
 range(wq_data$TSS_mgL)
 
 TSS_box <- ggplot(wq_data) +
@@ -334,10 +201,8 @@ TSS_box <- ggplot(wq_data) +
         theme(axis.ticks.length = unit(.2, "cm"))
 
 TSS_box
-
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TSS_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
  
- #Chla
+#Chla
  range(wq_data$Chloro_ppb, na.rm = T)
  sum(is.na(wq_data$Chloro_ppb))
 
@@ -364,19 +229,17 @@ Chla_box <- ggplot(wq_data) +
 
 Chla_box
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/Chla_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
 
-
- #Secchi
+#Secchi
  range(wq_data$SecchiDepth_m, na.rm = T)
  sum(is.na(wq_data$SecchiDepth_m))
 
 Secchi_box <- ggplot(wq_data) +
-  geom_boxplot(aes(x = GroupFac, y = SecchiDepth_m, fill = Month_factor), outlier.size = 1) + #, filter(wq_data, color_group=="group_red")
+  geom_boxplot(aes(x = Group, y = SecchiDepth_m, fill = Month_factor), outlier.size = 1) + #, filter(wq_data, color_group=="group_red")
   scale_fill_manual(name = "Month", values=month_colors_red)+
   guides(fill = "none")+ #remove guide
   new_scale_fill()+ #allows you to set 2 different color scales
-  geom_boxplot(aes(x = GroupFac, y = SecchiDepth_m, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
+  geom_boxplot(aes(x = Group, y = SecchiDepth_m, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
   scale_fill_manual(name = NULL, values=month_colors_blue)+
   guides(fill = "none")+ #remove guide
   theme_classic(base_size = 8) +
@@ -394,9 +257,7 @@ Secchi_box <- ggplot(wq_data) +
 
 Secchi_box
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/Secchi_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-
-# Water Temp - Legend
+# Water Temp
 range(wq_data$WaterTemp_C, na.rm = T)
 
 WaterTemp_box <- ggplot(wq_data) +
@@ -421,91 +282,29 @@ WaterTemp_box <- ggplot(wq_data) +
         theme(axis.ticks.length = unit(.2, "cm"))
 
 WaterTemp_box
+```
 
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/WaterTemp_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
+# Multipanel Figure
+```{r}
+# Multi-panel figure
 
-# Multipanel figure
 grid.arrange(TP_box, TN_box, DOC_box,
              pH_box,TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4) # wide nrow = 2 #long ncol=2, nrow=4
-
-jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide-nolegend.jpeg", width = 230, height = 190, units = 'mm',res=600)
-
-jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-long-nolegend.jpeg", width = 190, height = 230, units = 'mm',res=600)
-
-pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide.pdf", width = 9, height = 7.5)
-
-pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
-
-grid.arrange(TP_box, TN_box, DOC_box, pH_box,
-               TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
-dev.off()
-
 ```
 
-
-#DOC vs. Chla
+# Save output of multi-panel figure
 ```{r}
-sep_doc_chla <- allWQ_data %>% 
-  filter(Month == 9)
+# jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-long-nolegend.jpeg", width = 190, height = 230, units = 'mm',res=600)
+# 
+# #jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide-nolegend.jpeg", width = 230, height = 190, units = 'mm',res=600)
+# 
+# pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
+# 
+# #pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide.pdf", width = 9, height = 7.5)
+# 
+# 
+# grid.arrange(TP_box, TN_box, DOC_box, pH_box,
+#                TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
+# dev.off()
 
-ggplot(sep_doc_chla, aes(x = DOC_ppm, y = Chloro_ppb, color = Group, shape = Group))+
-  geom_point(size = 6, stroke = 1)+
-  theme_classic()+
-  scale_color_manual(values = c("red", "red", "navyblue", "navyblue"), labels=c('Burned drainage','Burned isolated','Control drainage','Control isolated'))+
-  scale_shape_manual(values = c(16, 1,16,1), labels=c('Burned drainage','Burned isolated','Control drainage','Control isolated'))+
-   xlim(0,40)+
-  ylim(0,25.1)+
-  labs(color = NULL, shape = NULL,x = "DOC (mg/L)", y = "Chlorophyll-a (µg/L)")+
-  theme(axis.title.x = element_text(size=24),
-              axis.title.y = element_text(size=24),
-              axis.text.y = element_text(size=20, color="black",margin = margin(l=10,r=5, unit = "pt")),
-              axis.text.x = element_text(size=20, color="black",margin = margin(b=10,t=5, unit = "pt")),
-              legend.title = element_text(size = 24),
-              #legend.position = "top", #c(0.77,0.83)  
-              legend.text = element_text(size=20,color="black", margin = margin(r=7,l=5, unit = "pt")))+
-        theme(axis.ticks.length = unit(.2, "cm"),legend.position=c(0.85,0.9))
-
-ggsave("~/Documents/RAPID Fire Grant/GLEON Poster/DOC_v_Chla.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
- 
 ```
-
-# Burn severity by lake
-```{r}
-
-ws_burn_severity_pct_melted_order <- ws_burn_severity_pct_melted %>% 
-  arrange(desc(Severity), desc(Percent))
-
-
-str(ws_burn_severity_pct_melted_order)
-
-unique(ws_burn_severity_pct_melted_order$Lake)
-
-ws_burn_severity_pct_melted_order$Severity_fac <- factor(ws_burn_severity_pct_melted_order$Severity, levels = c("Unburned_pct","Low_pct","ModerateLow_pct","ModerateHigh_pct", "High_pct"))
-
-# Order lakes by high severity burn
-ws_burn_severity_pct_melted_order$Lake_fac <- factor(ws_burn_severity_pct_melted_order$Lake, levels = c("Fourth McDougal", "Middle McDougal", "North McDougal" , "South McDougal" , "Stony ", "Fishtrap " ,     
-  "Wampus ",  "Sand " , "Greenwood ", " Gegoka" , "Slate "  ,"West Chub " , "Teamster " , "Unnamed ", "Lil Chub "      ))
-
-ggplot(ws_burn_severity_pct_melted_order, aes(x=Lake_fac, y = Percent, fill=Severity_fac))+ ##,  )) + 
-  geom_bar(position="stack", stat="identity")+
-  theme_classic()+
-  #coord_flip()+
-  #theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1, color='black'),
-      #  axis.text.y=element_text(color='black'))+
-  theme(axis.title.x = element_text(size=24),
-              axis.title.y = element_text(size=24),
-              axis.text.y = element_text(size=22, color="black",margin = margin(l=10,r=5, unit = "pt")),
-              axis.text.x = element_text(angle=50, vjust=0.75, hjust=0.5, size=20, color="black"),
-              legend.title = element_text(size = 24),
-              #legend.position = "top", #c(0.77,0.83)  
-              legend.text = element_text(size=20,color="black"))+ #, margin = margin(r=7,l=5, unit = "pt")))+
-        theme(axis.ticks.length = unit(.2, "cm"))+ #,
-              #legend.position=c(0.8,0.8))+
-  scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
-                    labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
-                    'Severity (%)')+
-  labs(y = 'Watershed Vegetation Burn Severity (%)', x = "Lake")
-
-ggsave("~/Documents/RAPID Fire Grant/GLEON Poster/WatershedBurnSeverity.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-```
-
