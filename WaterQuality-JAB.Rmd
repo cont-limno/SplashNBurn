@@ -26,6 +26,7 @@ library(gridExtra)
 ```{r}
 wq_data <- read_csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
 str(wq_data)
+summary(wq_data)
   
 unique(wq_data$Site)
 ```
@@ -145,61 +146,23 @@ ggplot(data=may_thru_sep, aes(x=TP_microMolar, y=TN_microMolar, color=Group, sha
 
 #month_colors <- c('dodgerblue','tan','gold','orange','darkgreen')
 #month_colors <- c("#364B9A", "#FFEE99", "#F99858", "#E34D34","#83B8D7" ) #red blue gradient
-#month_colors <- c("#762A83", "#9970AB", "#C2A5CF", "#E7D4E8", "#DDDDDD") # purple gradient#F7F7F7
+#month_colors <- c("#762A83", "#9970AB", "#C2A5CF", "#E7D4E8", "#DDDDDD") # purple gradient #F7F7F7
+
 month_colors_red <- c("#bd0026", '#f03b20', "#fd8d3c", "#fecc5c", "#ffffb2") # red gradient
 month_colors_blue <- c("#364b9a", '#5385bc', "#83b8d7", "#b7ddeb", "#eff3ff") # blue gradient
 
-
-summary(wq_data)
 
 # Make factors for Group (Burn/Control & Isolated/Drainage) & Month
 wq_data$Month_factor <- parse_factor(wq_data$Month_factor, levels = c("May","Jun","Jul","Aug","Sep"))
 wq_data$Group <- parse_factor(wq_data$Group, levels = c("Burned_Drainage", "Control_Drainage", "Burned_Isolated", "Control_Isolated"))
 
-wq_data$GroupFac <- as.factor(wq_data$Group)
-wq_data$GroupFac <- factor(wq_data$GroupFac,
-                                levels=c("Burned_Drainage","Control_Drainage",
-                                         "Burned_Isolated","Control_Isolated"),
-                                labels=c("Burned_Drainage","Control_Drainage",
-                                "Burned_Isolated","Control_Isolated"))
-
-sum(is.na(wq_data$TN_ppb))
-max(wq_data$TP_ppb)
-max(wq_data$TN_ppb, na.rm = T)
-which.max(wq_data$TSS_mgL)
-
 # Add grouping variable for 2 different color schemes
 wq_data <- wq_data %>% 
   mutate(color_group = ifelse(Group=="Burned_Drainage"|Group=="Burned_Isolated","group_red", "group_blue"))
 
-# TP Plot
-TP_box <- ggplot(wq_data) +
-  geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_red"), outlier.size = 1) + 
-  scale_fill_manual(name = "Month", values=month_colors_red)+
- # guides(fill = "none")+ #remove guide
-  new_scale_fill()+ #allows you to set 2 different color scales
-  geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
-  scale_fill_manual(name = NULL, values=month_colors_blue)+
-#  guides(fill = "none")+ #remove guide
-  theme_classic(base_size = 8) +
-  labs(title = "A) TP", x = NULL, y = "Total Phosphorus (ppb)")+ #µg/L, x = "Lake Type"
-  #ggtitle("A) TP")+
-  scale_y_continuous(limits=c(0,100))+
-  scale_x_discrete(labels=c('BD','BI','CD','CI'))+
-  theme(axis.title.x = element_text(size=8),
-              axis.title.y = element_text(size=8),
-              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
-              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
-              legend.title = element_text(size = 8),
-              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
-              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
-        theme(axis.ticks.length = unit(.2, "cm"))
+# TP plot - order with Drainage lakes together 
+range(wq_data$TP_ppb, na.rm = T)
 
-TP_box
-
-ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TP_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
-
-# Different order with Drainage lakes together 
 TP_box <- ggplot(wq_data) +
   geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), outlier.size = 1) + 
   scale_fill_manual(name = "Month", values=month_colors_red)+
@@ -221,6 +184,34 @@ TP_box <- ggplot(wq_data) +
               legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
         theme(axis.ticks.length = unit(.2, "cm"))
+
+TP_box
+
+ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/TP_laketype.pdf", width = 11, height = 8.5, useDingbats=FALSE, dpi = 600)
+
+# TP Plot - old order, burned lakes group vs. control group
+# TP_box <- ggplot(wq_data) +
+#   geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_red"), outlier.size = 1) + 
+#   scale_fill_manual(name = "Month", values=month_colors_red)+
+#  # guides(fill = "none")+ #remove guide
+#   new_scale_fill()+ #allows you to set 2 different color scales
+#   geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
+#   scale_fill_manual(name = NULL, values=month_colors_blue)+
+# #  guides(fill = "none")+ #remove guide
+#   theme_classic(base_size = 8) +
+#   labs(title = "A) TP", x = NULL, y = "Total Phosphorus (ppb)")+ #µg/L, x = "Lake Type"
+#   #ggtitle("A) TP")+
+#   scale_y_continuous(limits=c(0,100))+
+#   scale_x_discrete(labels=c('BD','BI','CD','CI'))+
+#   theme(axis.title.x = element_text(size=8),
+#               axis.title.y = element_text(size=8),
+#               axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+#               axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+#               legend.title = element_text(size = 8),
+#               legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+#               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+#         theme(axis.ticks.length = unit(.2, "cm"))
+
 
 # Poster sizing
   # theme(axis.title.x = element_text(size=24),
