@@ -1,6 +1,6 @@
 ############## Multipanel variance partitioning results plot ##################
 # Date: 1-26-23
-# updated: 2-20-23; make plot vertical
+# updated: 3-8-23; change plot labels to lowercase a,b,c, etc
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -48,7 +48,7 @@ pct_buff_burn_HSsoil$variable <- factor(pct_buff_burn_HSsoil$variable, levels=c(
 # set up plots individually
 pct_ws_burn_plot <- ggplot(pct_ws_burn, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("A) % Watershed burned") +
+  ggtitle("(a) % Watershed burned") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),
@@ -66,7 +66,7 @@ pct_ws_burn_plot
 
 pct_ws_HSburnveg_plot <- ggplot(pct_ws_burn_HSveg, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("B) % Watershed burned HS (veg)") +
+  ggtitle("(b) % Watershed burned HS (veg)") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),
@@ -84,7 +84,7 @@ pct_ws_HSburnveg_plot
 
 pct_buff_burn_plot <- ggplot(pct_buff_burn, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("D) % Shoreline burned") +
+  ggtitle("(d) % Shoreline burned") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),
@@ -102,7 +102,7 @@ pct_buff_burn_plot
 
 pct_buff_HSburnveg_plot <- ggplot(pct_buff_burn_HSveg, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("E) % Shoreline burned HS (veg)") +
+  ggtitle("(e) % Shoreline burned HS (veg)") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),
@@ -121,7 +121,7 @@ pct_buff_HSburnveg_plot
 
 pct_buff_HSburnsoil_plot <- ggplot(pct_buff_burn_HSsoil, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("F) % Shoreline burned HS (soil)") +
+  ggtitle("(f) % Shoreline burned HS (soil)") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),
@@ -140,7 +140,7 @@ pct_buff_HSburnsoil_plot
 
 pct_ws_HSburnsoil_plot <- ggplot(pct_ws_burn_HSsoil, aes(fill=predictor, y=variance, x=variable)) + 
   geom_bar(position="stack", stat="identity") +
-  ggtitle("C) % Watershed burned HS (soil)") +
+  ggtitle("(c) % Watershed burned HS (soil)") +
   theme_bw() +
   theme(axis.text.x = element_text(size = 9, angle = 45, vjust = 0.65, hjust=0.6, color='black'),
         axis.text.y = element_text(size = 9, color='black'),

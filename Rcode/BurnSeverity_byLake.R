@@ -1,6 +1,6 @@
 ################### Exploring lake times series data ##########################
 # Date: 8-26-22
-# updated: 1-24-23; change plot title
+# updated: 3-8-23; change plot title to lowercase b
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -13,7 +13,7 @@ library(tidyr)
 #### Input data ####
 setwd("C:/Users/immcc/Documents/SplashNBurn")
 
-may_june_july <- read.csv("Data/WaterQuality/may_june_july.csv")
+waterquality <- read.csv("Data/WaterQuality/combined_lab_field_may_sep.csv")
 ws_burn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_vbs_pct.csv")
 ws_soilburn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_ws_sbs_pct.csv")
 buffer_burn_severity <- read.csv("Data/BurnSeverity/Ian_calculations/burned_buff100m_vbs_pct.csv")
@@ -33,12 +33,12 @@ cor(ws_burn_severity_pct, method='spearman', use='pairwise.complete.obs')
 
 ## prepare for plot
 # get names + lagoslakeids only
-lakenamesids <- may_june_july[,c('Lagoslakeid','Site','Type')]
-lakenamesids <- subset(lakenamesids, Type=='sample')
+lakenamesids <- waterquality[,c('lagoslakeid','Site','Type')]
+lakenamesids <- subset(lakenamesids, Type=='Burned')
 lakenamesids <- lakenamesids[!duplicated(lakenamesids), ]
 lakenamesids <- lakenamesids[,c(1:2)]
 
-ws_burn_severity_pct <- merge(ws_burn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
+ws_burn_severity_pct <- merge(ws_burn_severity_pct, lakenamesids, by='lagoslakeid')
 # ERL category is so small...just lump in with unburned
 ws_burn_severity_pct$Unburned_pct <- ws_burn_severity_pct$Unburned_pct + ws_burn_severity_pct$ERL_pct
 ws_burn_severity_pct_melted <- reshape2::melt(ws_burn_severity_pct[,c(3:7,9)], 
@@ -65,7 +65,7 @@ ggplot(ws_burn_severity_pct_melted, aes(fill=Severity, y=Percent, x=LakeFac)) +
   scale_fill_manual(values=c('gray90','gold','orange','firebrick','black'), 
                     labels=c('Unburned','Low','Low-Moderate','Moderate-High','High'),
                     'Severity (%)')+
-  ggtitle('B) Watershed vegetation burn severity')
+  ggtitle('(b) Watershed vegetation burn severity')
 dev.off()
 
 ### watershed soil burn severity ###
@@ -81,7 +81,7 @@ cor(ws_soilburn_severity_pct, method='spearman', use='pairwise.complete.obs')
 #ws_soilburn_severity_pct$unburned_pct <- ifelse(ws_soilburn_severity_pct$unburned_pct < 0, 0, ws_soilburn_severity_pct$unburned_pct)
 
 ## prepare for plot
-ws_soilburn_severity_pct <- merge(ws_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
+ws_soilburn_severity_pct <- merge(ws_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='lagoslakeid')
 ws_soilburn_severity_pct_melted <- reshape2::melt(ws_soilburn_severity_pct[,c(2:6,8)], 
                                                   id.var='Site', variable.name='Severity', value.name='Percent')
 
@@ -121,7 +121,7 @@ cor(buffer_burn_severity_pct, method='spearman', use='pairwise.complete.obs')
 #buffer_burn_severity_pct$unburned_pct <- ifelse(buffer_burn_severity_pct$unburned_pct < 0, 0, buffer_burn_severity_pct$unburned_pct)
 
 ## prepare for plot
-buffer_burn_severity_pct <- merge(buffer_burn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
+buffer_burn_severity_pct <- merge(buffer_burn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='lagoslakeid')
 buffer_burn_severity_pct <- tidyr::replace_na(buffer_burn_severity_pct, list(Unburned_pct=100)) #replace Unburned NAs as 100 (i.e., everything not captured assumed to be unburned)
 buffer_burn_severity_pct_melted <- reshape2::melt(buffer_burn_severity_pct[,c(2:6,8)], 
                                                   id.var='Site', variable.name='Severity', value.name='Percent')
@@ -162,7 +162,7 @@ cor(buffer_soilburn_severity_pct, method='spearman', use='pairwise.complete.obs'
 #buffer_soilburn_severity_pct$unburned_pct <- ifelse(buffer_soilburn_severity_pct$unburned_pct < 0, 0, buffer_soilburn_severity_pct$unburned_pct)
 
 ## prepare for plot
-buffer_soilburn_severity_pct <- merge(buffer_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='Lagoslakeid')
+buffer_soilburn_severity_pct <- merge(buffer_soilburn_severity_pct, lakenamesids, by.x='lagoslakeid', by.y='lagoslakeid')
 buffer_soilburn_severity_pct_melted <- reshape2::melt(buffer_soilburn_severity_pct[,c(2:6,8)], 
                                                       id.var='Site', variable.name='Severity', value.name='Percent')
 
