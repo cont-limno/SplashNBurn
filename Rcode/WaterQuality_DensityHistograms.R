@@ -1,6 +1,6 @@
 ################## Water quality density plots/histograms #####################
 # Date: 10-26-22
-# updated: 3-8-23; change plot labels
+# updated: 3-25-23; add asterisks for k-s significance
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -1546,7 +1546,7 @@ allmonthsTP_plot  <- ggplot(waterquality, aes(x=TP_ppb, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Total phosphorus (ppb)')+
   ylab('Density')+
-  ggtitle('(a) TP')+
+  ggtitle('(a) TP*')+
   scale_x_continuous(limits=c(0,60))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1563,7 +1563,7 @@ allmonthsTN_plot  <- ggplot(waterquality, aes(x=TN_ppb, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Total nitrogen (ppb)')+
   ylab('Density')+
-  ggtitle('(b) TN')+
+  ggtitle('(b) TN*')+
   scale_x_continuous(limits=c(0,2000))+
   scale_y_continuous(limits=c(0,0.003))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1580,7 +1580,7 @@ allmonthsDOC_plot  <- ggplot(waterquality, aes(x=DOC_ppm, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Dissolved organic carbon (ppm)')+
   ylab('Density')+
-  ggtitle('(c) DOC')+
+  ggtitle('(c) DOC*')+
   scale_x_continuous(limits=c(0,50))+
   scale_y_continuous(limits=c(0,0.08))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1597,7 +1597,7 @@ allmonthsTSS_plot  <- ggplot(waterquality, aes(x=TSS_mgL, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Total suspended solids (mg/L)')+
   ylab('Density')+
-  ggtitle('(e) TSS')+
+  ggtitle('(e) TSS*')+
   scale_x_continuous(limits=c(0,15))+
   scale_y_continuous(limits=c(0,0.5))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1631,7 +1631,7 @@ allmonthsSecchi_plot  <- ggplot(waterquality, aes(x=SecchiDepth_m, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('Secchi (m)')+
   ylab('Density')+
-  ggtitle('(g) Secchi Depth')+
+  ggtitle('(g) Secchi Depth*')+
   scale_x_continuous(limits=c(0,5))+
   scale_y_continuous(limits=c(0,1))+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
@@ -1648,7 +1648,7 @@ allmonthspH_plot  <- ggplot(waterquality, aes(x=pH, fill=Type)) +
         plot.title=element_text(size=title_font))+
   xlab('pH')+
   ylab('Density')+
-  ggtitle('(d) pH')+
+  ggtitle('(d) pH*')+
   scale_x_continuous(limits=c(5,10))+
   scale_y_continuous(limits=c())+
   scale_fill_manual(values=c('firebrick','dodgerblue'))
