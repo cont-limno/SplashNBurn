@@ -294,11 +294,11 @@ grid.arrange(TP_box, TN_box, DOC_box,
 # Save output of multi-panel figure
 ```{r}
 # Save on github
-# pdf("Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
-# 
-# grid.arrange(TP_box, TN_box, DOC_box, pH_box,
-#                 TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
-# dev.off()
+#  pdf("Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
+
+#  grid.arrange(TP_box, TN_box, DOC_box, pH_box,
+#                  TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
+#  dev.off()
 
 # Save locally
 # jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-long-nolegend.jpeg", width = 190, height = 230, units = 'mm',res=600)
@@ -313,3 +313,45 @@ grid.arrange(TP_box, TN_box, DOC_box,
  
 
 ```
+
+
+# ANC figure for supplement
+```{r}
+# ANC
+range(wq_data$ANC_mgCaCO3L, na.rm = T)
+
+anc_label <- c(expression(paste("Acid Neutralizing Capacity (mg ",CaCO[3], " L"^-1,")"))) 
+
+ANC_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor), outlier.size = 1) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  #guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  #guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(x = NULL, y = anc_label)+ #title = "ANC", "Acid Neutralizing Capacity (mg CaCO3/L)"
+  scale_y_continuous(limits=c(0,80), breaks=seq(0,80,by=10))+
+  scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8),"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.2, "cm"))
+
+ANC_box
+
+
+# Save on github
+# ggsave("Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+
+# Save locally
+# ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+
+
+```
+
