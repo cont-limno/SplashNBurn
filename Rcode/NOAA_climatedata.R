@@ -1,6 +1,6 @@
 ##################### Exploring NOAA climate data #############################
 # Date: 8-25-22
-# updated: 12-23-22; add dplyr::
+# updated: 7-10-23; add Duluth historical daily precip data
 # Author: Ian McCullough, immccull@gmail.com
 ###############################################################################
 
@@ -16,6 +16,8 @@ precip <- read.csv("Data/NOAA_climate/MN-075-pcp-all-9-1895-2022.csv")[c(5:1535)
 tmax <- read.csv("Data/NOAA_climate/MN-075-tmax-all-9-1895-2022.csv")[c(5:1535),]
 tmin <- read.csv("Data/NOAA_climate/MN-075-tmin-all-9-1895-2022.csv")[c(5:1535),]
 tmean <- read.csv("Data/NOAA_climate/MN-075-tavg-all-9-1895-2022.csv")[c(5:1535),]
+
+duluth <- read.csv("Data/NOAA_climate/3386547_Duluth_precip_1948_2023.csv")
 
 #### Main program ####
 ## precip
@@ -291,3 +293,20 @@ zyp.sen(summer_tmean ~ WaterYear, airtemp_summery_19912020)
 attach(airtemp_summery_19912020)
 zyp.trend.vector(summer_tmean, method='yuepilon')
 detach(airtemp_summery_19912020)
+
+## New analysis of historical precip data to contextualize 2022 precip data
+# source: DULUTH INTERNATIONAL AIRPORT, MN US (GHCND:USW00014913) 
+# https://www.ncdc.noaa.gov/cdo-web/
+# obtained: 7-10-23
+
+# get historical only (1948-2021)
+duluth$Month <- lubridate::month(duluth$DATE)
+duluth$Year <- lubridate::year(duluth$DATE)
+duluth_summer <- subset(duluth, Month %in% c(5,6,7,8,9))
+duluth_summer <- subset(duluth_summer, Year %in% seq(1948,2021,1))
+
+quantile(duluth_summer$PRCP)
+quantile(duluth_summer$PRCP, probs = seq(.1, .9, by = .1))
+quantile(duluth_summer$PRCP, probs = seq(.05, 1, by = .05))
+quantile(duluth_summer$PRCP, probs = seq(.01, 1, by = .01))
+quantile(duluth_summer$PRCP, probs = seq(.005, 1, by = .005))
