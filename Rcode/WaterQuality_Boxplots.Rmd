@@ -18,6 +18,7 @@ library(readxl)
 library(lubridate)
 library(ggnewscale)
 library(gridExtra)
+library(lemon)
 ```
 
 # Load Data
@@ -330,17 +331,15 @@ ANC_box <- ggplot(wq_data) +
   geom_boxplot(aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
   scale_fill_manual(name = NULL, values=month_colors_blue)+
   #guides(fill = "none")+ #remove guide
-  theme_classic(base_size = 8) +
+  theme_classic(base_size = 14) +
   labs(x = NULL, y = anc_label)+ #title = "ANC", "Acid Neutralizing Capacity (mg CaCO3/L)"
   scale_y_continuous(limits=c(0,80), breaks=seq(0,80,by=10))+
   scale_x_discrete(labels=c('BD','CD','BI','CI'))+
-   theme(axis.title.x = element_text(size=8),
-              axis.title.y = element_text(size=8),
-              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
-              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
-              legend.title = element_text(size = 8),
+   theme(axis.text.y = element_text(size=14, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=14, color="black",margin = margin(b=10,t=5, unit = "pt")),
+             # legend.title = element_text(size = 8),
               legend.position = "right", #c(0.1,0.8),"right", puts legend on figure but covers outlier
-              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+              legend.text = element_text(size=14,color="black", margin = margin(r=7,l=5, unit = "pt")))+
         theme(axis.ticks.length = unit(.2, "cm"))
 
 ANC_box
@@ -350,8 +349,615 @@ ANC_box
 # ggsave("Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
 
 # Save locally
-# ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+ # ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+ # ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.jpeg", width = 9, height = 7.5, units = "in", dpi = 300)
 
 
 ```
+
+
+
+# Revision #####
+
+# Boxplot Code - revison verson
+### Order: TP, TN, DOC, pH, TSS, Chl-a, Secchi Depth, Water Temp
+```{r}
+# Create 2 color gradients for burn lakes (red) and control lakes (blue)
+
+month_colors_red <- c("#bd0026", '#f03b20', "#fd8d3c", "#fecc5c", "#ffffb2") # red gradient
+month_colors_blue <- c("#364b9a", '#5385bc', "#83b8d7", "#b7ddeb", "#eff3ff") # blue gradient
+
+# Change names for group
+wq_data <- wq_data %>% 
+        mutate(Group2 = str_replace(Group, "_", " "))
+
+# Make factors for Group (Burn/Control & Isolated/Drainage) & Month
+wq_data$Month_factor <- parse_factor(wq_data$Month_factor, levels = c("May","Jun","Jul","Aug","Sep"))
+wq_data$Group2 <- parse_factor(wq_data$Group2, levels = c("Burned Drainage", "Control Drainage", "Burned Isolated", "Control Isolated"))
+
+# Add grouping variable for 2 different color schemes
+wq_data <- wq_data %>% 
+  mutate(color_group = ifelse(Group2=="Burned Drainage"|Group2=="Burned Isolated","group_red", "group_blue"))
+
+
+# New version for revision with month on x-axis and facet by group2
+
+TP_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TP_ppb, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_red"), outlier.size = 0.75) + 
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = TP_ppb, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) +
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(a) TP", x = NULL, y = "Total Phosphorus (ppb)")+ #µg/L, x = "Lake Type"
+  scale_y_continuous(limits=c(0,100))+
+#  scale_x_discrete(limits = c("Burned_Drainage", "Control_Drainage", "Burned_Isolated", "Control_Isolated"), labels=c('BD','CD','BI','CI'))+ #scale_x_discrete(labels=c('BD','BI','CD','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+                axis.line.x = element_line(),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"top", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+        #facet_rep_wrap(~Group2) + coord_flex_cart(bottom=capped_horizontal('none', gap=0.02))
+
+TP_box
+
+#TN
+range(wq_data$TN_ppb, na.rm = T)
+
+TN_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TN_ppb, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_red"), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = TN_ppb, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(b) TN",x = NULL, y = "Total Nitrogen (ppb)")+ #µg/L
+  scale_y_continuous(limits=c(200,1845), breaks=seq(200,1800,by=400))+
+ # scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+TN_box
+
+#DOC
+range(wq_data$DOC_ppm)
+
+DOC_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = DOC_ppm, fill = Month_factor), outlier.size = 0.75, size = 0.25, filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = DOC_ppm, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(c) DOC",x = NULL, y = "Dissolved Organic Carbon (ppm)")+
+  scale_y_continuous(limits=c(0,44), breaks=seq(0,40,by=10))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+DOC_box
+
+ 
+#pH
+range(wq_data$pH, na.rm = T)
+
+pH_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = pH, fill = Month_factor), outlier.size = 0.75,size = 0.25,  filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = pH, fill = Month_factor), size = 0.25,  filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(d) pH",x = NULL, y = "pH")+
+  scale_y_continuous(limits=c(5.5,9.5), breaks=seq(5.5,9.5, by=1))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8), puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+pH_box
+
+#TSS
+range(wq_data$TSS_mgL)
+
+TSS_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TSS_mgL, fill = Month_factor), outlier.size = 0.75, size = 0.25, filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = TSS_mgL, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(e) TSS", x = NULL, y = "Total Suspended Solids (ppm)")+
+  scale_y_continuous(limits=c(0,15), breaks=seq(0,15,by=5))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+TSS_box
+ 
+#Chla
+ range(wq_data$Chloro_ppb, na.rm = T)
+ sum(is.na(wq_data$Chloro_ppb))
+
+Chla_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = Chloro_ppb, fill = Month_factor), outlier.size = 0.75, size = 0.25, filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = Chloro_ppb, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(f) Chlorophyll-a", x = NULL, y = "Chlorophyll-a (ppb)")+
+  scale_y_continuous(limits=c(0,25.2), breaks=seq(0,25,by=5))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+Chla_box
+
+
+#Secchi
+ range(wq_data$SecchiDepth_m, na.rm = T)
+ sum(is.na(wq_data$SecchiDepth_m))
+
+Secchi_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = SecchiDepth_m, fill = Month_factor), outlier.size = 0.75, size = 0.25, filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = SecchiDepth_m, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(g) Secchi Depth", x = NULL, y = "Secchi Depth (m)")+
+  scale_y_continuous(limits=c(0,4.1), breaks=seq(0,4,by=1))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+               legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+Secchi_box
+
+# Water Temp
+range(wq_data$WaterTemp_C, na.rm = T)
+
+WaterTemp_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = WaterTemp_C, fill = Month_factor), outlier.size = 0.75, size = 0.25, filter(wq_data, color_group=="group_red"))+
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Month_factor, y = WaterTemp_C, fill = Month_factor), size = 0.25, filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(h) Water Temperature", x = NULL, y = "Water Temperature (°C)")+
+  scale_y_continuous(limits=c(8.5,27.5), breaks=seq(9,27,by=6))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8),"right", puts legend on figure but covers outlier
+             legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")),
+                strip.background = element_blank(),
+                strip.text = element_text(size = 8))+
+        theme(axis.ticks.length = unit(.1, "cm"))+
+        facet_wrap(~Group2)
+
+WaterTemp_box
+```
+
+# Multipanel Figure
+```{r}
+# Multi-panel figure
+
+grid.arrange(TP_box, TN_box, DOC_box,
+             pH_box,TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4) # wide nrow = 2 #long ncol=2, nrow=4
+
+# 2 4x4 options - change letters
+grid.arrange(TP_box, TN_box, 
+             DOC_box, Secchi_box, ncol=2, nrow=2) 
+            
+grid.arrange(pH_box,TSS_box, Chla_box, WaterTemp_box, ncol=2, nrow=2) # wide nrow = 2 #long ncol=2, nrow=4
+```
+
+# Save output of multi-panel figure
+```{r}
+# Save on github
+#  pdf("Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
+
+#  grid.arrange(TP_box, TN_box, DOC_box, pH_box,
+#                  TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
+#  dev.off()
+
+# Save locally
+jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Rev_Multipanel_boxplot-long-nolegend.jpeg", width = 190, height = 230, units = 'mm',res=600)
+
+pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Rev_Multipanel_boxplot-long_newlines.pdf", width = 7.5, height = 9) #, width = 7.5, height = 9, width = 8.5, height = 11
+
+grid.arrange(TP_box, TN_box, DOC_box, pH_box,
+                 TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
+dev.off()
+
+
+```
+
+
+# Revision v2 ####
+# Boxplot Code
+### Order: TP, TN, DOC, pH, TSS, Chl-a, Secchi Depth, Water Temp
+```{r}
+# Create 2 color gradients for burn lakes (red) and control lakes (blue)
+
+month_colors_red <- c("#bd0026", '#f03b20', "#fd8d3c", "#fecc5c", "#ffffb2") # red gradient
+month_colors_blue <- c("#364b9a", '#5385bc', "#83b8d7", "#b7ddeb", "#eff3ff") # blue gradient
+
+group_colors <- c("#bd0026","#364b9a","#fd8d3c", "#83b8d7")
+
+# Make factors for Group (Burn/Control & Isolated/Drainage) & Month
+wq_data$Month_factor <- parse_factor(wq_data$Month_factor, levels = c("May","Jun","Jul","Aug","Sep"))
+wq_data$Group <- parse_factor(wq_data$Group, levels = c("Burned_Drainage", "Control_Drainage", "Burned_Isolated", "Control_Isolated"))
+
+# Add grouping variable for 2 different color schemes
+wq_data <- wq_data %>% 
+  mutate(color_group = ifelse(Group=="Burned_Drainage"|Group=="Burned_Isolated","group_red", "group_blue"))
+
+# TP plot - order with Drainage lakes together 
+range(wq_data$TP_ppb, na.rm = T)
+
+TP_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TP_ppb, fill = Group2), outlier.size = 0.75) + 
+  scale_fill_manual(name = NULL, values=group_colors)+
+#  guides(fill = "none")+ #remove guide
+#  new_scale_fill()+ #allows you to set 2 different color scales
+#  geom_boxplot(aes(x = Group, y = TP_ppb, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+#  scale_fill_manual(name = NULL, values=month_colors_blue)+
+#  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(a) TP", x = NULL, y = "Total Phosphorus (ppb)")+ #µg/L, x = "Lake Type"
+  scale_y_continuous(limits=c(0,100))+
+ # scale_x_discrete(labels=c('BD','CD','BI','CI'))+ #scale_x_discrete(labels=c('BD','BI','CD','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.8,0.8),# puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black"))+ #, margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+TP_box
+
+
+#TN
+range(wq_data$TN_ppb, na.rm = T)
+
+TN_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TN_ppb, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = TN_ppb, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(b) TN",x = NULL, y = "Total Nitrogen (ppb)")+ #µg/L
+  scale_y_continuous(limits=c(200,1845), breaks=seq(200,1800,by=400))+
+#  scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "top", #c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+TN_box
+
+#DOC
+range(wq_data$DOC_ppm)
+
+DOC_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = DOC_ppm, fill = Group2), outlier.size = 0.75) + #,  filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  # guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = DOC_ppm, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(c) DOC",x = NULL, y = "Dissolved Organic Carbon (ppm)")+
+  scale_y_continuous(limits=c(0,44), breaks=seq(0,40,by=10))+
+ # scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+DOC_box
+
+ 
+#pH
+range(wq_data$pH, na.rm = T)
+
+pH_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = pH, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = pH, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(d) pH",x = NULL, y = "pH")+
+  scale_y_continuous(limits=c(5.5,9.5), breaks=seq(5.5,9.5, by=1))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8), puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+pH_box
+
+#TSS
+range(wq_data$TSS_mgL)
+
+TSS_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = TSS_mgL, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = TSS_mgL, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(e) TSS", x = NULL, y = "Total Suspended Solids (ppm)")+
+  scale_y_continuous(limits=c(0,15), breaks=seq(0,15,by=5))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+TSS_box
+ 
+#Chla
+ range(wq_data$Chloro_ppb, na.rm = T)
+ sum(is.na(wq_data$Chloro_ppb))
+
+Chla_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = Chloro_ppb, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = Chloro_ppb, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(f) Chlorophyll-a", x = NULL, y = "Chlorophyll-a (ppb)")+
+  scale_y_continuous(limits=c(0,25.1), breaks=seq(0,25,by=5))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+  theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+Chla_box
+
+
+#Secchi
+ range(wq_data$SecchiDepth_m, na.rm = T)
+ sum(is.na(wq_data$SecchiDepth_m))
+
+Secchi_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = SecchiDepth_m, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = SecchiDepth_m, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(g) Secchi Depth", x = NULL, y = "Secchi Depth (m)")+
+  scale_y_continuous(limits=c(0,4.1), breaks=seq(0,4,by=1))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = c(0.1,0.8),#"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+Secchi_box
+
+# Water Temp
+range(wq_data$WaterTemp_C, na.rm = T)
+
+WaterTemp_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Month_factor, y = WaterTemp_C, fill = Group2), outlier.size = 0.75) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Lake Type", values=group_colors)+
+  guides(fill = "none")+ #remove guide
+  # new_scale_fill()+ #allows you to set 2 different color scales
+  # geom_boxplot(aes(x = Month_factor, y = WaterTemp_C, fill = Group2), filter(wq_data, color_group=="group_blue"), outlier.size = 0.75) + 
+  # scale_fill_manual(name = NULL, values=month_colors_blue)+
+  # guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 8) +
+  labs(title = "(h) Water Temperature", x = NULL, y = "Water Temperature (°C)")+
+  scale_y_continuous(limits=c(8.5,27.5), breaks=seq(9,27,by=3))+
+  #scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.title.x = element_text(size=8),
+              axis.title.y = element_text(size=8),
+              axis.text.y = element_text(size=8, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=8, color="black",margin = margin(b=10,t=5, unit = "pt")),
+              legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8),"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=8,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.1, "cm"))
+
+WaterTemp_box
+```
+
+# Multipanel Figure
+```{r}
+# Multi-panel figure
+
+grid.arrange(TP_box, TN_box, DOC_box,
+             pH_box,TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4) # wide nrow = 2 #long ncol=2, nrow=4
+```
+
+# Save output of multi-panel figure
+```{r}
+# Save on github
+#  pdf("Figures/Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
+
+#  grid.arrange(TP_box, TN_box, DOC_box, pH_box,
+#                  TSS_box, Chla_box, Secchi_box, WaterTemp_box, ncol=2, nrow=4)
+dev.off()
+
+# Save locally
+jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Rev_v2_Multipanel_boxplot-long.jpeg", width = 190, height = 230, units = 'mm',res=600)
+# 
+# jpeg("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide-nolegend.jpeg", width = 230, height = 190, units = 'mm',res=600)
+# 
+pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Rev_v2_Multipanel_boxplot-long.pdf", width = 7.5, height = 9)
+# 
+# pdf("~/Documents/RAPID Fire Grant/Manuscript Figures/Multipanel_boxplot-wide.pdf", width = 9, height = 7.5)
+# 
+# 
+ 
+
+```
+
+
+# ANC figure for supplement
+```{r}
+# ANC
+range(wq_data$ANC_mgCaCO3L, na.rm = T)
+
+anc_label <- c(expression(paste("Acid Neutralizing Capacity (mg ",CaCO[3], " L"^-1,")"))) 
+
+ANC_box <- ggplot(wq_data) +
+  geom_boxplot(aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor), outlier.size = 1) + #, filter(wq_data, color_group=="group_red")
+  scale_fill_manual(name = "Month", values=month_colors_red)+
+  #guides(fill = "none")+ #remove guide
+  new_scale_fill()+ #allows you to set 2 different color scales
+  geom_boxplot(aes(x = Group, y = ANC_mgCaCO3L, fill = Month_factor), filter(wq_data, color_group=="group_blue"), outlier.size = 1) + 
+  scale_fill_manual(name = NULL, values=month_colors_blue)+
+  #guides(fill = "none")+ #remove guide
+  theme_classic(base_size = 14) +
+  labs(x = NULL, y = anc_label)+ #title = "ANC", "Acid Neutralizing Capacity (mg CaCO3/L)"
+  scale_y_continuous(limits=c(0,80), breaks=seq(0,80,by=10))+
+  scale_x_discrete(labels=c('BD','CD','BI','CI'))+
+   theme(axis.text.y = element_text(size=14, color="black",margin = margin(l=5,r=3, unit = "pt")),
+              axis.text.x = element_text(size=14, color="black",margin = margin(b=10,t=5, unit = "pt")),
+             # legend.title = element_text(size = 8),
+              legend.position = "right", #c(0.1,0.8),"right", puts legend on figure but covers outlier
+              legend.text = element_text(size=14,color="black", margin = margin(r=7,l=5, unit = "pt")))+
+        theme(axis.ticks.length = unit(.2, "cm"))
+
+ANC_box
+
+
+# Save on github
+# ggsave("Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+
+# Save locally
+ # ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.pdf", width = 9, height = 7.5, units = "in", dpi = 300)
+ # ggsave("~/Documents/RAPID Fire Grant/Manuscript Figures/ANC_boxplot.jpeg", width = 9, height = 7.5, units = "in", dpi = 300)
+
+
+```
+
+
+
 
