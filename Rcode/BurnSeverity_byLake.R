@@ -1,4 +1,4 @@
-################### Exploring lake times series data ##########################
+####################### Burn severity plots by lake ###########################
 # Date: 8-26-22
 # updated: 3-8-23; change plot title to lowercase b
 # Author: Ian McCullough, immccull@gmail.com

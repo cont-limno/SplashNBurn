@@ -1,9 +1,0 @@
-8-24-22
-
-Downloaded summary data for entire record (starting May 24); contains daily highs, lows and averages
-Changed column names to get rid of special characters. Not entirely clear how variables were calculated (especially precip total variables)
-Didn't see anything in user's manual about how variables were calculated
-Downloaded quickly
-
-If you download all the data, it takes several minutes despite being relatively small file
-This may be preferable for calculating summary variables (15-minute interval data)
